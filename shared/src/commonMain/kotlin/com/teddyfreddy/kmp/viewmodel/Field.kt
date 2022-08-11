@@ -1,7 +1,7 @@
 package com.teddyfreddy.kmp.viewmodel
 
 interface Field {
-    val name: String
+    val label: String
     val required: Boolean
     val validator: Validator?
 

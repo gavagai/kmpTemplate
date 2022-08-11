@@ -9,14 +9,14 @@ class AccountComposeViewModel(
     private val registrationContext: RegistrationContext
 ) : KoinComponent {
     private val binder = AccountBinder(AccountStoreProvider(get(), registrationContext).provide())
-    private val proxy = AccountViewProxy(
+    private val proxy = AccountMVIViewProxy(
         onRender = {
             model.value = it
         },
         onForward = {
-            registrationContext.email = model.value.email.value as? String
-            registrationContext.givenName = model.value.givenName.value as? String
-            registrationContext.familyName = model.value.familyName.value as? String
+            registrationContext.email = model.value.email.data
+            registrationContext.givenName = model.value.givenName.data
+            registrationContext.familyName = model.value.familyName.data
 
             // Navigate to next view
         },
@@ -25,7 +25,7 @@ class AccountComposeViewModel(
         }
     )
 
-    var model: MutableState<AccountView.Model> = mutableStateOf(AccountView.Model())
+    var model: MutableState<AccountMVIView.Model> = mutableStateOf(AccountMVIView.Model())
 
 
     // Lifecycle events
@@ -52,18 +52,18 @@ class AccountComposeViewModel(
 
 
     fun changeField(field: AccountViewField, value: Any?, validate: Boolean = false) {
-        proxy.dispatch(AccountView.Event.ChangeField(field, value, validate))
+        proxy.dispatch(AccountMVIView.Event.ChangeField(field, value, validate))
     }
 
     fun validateField(field: AccountViewField) {
-        proxy.dispatch(AccountView.Event.ValidateField(field))
+        proxy.dispatch(AccountMVIView.Event.ValidateField(field))
     }
 
     fun cancelPressed() {
-        proxy.dispatch(AccountView.Event.Cancel)
+        proxy.dispatch(AccountMVIView.Event.Cancel)
     }
 
     fun continuePressed() {
-        proxy.dispatch(AccountView.Event.Forward)
+        proxy.dispatch(AccountMVIView.Event.Forward)
     }
 }

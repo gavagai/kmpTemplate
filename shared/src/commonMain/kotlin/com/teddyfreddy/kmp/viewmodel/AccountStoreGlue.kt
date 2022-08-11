@@ -4,7 +4,7 @@ import com.arkivanov.mvikotlin.core.binder.Binder
 import com.arkivanov.mvikotlin.core.view.BaseMviView
 import com.arkivanov.mvikotlin.core.view.MviView
 import com.arkivanov.mvikotlin.extensions.coroutines.*
-import com.teddyfreddy.kmp.ValidatedField
+import com.teddyfreddy.kmp.ValidatedStringField
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -20,12 +20,12 @@ data class RegistrationContext(
 
 
 
-class AccountViewProxy(
-    private val onRender: (AccountView.Model) -> Unit,
+class AccountMVIViewProxy(
+    private val onRender: (AccountMVIView.Model) -> Unit,
     onForward: () -> Unit,
     onCancel: () -> Unit
-) : BaseMviView<AccountView.Model, AccountView.Event>(), AccountView {
-    override fun render(model: AccountView.Model) { // Invoked via bindings in binder
+) : BaseMviView<AccountMVIView.Model, AccountMVIView.Event>(), AccountMVIView {
+    override fun render(model: AccountMVIView.Model) { // Invoked via bindings in binder
         onRender(model)
     }
 
@@ -41,15 +41,15 @@ class AccountViewProxy(
 /**
  * Interface for proxy
  */
-interface AccountView : MviView<AccountView.Model, AccountView.Event> {
+interface AccountMVIView : MviView<AccountMVIView.Model, AccountMVIView.Event> {
 
     data class Model(
-        var email: ValidatedField = ValidatedField(value = ""),
-        var password: ValidatedField = ValidatedField(value = ""),
-        var passwordConfirmation: ValidatedField = ValidatedField(value = ""),
-        var givenName: ValidatedField = ValidatedField(value = ""),
-        var familyName: ValidatedField = ValidatedField(value = ""),
-        var phone: String? = "",
+        var email: ValidatedStringField = ValidatedStringField(data = ""),
+        var password: ValidatedStringField = ValidatedStringField(data = ""),
+        var passwordConfirmation: ValidatedStringField = ValidatedStringField(data = ""),
+        var givenName: ValidatedStringField = ValidatedStringField(data = ""),
+        var familyName: ValidatedStringField = ValidatedStringField(data = ""),
+        var phone: String = "",
         var dateOfBirth: LocalDate? = null,
 
         var optionalsShown: Boolean = false,
@@ -62,11 +62,12 @@ interface AccountView : MviView<AccountView.Model, AccountView.Event> {
         object Forward : Event
     }
 }
+typealias AccountMVIViewModel = AccountMVIView.Model // For iOS visibility
 
 
-internal val stateToModel: AccountStore.State.() -> AccountView.Model =
+internal val stateToModel: AccountStore.State.() -> AccountMVIView.Model =
     {
-        AccountView.Model(
+        AccountMVIView.Model(
             email = email,
             password = password,
             passwordConfirmation = passwordConfirmation,
@@ -79,13 +80,13 @@ internal val stateToModel: AccountStore.State.() -> AccountView.Model =
         )
     }
 
-internal val eventToIntent: AccountView.Event.() -> AccountStore.Intent =
+internal val eventToIntent: AccountMVIView.Event.() -> AccountStore.Intent =
     {
         when (this) {
-            is AccountView.Event.ChangeField -> AccountStore.Intent.ChangeField(field, value, validate)
-            is AccountView.Event.ValidateField -> AccountStore.Intent.ValidateField(field)
-            AccountView.Event.Cancel -> AccountStore.Intent.Cancel
-            AccountView.Event.Forward -> AccountStore.Intent.Continue
+            is AccountMVIView.Event.ChangeField -> AccountStore.Intent.ChangeField(field, value, validate)
+            is AccountMVIView.Event.ValidateField -> AccountStore.Intent.ValidateField(field)
+            AccountMVIView.Event.Cancel -> AccountStore.Intent.Cancel
+            AccountMVIView.Event.Forward -> AccountStore.Intent.Continue
         }
     }
 
@@ -93,7 +94,7 @@ class AccountBinder(private val store: AccountStore) {
     private var binder: Binder? = null
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun onViewCreated(view: AccountViewProxy) {
+    fun onViewCreated(view: AccountMVIViewProxy) {
         binder = bind {
             store.states.map(stateToModel).distinctUntilChanged() bindTo view
             store.labels bindTo view.onLabel

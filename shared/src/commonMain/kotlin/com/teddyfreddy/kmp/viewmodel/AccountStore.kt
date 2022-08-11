@@ -5,31 +5,31 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import com.teddyfreddy.kmp.ValidatedField
+import com.teddyfreddy.kmp.ValidatedStringField
 import com.teddyfreddy.kmp.emailValidator
 import com.teddyfreddy.kmp.stringValidator
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 
 
-sealed class AccountViewField(
-    override val name: String,
+enum class AccountViewField(
+    override val label: String,
     override val required: Boolean = false,
     override val validator: Field.Validator? = null
 ) : Field {
-    object UsernameField : AccountViewField("Email", true,
+    Username("Email", true,
         validator = Field.Validator { field: Field, value: Any?, _ ->
-            emailValidator(field.name, value as? String, field.required)
+            emailValidator(field.label, value as? String, field.required)
         }
-    )
-    object PasswordField : AccountViewField("Password", true,
+    ),
+    Password("Password", true,
         validator = Field.Validator { field: Field, value: Any?, _ ->
-            stringValidator(field.name, value as? String, field.required)
+            stringValidator(field.label, value as? String, field.required)
         }
-    )
-    object PasswordConfirmationField : AccountViewField("Password confirmation", true,
-        validator = Field.Validator { field: Field, value: Any?, args: Array<out Any?>->
-            var error = stringValidator(field.name, value as? String, field.required)
+    ),
+    PasswordConfirmation("Password confirmation", true,
+        validator = Field.Validator { field: Field, value: Any?, args: Array<out Any?> ->
+            var error = stringValidator(field.label, value as? String, field.required)
             if (error == null) {
                 if (value != args[0]) {
                     error = "Passwords don't match"
@@ -37,19 +37,19 @@ sealed class AccountViewField(
             }
             error
         }
-    )
-    object FirstNameField : AccountViewField("First name", true,
+    ),
+    FirstName("First name", true,
         validator = Field.Validator { field: Field, value: Any?, _ ->
-            stringValidator(field.name, value as? String, field.required)
+            stringValidator(field.label, value as? String, field.required)
         }
-    )
-    object LastNameField : AccountViewField("Last name", true,
+    ),
+    LastName("Last name", true,
         validator = Field.Validator { field: Field, value: Any?, _ ->
-            stringValidator(field.name, value as? String, field.required)
+            stringValidator(field.label, value as? String, field.required)
         }
-    )
-    object PhoneNumberField : AccountViewField("Phone number")
-    object DateOfBirthField : AccountViewField("Date of birth")
+    ),
+    PhoneNumber("Phone number"),
+    DateOfBirth("Date of birth")
 }
 
 
@@ -63,12 +63,12 @@ interface AccountStore : Store<AccountStore.Intent, AccountStore.State, AccountS
     }
 
     data class State(
-        var email: ValidatedField = ValidatedField(value = ""),
-        var password: ValidatedField = ValidatedField(value = ""),
-        var passwordConfirmation: ValidatedField = ValidatedField(value = ""),
-        var givenName: ValidatedField = ValidatedField(value = ""),
-        var familyName: ValidatedField = ValidatedField(value = ""),
-        var phone: String? = "",
+        var email: ValidatedStringField = ValidatedStringField(data = ""),
+        var password: ValidatedStringField = ValidatedStringField(data = ""),
+        var passwordConfirmation: ValidatedStringField = ValidatedStringField(data = ""),
+        var givenName: ValidatedStringField = ValidatedStringField(data = ""),
+        var familyName: ValidatedStringField = ValidatedStringField(data = ""),
+        var phone: String = "",
         var dateOfBirth: LocalDate? = null,
 
         var optionalsShown: Boolean = false,
@@ -117,48 +117,48 @@ class AccountStoreProvider(
             when (msg) {
                 is Msg.ChangeField -> {
                     when (msg.field) {
-                        AccountViewField.UsernameField -> {
+                        AccountViewField.Username -> {
                             val email = email.copy(
-                                value = msg.value as? String
+                                data = msg.value as? String ?: ""
                             )
                             copy(
                                 email = email
                             )
                         }
-                        AccountViewField.PasswordField -> {
+                        AccountViewField.Password -> {
                             copy(
                                 password = password.copy(
-                                    value = msg.value as? String
+                                    data = msg.value as? String ?: ""
                                 )
                             )
                         }
-                        AccountViewField.PasswordConfirmationField -> {
+                        AccountViewField.PasswordConfirmation -> {
                             copy(
                                 passwordConfirmation = passwordConfirmation.copy(
-                                    value = msg.value as? String
+                                    data = msg.value as? String ?: ""
                                 )
                             )
                         }
-                        AccountViewField.FirstNameField -> {
+                        AccountViewField.FirstName -> {
                             copy(
                                 givenName = givenName.copy(
-                                    value = msg.value as? String
+                                    data = msg.value as? String ?: ""
                                 )
                             )
                         }
-                        AccountViewField.LastNameField -> {
+                        AccountViewField.LastName -> {
                             copy(
                                 familyName = familyName.copy(
-                                    value = msg.value as? String
+                                    data = msg.value as? String ?: ""
                                 )
                             )
                         }
-                        AccountViewField.PhoneNumberField -> {
+                        AccountViewField.PhoneNumber -> {
                             copy(
-                                phone = msg.value as? String
+                                phone = msg.value as? String ?: ""
                             )
                         }
-                        AccountViewField.DateOfBirthField -> {
+                        AccountViewField.DateOfBirth -> {
                             copy(
                                 dateOfBirth = msg.value as? LocalDate
                             )
@@ -170,38 +170,38 @@ class AccountStoreProvider(
                         null
                     }
                     when (msg.field) {
-                        AccountViewField.UsernameField -> {
+                        AccountViewField.Username -> {
                             copy(
                                 email = email.copy(
-                                    error = validator.validate(msg.field, email.value)
+                                    error = validator.validate(msg.field, email.data)
                                 )
                             )
                         }
-                        AccountViewField.PasswordField -> {
+                        AccountViewField.Password -> {
                             copy(
                                 password = password.copy(
-                                    error = validator.validate(msg.field, password.value)
+                                    error = validator.validate(msg.field, password.data)
                                 )
                             )
                         }
-                        AccountViewField.PasswordConfirmationField -> {
+                        AccountViewField.PasswordConfirmation -> {
                             copy(
                                 passwordConfirmation = passwordConfirmation.copy(
-                                    error = validator.validate(msg.field, passwordConfirmation.value, password.value)
+                                    error = validator.validate(msg.field, passwordConfirmation.data, password.data)
                                 )
                             )
                         }
-                        AccountViewField.FirstNameField -> {
+                        AccountViewField.FirstName -> {
                             copy(
                                 givenName = givenName.copy(
-                                    error = validator.validate(msg.field, givenName.value)
+                                    error = validator.validate(msg.field, givenName.data)
                                 )
                             )
                         }
-                        AccountViewField.LastNameField -> {
+                        AccountViewField.LastName -> {
                             copy(
                                 familyName = familyName.copy(
-                                    error = validator.validate(msg.field,familyName.value)
+                                    error = validator.validate(msg.field, familyName.data)
                                 )
                             )
                         }
@@ -221,11 +221,11 @@ class AccountStoreProvider(
             }
 
         private fun executeContinue(getState: () -> AccountStore.State) {
-            dispatch(Msg.ValidateField(AccountViewField.UsernameField))
-            dispatch(Msg.ValidateField(AccountViewField.PasswordField))
-            dispatch(Msg.ValidateField(AccountViewField.PasswordConfirmationField))
-            dispatch(Msg.ValidateField(AccountViewField.FirstNameField))
-            dispatch(Msg.ValidateField(AccountViewField.LastNameField))
+            dispatch(Msg.ValidateField(AccountViewField.Username))
+            dispatch(Msg.ValidateField(AccountViewField.Password))
+            dispatch(Msg.ValidateField(AccountViewField.PasswordConfirmation))
+            dispatch(Msg.ValidateField(AccountViewField.FirstName))
+            dispatch(Msg.ValidateField(AccountViewField.LastName))
             if (getState().valid) {
                 publish(AccountStore.Label.Continue)
             }
@@ -245,9 +245,9 @@ class AccountStoreProvider(
         }
 
         private fun executeRestoreFromRegistrationContext(registrationContext: RegistrationContext) {
-            dispatch(Msg.ChangeField(AccountViewField.UsernameField, registrationContext.email))
-            dispatch(Msg.ChangeField(AccountViewField.FirstNameField, registrationContext.givenName))
-            dispatch(Msg.ChangeField(AccountViewField.LastNameField, registrationContext.familyName))
+            dispatch(Msg.ChangeField(AccountViewField.Username, registrationContext.email))
+            dispatch(Msg.ChangeField(AccountViewField.FirstName, registrationContext.givenName))
+            dispatch(Msg.ChangeField(AccountViewField.LastName, registrationContext.familyName))
         }
     }
 
