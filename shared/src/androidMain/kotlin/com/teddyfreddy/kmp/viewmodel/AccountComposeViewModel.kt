@@ -2,18 +2,16 @@ package com.teddyfreddy.kmp.viewmodel
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import com.teddyfreddy.kmp.account.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
 class AccountComposeViewModel(
     private val registrationContext: RegistrationContext
 ) : KoinComponent {
-    private val binder = AccountBinder(AccountStoreProvider(get(), registrationContext).provide())
-    private val proxy = AccountMVIViewProxy(
-        onRender = {
-            model.value = it
-        },
-        onForward = {
+    private val binder = AccountController(AccountStoreFactory(get(), registrationContext).create())
+    private val proxy = AccountBaseMviView(
+        onContinue = {
             registrationContext.email = model.value.email.data
             registrationContext.givenName = model.value.givenName.data
             registrationContext.familyName = model.value.familyName.data
@@ -22,10 +20,13 @@ class AccountComposeViewModel(
         },
         onCancel = {
             // Return from this view
+        },
+        onRender = {
+            model.value = it
         }
     )
 
-    var model: MutableState<AccountMVIView.Model> = mutableStateOf(AccountMVIView.Model())
+    var model: MutableState<AccountMviView.Model> = mutableStateOf(AccountMviView.Model())
 
 
     // Lifecycle events
@@ -51,19 +52,19 @@ class AccountComposeViewModel(
     // End Lifecycle events
 
 
-    fun changeField(field: AccountViewField, value: Any?, validate: Boolean = false) {
-        proxy.dispatch(AccountMVIView.Event.ChangeField(field, value, validate))
+    fun changeField(field: AccountField, value: Any?, validate: Boolean = false) {
+        proxy.dispatch(AccountMviView.Event.ChangeField(field, value, validate))
     }
 
-    fun validateField(field: AccountViewField) {
-        proxy.dispatch(AccountMVIView.Event.ValidateField(field))
+    fun validateField(field: AccountField) {
+        proxy.dispatch(AccountMviView.Event.ValidateField(field))
     }
 
     fun cancelPressed() {
-        proxy.dispatch(AccountMVIView.Event.Cancel)
+        proxy.dispatch(AccountMviView.Event.Cancel)
     }
 
     fun continuePressed() {
-        proxy.dispatch(AccountMVIView.Event.Forward)
+        proxy.dispatch(AccountMviView.Event.Forward)
     }
 }

@@ -15,7 +15,7 @@ import com.teddyfreddy.kmp.android.ui.registration.AccountView
 import com.teddyfreddy.kmp.android.ui.theme.Material3Theme
 import com.teddyfreddy.kmp.sharedModule
 import com.teddyfreddy.kmp.viewmodel.AccountComposeViewModel
-import com.teddyfreddy.kmp.viewmodel.RegistrationContext
+import com.teddyfreddy.kmp.account.RegistrationContext
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 

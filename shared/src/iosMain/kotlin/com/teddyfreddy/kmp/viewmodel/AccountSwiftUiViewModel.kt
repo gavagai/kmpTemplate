@@ -1,5 +1,6 @@
 package com.teddyfreddy.kmp.viewmodel
 
+import com.teddyfreddy.kmp.account.*
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -8,18 +9,15 @@ import org.koin.core.component.get
 open class AccountSwiftUiViewModel(
     private val registrationContext: RegistrationContext
 ) : KoinComponent {
-    private lateinit var binder: AccountBinder
-    private lateinit var proxy: AccountMVIViewProxy
-    private lateinit var model: AccountMVIViewModel
+    private lateinit var binder: AccountController
+    private lateinit var proxy: AccountBaseMviView
+    private lateinit var model: AccountMviView.Model
 
     init {
         runBlocking {
-            this@AccountSwiftUiViewModel.binder = AccountBinder(AccountStoreProvider(get(), registrationContext).provide())
-            this@AccountSwiftUiViewModel.proxy = AccountMVIViewProxy(
-                onRender = {
-                    model = it
-                },
-                onForward = {
+            this@AccountSwiftUiViewModel.binder = AccountController(AccountStoreFactory(get(), registrationContext).create())
+            this@AccountSwiftUiViewModel.proxy = AccountBaseMviView(
+                onContinue = {
                     registrationContext.email = model.email.data
                     registrationContext.givenName = model.givenName.data
                     registrationContext.familyName = model.familyName.data
@@ -28,13 +26,16 @@ open class AccountSwiftUiViewModel(
                 },
                 onCancel = {
                     // Return from this view
+                },
+                onRender = {
+                    this@AccountSwiftUiViewModel.render(it)
                 }
             )
-            this@AccountSwiftUiViewModel.model = AccountMVIViewModel()
+            this@AccountSwiftUiViewModel.model = AccountMviView.Model()
         }
     }
 
-    open fun onRender(model: AccountMVIViewModel) {
+    open fun render(model: AccountMviView.Model) {
         this.model = model
     }
 
@@ -63,18 +64,18 @@ open class AccountSwiftUiViewModel(
 
 
     fun changeField(field: String, value: Any?, validate: Boolean = false) {
-        proxy.dispatch(AccountMVIView.Event.ChangeField(AccountViewField.valueOf(field), value, validate))
+        proxy.dispatch(AccountMviView.Event.ChangeField(AccountField.valueOf(field), value, validate))
     }
 
     fun validateField(field: String) {
-        proxy.dispatch(AccountMVIView.Event.ValidateField(AccountViewField.valueOf(field)))
+        proxy.dispatch(AccountMviView.Event.ValidateField(AccountField.valueOf(field)))
     }
 
     fun cancelPressed() {
-        proxy.dispatch(AccountMVIView.Event.Cancel)
+        proxy.dispatch(AccountMviView.Event.Cancel)
     }
 
     fun continuePressed() {
-        proxy.dispatch(AccountMVIView.Event.Forward)
+        proxy.dispatch(AccountMviView.Event.Forward)
     }
 }

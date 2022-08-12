@@ -7,8 +7,8 @@ struct AccountView: View {
 
     init(registrationContext: RegistrationContext = RegistrationContext(email: nil, givenName: nil, familyName: nil)) {
         self._viewModel = StateObject(wrappedValue: .init(registrationContext: registrationContext))
-        self.viewModel.onViewCreated()
-        self.viewModel.onViewStarted()
+            self.viewModel.onViewCreated()
+            self.viewModel.onViewStarted()
     }
 
 
@@ -32,21 +32,20 @@ struct AccountView: View {
                             viewModel.viewState.email.data as String
                         },
                         set: {
-                            viewModel.viewState.email.data = $0
                             viewModel.changeField(field: "Username",
-                                                  value: viewModel.viewState.email.data,
-                                                  validate: false)
+                                                  value: $0,
+                                                  validate: true)
                         }
                     )
                     TextField("Username", text: emailBinding)
+                    Text("Rendered: \(viewModel.rendered) #\(viewModel.viewState.email.error ?? "No error")#")
                     let passwordBinding = Binding<String>(
                         get: {
                             viewModel.viewState.password.data as String
                         },
                         set: {
-                            viewModel.viewState.password.data = $0
                             viewModel.changeField(field: "Password",
-                                                  value: viewModel.viewState.password.data,
+                                                  value: $0,
                                                   validate: false)
                         }
                     )
@@ -56,9 +55,8 @@ struct AccountView: View {
                             viewModel.viewState.passwordConfirmation.data as String
                         },
                         set: {
-                            viewModel.viewState.passwordConfirmation.data = $0
                             viewModel.changeField(field: "PasswordConfirmation",
-                                                  value: viewModel.viewState.passwordConfirmation.data,
+                                                  value: $0,
                                                   validate: false)
                         }
                     )
@@ -79,9 +77,8 @@ struct AccountView: View {
                             viewModel.viewState.givenName.data
                         },
                         set: {
-                            viewModel.viewState.givenName.data = $0
                             viewModel.changeField(field: "FirstName",
-                                                  value: viewModel.viewState.givenName.data,
+                                                  value: $0,
                                                   validate: false)
                         }
                     )
@@ -91,9 +88,8 @@ struct AccountView: View {
                             viewModel.viewState.familyName.data as String
                         },
                         set: {
-                            viewModel.viewState.familyName.data = $0
                             viewModel.changeField(field: "LastName",
-                                                  value: viewModel.viewState.familyName.data,
+                                                  value: $0,
                                                   validate: false)
                         }
                     )
@@ -103,9 +99,8 @@ struct AccountView: View {
                             viewModel.viewState.phone
                         },
                         set: {
-                            viewModel.viewState.phone = $0
                             viewModel.changeField(field: "LastName",
-                                                  value: viewModel.viewState.phone,
+                                                  value: $0,
                                                   validate: false)
                         }
                     )
@@ -142,8 +137,8 @@ extension AccountView {
 
     class ViewProxy: AccountSwiftUiViewModel, ObservableObject {
 
-        @Published var viewState: AccountMVIViewModel =
-            AccountMVIViewModel(
+        @Published var viewState: AccountMviViewModel =
+            AccountMviViewModel(
                 email: ValidatedStringField(data: "", error: nil),
                 password: ValidatedStringField(data: "", error: nil),
                 passwordConfirmation: ValidatedStringField(data: "", error: nil),
@@ -154,8 +149,10 @@ extension AccountView {
 
                 optionalsShown: false
             )
+        @Published var rendered: Int = 0
 
-        override func onRender(model: AccountMVIViewModel) {
+        override func render(model: AccountMviViewModel) {
+            rendered = rendered + 1
             viewState = model
         }
 

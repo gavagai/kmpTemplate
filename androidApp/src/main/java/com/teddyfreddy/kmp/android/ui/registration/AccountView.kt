@@ -15,6 +15,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.teddyfreddy.kmp.account.AccountField
 import com.teddyfreddy.kmp.android.ui.extensions.ValidatedTextField
 import com.teddyfreddy.kmp.viewmodel.*
 
@@ -41,9 +42,9 @@ fun AccountView(
 
         Spacer(modifier = Modifier.padding(20.dp))
         ValidatedTextField(
-            value = vm.model.value.email.data ?: "",
+            value = vm.model.value.email.data,
             onValueChange = {
-                vm.changeField(AccountViewField.Username, it)
+                vm.changeField(AccountField.Username, it)
             },
             label = { Text("Email") },
             placeholder =  { Text("Email*") },
@@ -55,7 +56,7 @@ fun AccountView(
             ),
             keyboardActions = KeyboardActions(
                 onNext = {
-                    vm.validateField(AccountViewField.Username)
+                    vm.validateField(AccountField.Username)
                     focusManager.moveFocus(FocusDirection.Down)
                 }
             ),
@@ -65,9 +66,9 @@ fun AccountView(
         )
 
         ValidatedTextField(
-            value = vm.model.value.password.data ?: "",
+            value = vm.model.value.password.data,
             onValueChange = {
-                vm.changeField(AccountViewField.Password, it)
+                vm.changeField(AccountField.Password, it)
             },
             label = { Text("Password") },
             placeholder =  { Text("Password*") },
@@ -79,7 +80,7 @@ fun AccountView(
             ),
             keyboardActions = KeyboardActions(
                 onNext = {
-                    vm.validateField(AccountViewField.Password)
+                    vm.validateField(AccountField.Password)
                     focusManager.moveFocus(FocusDirection.Down)
                 }
             ),
@@ -89,9 +90,9 @@ fun AccountView(
         )
 
         ValidatedTextField(
-            value = vm.model.value.passwordConfirmation.data ?: "",
+            value = vm.model.value.passwordConfirmation.data,
             onValueChange = {
-                vm.changeField(AccountViewField.PasswordConfirmation, it)
+                vm.changeField(AccountField.PasswordConfirmation, it)
             },
             label = { Text("Password confirmation") },
             placeholder =  { Text("Retype your password*") },
@@ -103,7 +104,7 @@ fun AccountView(
             ),
             keyboardActions = KeyboardActions(
                 onNext = {
-                    vm.validateField(AccountViewField.PasswordConfirmation)
+                    vm.validateField(AccountField.PasswordConfirmation)
                     focusManager.moveFocus(FocusDirection.Down)
                 }
             ),
@@ -113,9 +114,9 @@ fun AccountView(
         )
 
         ValidatedTextField(
-            value = vm.model.value.givenName.data ?: "",
+            value = vm.model.value.givenName.data,
             onValueChange = {
-                vm.changeField(AccountViewField.FirstName, it)
+                vm.changeField(AccountField.FirstName, it)
             },
             label = { Text("First name") },
             placeholder =  { Text("First name*") },
@@ -127,7 +128,7 @@ fun AccountView(
             ),
             keyboardActions = KeyboardActions(
                 onNext = {
-                    vm.validateField(AccountViewField.FirstName)
+                    vm.validateField(AccountField.FirstName)
                     focusManager.moveFocus(FocusDirection.Down)
                 }
             ),
@@ -137,9 +138,9 @@ fun AccountView(
         )
 
         ValidatedTextField(
-            value = vm.model.value.familyName.data ?: "",
+            value = vm.model.value.familyName.data,
             onValueChange = {
-                vm.changeField(AccountViewField.LastName, it)
+                vm.changeField(AccountField.LastName, it)
             },
             label = { Text("Last name") },
             placeholder =  { Text("Last name*") },
@@ -151,7 +152,7 @@ fun AccountView(
             ),
             keyboardActions = KeyboardActions(
                 onNext = {
-                    vm.validateField(AccountViewField.LastName)
+                    vm.validateField(AccountField.LastName)
                     focusManager.moveFocus(FocusDirection.Down)
                 }
             ),
@@ -161,9 +162,9 @@ fun AccountView(
         )
 
         TextField(
-            value = vm.model.value.phone ?: "",
+            value = vm.model.value.phone,
             onValueChange = {
-                vm.changeField(AccountViewField.PhoneNumber, it)
+                vm.changeField(AccountField.PhoneNumber, it)
             },
             label = { Text("Phone number") }
         )
