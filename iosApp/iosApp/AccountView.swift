@@ -41,7 +41,7 @@ struct AccountView: View {
                             viewModel.viewState.email.data as String
                         },
                         set: {
-                            viewModel.changeField(field: "Username",
+                            viewModel.changeField(field: AccountField.username,
                                                   value: $0,
                                                   validate: true)
                         }
@@ -53,7 +53,7 @@ struct AccountView: View {
                             viewModel.viewState.password.data as String
                         },
                         set: {
-                            viewModel.changeField(field: "Password",
+                            viewModel.changeField(field: AccountField.password,
                                                   value: $0,
                                                   validate: false)
                         }
@@ -64,7 +64,7 @@ struct AccountView: View {
                             viewModel.viewState.passwordConfirmation.data as String
                         },
                         set: {
-                            viewModel.changeField(field: "PasswordConfirmation",
+                            viewModel.changeField(field: AccountField.passwordconfirmation,
                                                   value: $0,
                                                   validate: false)
                         }
@@ -86,7 +86,7 @@ struct AccountView: View {
                             viewModel.viewState.givenName.data
                         },
                         set: {
-                            viewModel.changeField(field: "FirstName",
+                            viewModel.changeField(field: AccountField.firstname,
                                                   value: $0,
                                                   validate: false)
                         }
@@ -97,7 +97,7 @@ struct AccountView: View {
                             viewModel.viewState.familyName.data as String
                         },
                         set: {
-                            viewModel.changeField(field: "LastName",
+                            viewModel.changeField(field: AccountField.lastname,
                                                   value: $0,
                                                   validate: false)
                         }
@@ -108,7 +108,7 @@ struct AccountView: View {
                             viewModel.viewState.phone
                         },
                         set: {
-                            viewModel.changeField(field: "LastName",
+                            viewModel.changeField(field: AccountField.phonenumber,
                                                   value: $0,
                                                   validate: false)
                         }

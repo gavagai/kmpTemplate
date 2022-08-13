@@ -42,8 +42,8 @@ interface AccountMviView : MviView<AccountMviView.Model, AccountMviView.Event> {
         object Continue : Event
     }
 
-    fun changeField(field: String, value: Any?, validate: Boolean = false)
-    fun validateField(field: String)
+    fun changeField(field: AccountField, value: Any?, validate: Boolean = false)
+    fun validateField(field: AccountField)
     fun cancelPressed()
     fun continuePressed()
 
@@ -67,13 +67,13 @@ open class AccountBaseMviView : BaseMviView<AccountMviView.Model, AccountMviView
     override fun onCancel() {}
 
     @Suppress("unused")
-    override fun changeField(field: String, value: Any?, validate: Boolean) {
-        dispatch(AccountMviView.Event.ChangeField(AccountField.valueOf(field), value, validate))
+    override fun changeField(field: AccountField, value: Any?, validate: Boolean) {
+        dispatch(AccountMviView.Event.ChangeField(field, value, validate))
     }
 
     @Suppress("unused")
-    override fun validateField(field: String) {
-        dispatch(AccountMviView.Event.ValidateField(AccountField.valueOf(field)))
+    override fun validateField(field: AccountField) {
+        dispatch(AccountMviView.Event.ValidateField(field))
     }
 
     @Suppress("unused")
