@@ -15,6 +15,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.teddyfreddy.kmp.account.AccountField
 import com.teddyfreddy.kmp.android.ui.extensions.ValidatedTextField
 import com.teddyfreddy.kmp.viewmodel.*
@@ -23,6 +24,7 @@ import com.teddyfreddy.kmp.viewmodel.*
 @Composable
 fun AccountView(
     vm: AccountComposeViewModel,
+    onCancel: () -> Unit,
     modifier: Modifier? = Modifier
 ) {
     Column(
@@ -171,12 +173,12 @@ fun AccountView(
 
         Spacer(modifier = Modifier.padding(20.dp))
         Row(horizontalArrangement = Arrangement.SpaceAround) {
-            Button(onClick = { vm.cancelPressed() }) {
-                Text("Cancel")
+            Button(onClick = { vm.cancelPressed() ; onCancel() }) {
+                Text("Cancel: ${vm.canceled.value}")
             }
             Spacer(modifier = Modifier.padding(10.dp))
             Button(onClick = { vm.continuePressed() }) {
-                Text("Continue")
+                Text("Continue: ${vm.continued.value}")
             }
         }
     }

@@ -34,6 +34,10 @@ class MainActivity : ComponentActivity() {
             modules(androidModule, sharedModule)
         }
 
+        val lifecycle: Lifecycle = essentyLifecycle()
+        val registrationContext = RegistrationContext()
+        var vm = AccountComposeViewModel(lifecycle, registrationContext)
+
         setContent {
             Material3Theme {
                 // A surface container using the 'background' color from the theme
@@ -49,14 +53,14 @@ class MainActivity : ComponentActivity() {
 //                        onSignup = {
 //                        }
 //                    )
-                    val lifecycle: Lifecycle = essentyLifecycle()
-                    val registrationContext = RegistrationContext()
-                    var vm = remember { mutableStateOf(AccountComposeViewModel(lifecycle, registrationContext)) }
-                    vm.value.onViewCreated(lifecycle)
-
                     var signup = remember { mutableStateOf(false) }
                     if (signup.value) {
-                        AccountView(vm.value)
+                        AccountView(vm,
+                            onCancel = {
+                                signup.value = false
+                            }
+                        )
+                        vm.onViewCreated(lifecycle)
                     }
                     else {
                         LoginView(

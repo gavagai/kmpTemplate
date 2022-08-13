@@ -30,16 +30,20 @@ class AccountComposeViewModel(
         controller.onViewCreated(view, viewLifecycle)
     }
 
+    var continued = mutableStateOf(0)
     fun onContinue() {
         registrationContext.email = model.value.email.data
         registrationContext.givenName = model.value.givenName.data
         registrationContext.familyName = model.value.familyName.data
 
         // Navigate to next view
+        continued.value = continued.value + 1
     }
 
+    var canceled = mutableStateOf(0)
     fun onCancel() {
         // Return from this view
+        canceled.value = canceled.value + 1
     }
 
 

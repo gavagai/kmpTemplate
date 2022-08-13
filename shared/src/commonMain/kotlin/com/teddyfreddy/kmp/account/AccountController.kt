@@ -18,7 +18,7 @@ open class AccountController(lifecycle: Lifecycle, registrationContext: Registra
     private lateinit var store: AccountStore
 
     init {
-        runBlocking { // Not sure about this. Bootstrapper needs a coroutine context for launch.
+        runBlocking { // Bootstrapper needs a coroutine context for launch in SwiftUI. Seriously?
             store = AccountStoreFactory(DefaultStoreFactory(), registrationContext).create()
         }
         lifecycle.doOnDestroy(store::dispose)

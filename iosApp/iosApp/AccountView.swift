@@ -20,7 +20,6 @@ struct AccountView: View {
         )
     }
 
-
     var body: some View {
 
         VStack {
@@ -120,18 +119,16 @@ struct AccountView: View {
             .padding(.top, 10)
 
             HStack {
-                Button("Cancel", role: .cancel) {
+                Button("Cancel: \(viewModel.canceled)", role: .cancel) {
                     viewModel.cancelPressed()
                 }
 
-                Button("Continue") {
+                Button("Continue: \(viewModel.continued)") {
                      viewModel.continuePressed()
                 }
             }
             .padding(.horizontal, 30)
             .padding(.top, 25)
-
-            Spacer()
         }
         .onFirstAppear { holder.controller.onViewCreated(view: viewModel, viewLifecycle: holder.lifecycle) }
         .onAppear { LifecycleRegistryExtKt.resume(holder.lifecycle) }
@@ -153,6 +150,9 @@ extension AccountView {
         var viewState: AccountMviViewModel = AccountMviViewModel()
         @Published
         var rendered: Int = 0
+        
+        @Published var continued = 0
+        @Published var canceled = 0
 
 
         override func render(model: AccountMviViewModel) {
@@ -161,8 +161,10 @@ extension AccountView {
         }
 
         override func onContinue() {
+            continued += 1
         }
         override func onCancel() {
+            canceled += 1
         }
     }
 
