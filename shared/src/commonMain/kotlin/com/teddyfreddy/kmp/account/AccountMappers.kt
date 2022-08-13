@@ -9,9 +9,7 @@ internal val stateToModel: AccountStore.State.() -> AccountMviView.Model =
             givenName = givenName,
             familyName = familyName,
             phone = phone,
-            dateOfBirth = dateOfBirth,
-
-            optionalsShown = optionalsShown
+            dateOfBirth = dateOfBirth
         )
     }
 

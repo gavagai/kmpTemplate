@@ -23,8 +23,6 @@ interface AccountStore : Store<AccountStore.Intent, AccountStore.State, AccountS
         var phone: String = "",
         var dateOfBirth: LocalDate? = null,
 
-        var optionalsShown: Boolean = false,
-
         val valid: Boolean =
                     email.error == null &&
                     password.error == null &&

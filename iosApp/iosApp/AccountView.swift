@@ -150,34 +150,19 @@ extension AccountView {
     private class ViewProxy: AccountBaseMviView, ObservableObject {
 
         @Published
-        var viewState: AccountMviViewModel =
-            AccountMviViewModel(
-                email: ValidatedStringField(data: "", error: nil),
-                password: ValidatedStringField(data: "", error: nil),
-                passwordConfirmation: ValidatedStringField(data: "", error: nil),
-                givenName: ValidatedStringField(data: "", error: nil),
-                familyName: ValidatedStringField(data: "", error: nil),
-                phone: "",
-                dateOfBirth: nil,
-
-                optionalsShown: false
-            )
+        var viewState: AccountMviViewModel = AccountMviViewModel()
         @Published
         var rendered: Int = 0
-
-        init() {
-            super.init(
-                onContinue: {
-                },
-                onCancel: {
-                }
-            )
-        }
 
 
         override func render(model: AccountMviViewModel) {
             rendered = rendered + 1
             viewState = model
+        }
+
+        override func onContinue() {
+        }
+        override func onCancel() {
         }
     }
 

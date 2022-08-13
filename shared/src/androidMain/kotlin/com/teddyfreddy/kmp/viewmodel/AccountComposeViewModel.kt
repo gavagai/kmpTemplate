@@ -11,27 +11,35 @@ class AccountComposeViewModel(
     private val registrationContext: RegistrationContext
 ) : KoinComponent {
     private val controller = AccountController(lifecycle, registrationContext)
-    private val view = AccountBaseMviView(
-        onContinue = {
-            registrationContext.email = model.value.email.data
-            registrationContext.givenName = model.value.givenName.data
-            registrationContext.familyName = model.value.familyName.data
-
-            // Navigate to next view
-        },
-        onCancel = {
-            // Return from this view
-        },
-        onRender = {
-            model.value = it
+    private val view = object: AccountBaseMviView() {
+        override fun render(model: AccountMviView.Model) {
+            this@AccountComposeViewModel.model.value = model
         }
-    )
+        override fun onContinue() {
+            this@AccountComposeViewModel.onContinue()
+        }
+        override fun onCancel() {
+            this@AccountComposeViewModel.onCancel()
+        }
+    }
 
     var model: MutableState<AccountMviView.Model> = mutableStateOf(AccountMviView.Model())
 
 
     fun onViewCreated(viewLifecycle: Lifecycle) {
         controller.onViewCreated(view, viewLifecycle)
+    }
+
+    fun onContinue() {
+        registrationContext.email = model.value.email.data
+        registrationContext.givenName = model.value.givenName.data
+        registrationContext.familyName = model.value.familyName.data
+
+        // Navigate to next view
+    }
+
+    fun onCancel() {
+        // Return from this view
     }
 
 

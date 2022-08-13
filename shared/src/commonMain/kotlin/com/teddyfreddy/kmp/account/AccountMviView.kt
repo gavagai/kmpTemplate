@@ -22,8 +22,6 @@ interface AccountMviView : MviView<AccountMviView.Model, AccountMviView.Event> {
         var familyName: ValidatedStringField,
         var phone: String,
         var dateOfBirth: LocalDate?,
-
-        var optionalsShown: Boolean
     ) {
         // No-arg constructor for Swift.
         constructor() : this(
@@ -33,9 +31,7 @@ interface AccountMviView : MviView<AccountMviView.Model, AccountMviView.Event> {
             givenName = ValidatedStringField(data = ""),
             familyName = ValidatedStringField(data = ""),
             phone = "",
-            dateOfBirth = null,
-
-            optionalsShown = false
+            dateOfBirth = null
         )
     }
 
@@ -46,48 +42,47 @@ interface AccountMviView : MviView<AccountMviView.Model, AccountMviView.Event> {
         object Continue : Event
     }
 
+    fun changeField(field: String, value: Any?, validate: Boolean = false)
+    fun validateField(field: String)
+    fun cancelPressed()
+    fun continuePressed()
+
     val onLabel: suspend (label: AccountStore.Label) -> Unit
+    fun onContinue()
+    fun onCancel()
 }
 
 
 // Added for label delegation and Compose aggregation
-open class AccountBaseMviView(
-    onContinue: () -> Unit,
-    onCancel: () -> Unit,
-    private val onRender: ((AccountMviView.Model) -> Unit)? = null // For AccountComposeViewModel
-) : BaseMviView<AccountMviView.Model, AccountMviView.Event>(), AccountMviView {
+open class AccountBaseMviView : BaseMviView<AccountMviView.Model, AccountMviView.Event>(), AccountMviView {
 
     override val onLabel: suspend (label: AccountStore.Label) -> Unit = { // Invoked via bindings in binder
         when (it) {
-            AccountStore.Label.Continue -> onContinue()
-            AccountStore.Label.Cancel -> onCancel()
+            AccountStore.Label.Continue -> this.onContinue()
+            AccountStore.Label.Cancel -> this.onCancel()
         }
     }
 
-    override fun render(model: AccountMviView.Model) {
-        onRender?.let {
-            it(model)
-        }
-    }
-
+    override fun onContinue() {}
+    override fun onCancel() {}
 
     @Suppress("unused")
-    fun changeField(field: String, value: Any?, validate: Boolean = false) {
+    override fun changeField(field: String, value: Any?, validate: Boolean) {
         dispatch(AccountMviView.Event.ChangeField(AccountField.valueOf(field), value, validate))
     }
 
     @Suppress("unused")
-    fun validateField(field: String) {
+    override fun validateField(field: String) {
         dispatch(AccountMviView.Event.ValidateField(AccountField.valueOf(field)))
     }
 
     @Suppress("unused")
-    fun cancelPressed() {
+    override fun cancelPressed() {
         dispatch(AccountMviView.Event.Cancel)
     }
 
     @Suppress("unused")
-    fun continuePressed() {
+    override fun continuePressed() {
         dispatch(AccountMviView.Event.Continue)
     }
 }

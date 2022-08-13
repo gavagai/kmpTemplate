@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
-class AccountController(lifecycle: Lifecycle, registrationContext: RegistrationContext) {
+open class AccountController(lifecycle: Lifecycle, registrationContext: RegistrationContext) {
     private lateinit var store: AccountStore
 
     init {
