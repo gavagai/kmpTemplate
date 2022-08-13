@@ -43,20 +43,21 @@ interface AccountMviView : MviView<AccountMviView.Model, AccountMviView.Event> {
         data class ChangeField(val field: AccountField, val value: Any?, val validate: Boolean = false) : Event
         data class ValidateField(val field: AccountField) : Event
         object Cancel : Event
-        object Forward : Event
+        object Continue : Event
     }
+
+    val onLabel: suspend (label: AccountStore.Label) -> Unit
 }
 
 
-// Added for label delegation only
-class AccountBaseMviView(
+// Added for label delegation and Compose aggregation
+open class AccountBaseMviView(
     onContinue: () -> Unit,
     onCancel: () -> Unit,
-    private val onRender: ((AccountMviView.Model) -> Unit)? = null // For SwiftUI
-
+    private val onRender: ((AccountMviView.Model) -> Unit)? = null // For AccountComposeViewModel
 ) : BaseMviView<AccountMviView.Model, AccountMviView.Event>(), AccountMviView {
 
-    internal val onLabel: suspend (label: AccountStore.Label) -> Unit = { // Invoked via bindings in binder
+    override val onLabel: suspend (label: AccountStore.Label) -> Unit = { // Invoked via bindings in binder
         when (it) {
             AccountStore.Label.Continue -> onContinue()
             AccountStore.Label.Cancel -> onCancel()
@@ -64,7 +65,30 @@ class AccountBaseMviView(
     }
 
     override fun render(model: AccountMviView.Model) {
-        onRender?.let { it(model) }
+        onRender?.let {
+            it(model)
+        }
+    }
+
+
+    @Suppress("unused")
+    fun changeField(field: String, value: Any?, validate: Boolean = false) {
+        dispatch(AccountMviView.Event.ChangeField(AccountField.valueOf(field), value, validate))
+    }
+
+    @Suppress("unused")
+    fun validateField(field: String) {
+        dispatch(AccountMviView.Event.ValidateField(AccountField.valueOf(field)))
+    }
+
+    @Suppress("unused")
+    fun cancelPressed() {
+        dispatch(AccountMviView.Event.Cancel)
+    }
+
+    @Suppress("unused")
+    fun continuePressed() {
+        dispatch(AccountMviView.Event.Continue)
     }
 }
 

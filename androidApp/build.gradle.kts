@@ -35,6 +35,7 @@ android {
 val material3Version = "1.0.0-alpha15"
 val koinVersion = "3.2.0"
 val composeLibraryVersion = "1.2.0"
+val essentyVersion = "0.5.2"
 // DON: --
 dependencies {
     implementation(project(":shared"))
@@ -65,5 +66,8 @@ dependencies {
     implementation("io.insert-koin:koin-android:$koinVersion")
     // Koin for Jetpack Compose - https://insert-koin.io/docs/reference/koin-android/compose
     implementation("io.insert-koin:koin-androidx-compose:$koinVersion")
+
+    // Essenty lifecycle (for MVIKotlin)
+    implementation("com.arkivanov.essenty:lifecycle:$essentyVersion")
     // DON: --
 }

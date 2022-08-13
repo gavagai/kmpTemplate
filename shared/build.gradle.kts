@@ -3,6 +3,10 @@ plugins {
     id("com.android.library")
 }
 
+// DON: --
+val essentyVersion = "0.5.2"
+val mviKotlinVersion = "3.0.0-beta01"
+// DON: --
 kotlin {
     android()
     
@@ -13,13 +17,17 @@ kotlin {
     ).forEach {
         it.binaries.framework {
             baseName = "shared"
+
+            // DON: --
+            export("com.arkivanov.essenty:lifecycle:$essentyVersion")
+            export("com.arkivanov.mvikotlin:mvikotlin:$mviKotlinVersion")
+            // DON: --
         }
     }
 
 // DON: --
     val ktorVersion = "2.0.2"
     val koinVersion = "3.2.0"
-    val mviKotlinVersion = "3.0.0-beta01"
 // DON: --
     sourceSets {
         val commonMain by getting {
@@ -73,6 +81,8 @@ kotlin {
             // DON: --
             dependencies {
                 implementation("io.ktor:ktor-client-darwin:$ktorVersion")
+                api("com.arkivanov.essenty:lifecycle:$essentyVersion")
+                api("com.arkivanov.mvikotlin:mvikotlin:$mviKotlinVersion")
             }
             // DON: --
         }

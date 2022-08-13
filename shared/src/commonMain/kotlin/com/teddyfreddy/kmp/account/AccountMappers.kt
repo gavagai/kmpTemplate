@@ -25,6 +25,6 @@ internal val eventToIntent: AccountMviView.Event.() -> AccountStore.Intent =
             )
             is AccountMviView.Event.ValidateField -> AccountStore.Intent.ValidateField(field)
             AccountMviView.Event.Cancel -> AccountStore.Intent.Cancel
-            AccountMviView.Event.Forward -> AccountStore.Intent.Continue
+            AccountMviView.Event.Continue -> AccountStore.Intent.Continue
         }
     }

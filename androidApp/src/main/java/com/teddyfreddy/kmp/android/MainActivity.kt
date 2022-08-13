@@ -9,6 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.teddyfreddy.kmp.Greeting
 import com.teddyfreddy.kmp.android.ui.login.LoginView
 import com.teddyfreddy.kmp.android.ui.registration.AccountView
@@ -18,6 +19,7 @@ import com.teddyfreddy.kmp.viewmodel.AccountComposeViewModel
 import com.teddyfreddy.kmp.account.RegistrationContext
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+import com.arkivanov.essenty.lifecycle.essentyLifecycle
 
 fun greet(): String {
     return Greeting().greeting()
@@ -47,10 +49,10 @@ class MainActivity : ComponentActivity() {
 //                        onSignup = {
 //                        }
 //                    )
+                    val lifecycle: Lifecycle = essentyLifecycle()
                     val registrationContext = RegistrationContext()
-                    var vm = remember { mutableStateOf(AccountComposeViewModel(registrationContext)) }
-                    vm.value.onViewCreated()
-                    vm.value.onViewStarted()
+                    var vm = remember { mutableStateOf(AccountComposeViewModel(lifecycle, registrationContext)) }
+                    vm.value.onViewCreated(lifecycle)
 
                     var signup = remember { mutableStateOf(false) }
                     if (signup.value) {

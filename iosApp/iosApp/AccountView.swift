@@ -3,12 +3,21 @@ import shared
 
 struct AccountView: View {
 
-    @StateObject private var viewModel: ViewProxy
+    @StateObject
+    private var viewModel: ViewProxy = ViewProxy()
+
+    @StateObject
+    private var holder: ControllerHolder
 
     init(registrationContext: RegistrationContext = RegistrationContext(email: nil, givenName: nil, familyName: nil)) {
-        self._viewModel = StateObject(wrappedValue: .init(registrationContext: registrationContext))
-            self.viewModel.onViewCreated()
-            self.viewModel.onViewStarted()
+        self._holder = StateObject(
+            wrappedValue: ControllerHolder { lifecycle in
+                AccountController(
+                    lifecycle: lifecycle,
+                    registrationContext: registrationContext
+                )
+            }
+        )
     }
 
 
@@ -124,6 +133,9 @@ struct AccountView: View {
 
             Spacer()
         }
+        .onFirstAppear { holder.controller.onViewCreated(view: viewModel, viewLifecycle: holder.lifecycle) }
+        .onAppear { LifecycleRegistryExtKt.resume(holder.lifecycle) }
+        .onDisappear { LifecycleRegistryExtKt.stop(holder.lifecycle) }
     }
 }
 
@@ -135,9 +147,10 @@ struct AccountView_Previews: PreviewProvider {
 
 extension AccountView {
 
-    class ViewProxy: AccountSwiftUiViewModel, ObservableObject {
+    private class ViewProxy: AccountBaseMviView, ObservableObject {
 
-        @Published var viewState: AccountMviViewModel =
+        @Published
+        var viewState: AccountMviViewModel =
             AccountMviViewModel(
                 email: ValidatedStringField(data: "", error: nil),
                 password: ValidatedStringField(data: "", error: nil),
@@ -149,17 +162,35 @@ extension AccountView {
 
                 optionalsShown: false
             )
-        @Published var rendered: Int = 0
+        @Published
+        var rendered: Int = 0
+
+        init() {
+            super.init(
+                onContinue: {
+                },
+                onCancel: {
+                }
+            )
+        }
+
 
         override func render(model: AccountMviViewModel) {
             rendered = rendered + 1
             viewState = model
         }
-
-
-        override init(registrationContext: RegistrationContext) {
-            super.init(registrationContext: registrationContext)
-        }
     }
 
+    private class ControllerHolder : ObservableObject {
+        let lifecycle: LifecycleRegistry = LifecycleRegistryKt.LifecycleRegistry()
+        let controller: AccountController
+
+        init(factory: (Lifecycle) -> AccountController) {
+            controller = factory(lifecycle)
+        }
+
+        deinit {
+            LifecycleRegistryExtKt.destroy(lifecycle)
+        }
+    }
 }
