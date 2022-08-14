@@ -89,7 +89,7 @@ class LoginStoreFactory(
             dispatch(Msg.ValidateField(LoginField.Password))
             val state = getState()
             if (state.valid) {
-                publish(LoginStore.Label.Login(getState().username.data, getState().password.data))
+                publish(LoginStore.Label.Login(state.username.data, state.password.data))
             }
         }
     }

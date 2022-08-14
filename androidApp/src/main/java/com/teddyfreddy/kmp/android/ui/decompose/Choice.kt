@@ -1,7 +1,8 @@
 package com.teddyfreddy.kmp.android.ui.decompose
 
-interface Home {
+interface Choice {
 
-    fun logoutPressed()
+    fun continuePressed()
+    fun cancelPressed()
     fun backPressed()
 }

@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 @OptIn(ExperimentalCoroutinesApi::class)
 class LoginComponent(
     componentContext: ComponentContext,
-    modifier: Modifier? = Modifier,
     private val onLogin: () -> Unit,
     private val onSignup: () -> Unit
 ) : Login, ComponentContext by componentContext {
@@ -29,10 +28,12 @@ class LoginComponent(
 
     private val scope = CoroutineScope(Dispatchers.Main)
     init {
-         scope.launch {
+        scope.launch {
             store.states.distinctUntilChanged().collect {
                 this@LoginComponent._state.value = it
             }
+        }
+        scope.launch {
             store.labels.collect {
                 when (it) {
                     is LoginStore.Label.Login -> this@LoginComponent.onLogin()

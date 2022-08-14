@@ -27,6 +27,7 @@ fun LoginView(
     modifier: Modifier? = Modifier
 ) {
     val state = remember { component.state }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier?.fillMaxWidth() ?: Modifier.fillMaxWidth()

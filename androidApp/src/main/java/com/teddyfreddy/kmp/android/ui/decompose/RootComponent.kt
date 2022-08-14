@@ -50,7 +50,9 @@ class RootComponent(
 
     private fun homeComponent(componentContext: ComponentContext): HomeComponent =
         HomeComponent(
-            componentContext = componentContext
+            componentContext = componentContext,
+            onLogout = { navigation.replaceCurrent(configuration = Config.Login) },
+            onBack = { navigation.replaceCurrent(configuration = Config.Login) }
         )
 
 
