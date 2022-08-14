@@ -226,6 +226,7 @@ fun PasswordTextField(
             onGo = { if (onGo != null) onGo() }
         ),
         supportingText = supportingText,
+        errorText = errorText ?: "Please enter your password",
         required = true
     )
 }

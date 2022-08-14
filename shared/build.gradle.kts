@@ -28,6 +28,7 @@ kotlin {
 // DON: --
     val ktorVersion = "2.0.2"
     val koinVersion = "3.2.0"
+    val decomposeVersion = "1.0.0-alpha-02"
 // DON: --
     sourceSets {
         val commonMain by getting {
@@ -47,10 +48,13 @@ kotlin {
                 implementation("io.insert-koin:koin-core:$koinVersion")
 
                 // MVIKotlin - https://github.com/arkivanov/MVIKotlin#readme
-                implementation("com.arkivanov.mvikotlin:mvikotlin:$mviKotlinVersion")
-                implementation("com.arkivanov.mvikotlin:mvikotlin-main:$mviKotlinVersion")
+                api("com.arkivanov.mvikotlin:mvikotlin:$mviKotlinVersion")
+                api("com.arkivanov.mvikotlin:mvikotlin-main:$mviKotlinVersion")
                 implementation("com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:$mviKotlinVersion")
                 implementation("com.arkivanov.mvikotlin:mvikotlin-logging:$mviKotlinVersion")
+                // Decompose
+                implementation("com.arkivanov.decompose:decompose:$decomposeVersion")
+                implementation("com.arkivanov.decompose:extensions-compose-jetpack:$decomposeVersion")
             }
             // DON: --
         }

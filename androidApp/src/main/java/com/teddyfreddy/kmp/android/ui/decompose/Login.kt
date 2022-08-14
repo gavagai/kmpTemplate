@@ -1,27 +1,16 @@
 package com.teddyfreddy.kmp.android.ui.decompose
 
-import com.arkivanov.decompose.value.Value
+import androidx.compose.runtime.State
+import com.teddyfreddy.kmp.login.LoginStore
 
 interface Login {
-    fun login(username: String, password: String)
+    fun login()
     fun signup()
 
-    data class Model(
-        var username: String = "",
-        var password: String = "",
-        var isUsernameError: Boolean = false,
-        var isPasswordError: Boolean = false
-    ) {
-        constructor() : this(
-            username = "admin",
-            password = "pw",
-            isUsernameError = false,
-            isPasswordError = false
-        )
-    }
+    val state: State<LoginStore.State>
 
-    val model: Value<Model>
-
-    fun onUsernameChange(newval: String)
-    fun onPasswordChange(newval: String)
+    fun changeUsername(newVal: String)
+    fun validateUsername()
+    fun changePassword(newVal: String)
+    fun validatePassword()
 }

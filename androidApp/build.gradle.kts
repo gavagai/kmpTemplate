@@ -38,6 +38,7 @@ android {
 val material3Version = "1.0.0-alpha15"
 val koinVersion = "3.2.0"
 val composeLibraryVersion = "1.2.0"
+val mviKotlinVersion = "3.0.0-beta01"
 val essentyVersion = "0.5.2"
 val decomposeVersion = "1.0.0-alpha-02"
 // DON: --
@@ -76,5 +77,7 @@ dependencies {
     // Decompose for Compose navigation, MVI sore lifecycle etc
     implementation("com.arkivanov.decompose:decompose:$decomposeVersion")
     implementation("com.arkivanov.decompose:extensions-compose-jetpack:$decomposeVersion")
+    // MVIKotlin
+    implementation("com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:$mviKotlinVersion")
     // DON: --
 }

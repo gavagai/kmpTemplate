@@ -1,10 +1,20 @@
 package com.teddyfreddy.kmp.android.ui.decompose
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.lifecycle.doOnDestroy
+import com.arkivanov.mvikotlin.extensions.coroutines.labels
+import com.arkivanov.mvikotlin.extensions.coroutines.states
+import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import com.teddyfreddy.kmp.login.LoginField
+import com.teddyfreddy.kmp.login.LoginStore
+import com.teddyfreddy.kmp.login.LoginStoreFactory
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.distinctUntilChanged
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class LoginComponent(
     componentContext: ComponentContext,
     modifier: Modifier? = Modifier,
@@ -12,24 +22,45 @@ class LoginComponent(
     private val onSignup: () -> Unit
 ) : Login, ComponentContext by componentContext {
 
-    override val model: Value<Login.Model> = MutableValue(Login.Model())
+    private val store = LoginStoreFactory(DefaultStoreFactory()).create()
 
-    override fun login(username: String, password: String) {
-        // Actual login activity
+    private var _state: MutableState<LoginStore.State> = mutableStateOf(store.state)
+    override val state = _state
 
-        // For navigation (replace by Home)
-        this.onLogin()
+    private val scope = CoroutineScope(Dispatchers.Main)
+    init {
+         scope.launch {
+            store.states.distinctUntilChanged().collect {
+                this@LoginComponent._state.value = it
+            }
+            store.labels.collect {
+                when (it) {
+                    is LoginStore.Label.Login -> this@LoginComponent.onLogin()
+                }
+            }
+        }
+        lifecycle.doOnDestroy { scope.cancel() }
+    }
+
+
+    override fun login() {
+        store.accept(LoginStore.Intent.Login)
     }
 
     override fun signup() {
         this.onSignup()
     }
 
-    override fun onUsernameChange(newval: String) {
-        model.value.username = newval
+    override fun changeUsername(newVal: String) {
+        store.accept(LoginStore.Intent.ChangeField(LoginField.Username, newVal, false))
     }
-    override fun onPasswordChange(newval: String) {
-        model.value.password = newval
+    override fun validateUsername() {
+        store.accept(LoginStore.Intent.ValidateField(LoginField.Username))
     }
-
+    override fun changePassword(newVal: String) {
+        store.accept(LoginStore.Intent.ChangeField(LoginField.Password, newVal, false))
+    }
+    override fun validatePassword() {
+        store.accept(LoginStore.Intent.ValidateField(LoginField.Password))
+    }
 }
