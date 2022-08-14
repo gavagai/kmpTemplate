@@ -1,9 +1,6 @@
 package com.teddyfreddy.kmp.android.ui.login
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
@@ -32,7 +29,7 @@ fun LoginView(
     val state = remember { component.state }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier ?: Modifier
+        modifier = modifier?.fillMaxWidth() ?: Modifier.fillMaxWidth()
     ) {
         val focusManager = LocalFocusManager.current
 

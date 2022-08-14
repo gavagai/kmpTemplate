@@ -12,13 +12,18 @@ interface LoginStore : Store<LoginStore.Intent, LoginStore.State, LoginStore.Lab
     }
 
     data class State(
-        var username: ValidatedStringField = ValidatedStringField(data = ""),
-        var password: ValidatedStringField = ValidatedStringField(data = ""),
+        val username: ValidatedStringField,
+        val password: ValidatedStringField
+    ) {
+        constructor() : this(
+            username = ValidatedStringField(data = ""),
+            password = ValidatedStringField(data = "")
+        )
 
-        val valid: Boolean =
-            username.error == null &&
-            password.error == null
-    )
+        val valid: Boolean
+            get() = username.error == null && password.error == null
+    }
+
 
     sealed interface Label {
         data class Login(

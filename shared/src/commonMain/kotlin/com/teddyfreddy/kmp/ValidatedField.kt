@@ -1,18 +1,28 @@
 package com.teddyfreddy.kmp
 
 data class ValidatedStringField(
-    var data: String = "",
-    var error: String? = null
-)
+    val data: String,
+    val error: String?
+) {
+    constructor() : this(
+        data = "",
+        error = null
+    )
+    constructor(data: String) : this(
+        data = data,
+        error = null
+    )
+
+}
 
 data class ValidatedField<T>( // No Swift
-    var value: T,
-    var error: String? = null
+    val data: T,
+    val error: String? = null
 )
 
 data class ValidatedNullableField<T>( // No Swift
-    var value: T? = null,
-    var error: String? = null
+    val data: T? = null,
+    val error: String? = null
 )
 
 fun stringValidator(label: String, value: String?, required: Boolean? = false, regex: Regex? = null) : String? {

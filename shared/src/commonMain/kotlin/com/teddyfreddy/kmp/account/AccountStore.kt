@@ -15,21 +15,22 @@ interface AccountStore : Store<AccountStore.Intent, AccountStore.State, AccountS
     }
 
     data class State(
-        var email: ValidatedStringField = ValidatedStringField(data = ""),
-        var password: ValidatedStringField = ValidatedStringField(data = ""),
-        var passwordConfirmation: ValidatedStringField = ValidatedStringField(data = ""),
-        var givenName: ValidatedStringField = ValidatedStringField(data = ""),
-        var familyName: ValidatedStringField = ValidatedStringField(data = ""),
-        var phone: String = "",
-        var dateOfBirth: LocalDate? = null,
-
-        val valid: Boolean =
-                    email.error == null &&
-                    password.error == null &&
-                    passwordConfirmation.error == null &&
-                    givenName.error == null &&
-                    familyName.error == null
-    )
+        val email: ValidatedStringField = ValidatedStringField(data = ""),
+        val password: ValidatedStringField = ValidatedStringField(data = ""),
+        val passwordConfirmation: ValidatedStringField = ValidatedStringField(data = ""),
+        val givenName: ValidatedStringField = ValidatedStringField(data = ""),
+        val familyName: ValidatedStringField = ValidatedStringField(data = ""),
+        val phone: String = "",
+        val dateOfBirth: LocalDate? = null,
+    ) {
+        val valid: Boolean
+            get() =
+                email.error == null &&
+                password.error == null &&
+                passwordConfirmation.error == null &&
+                givenName.error == null &&
+                familyName.error == null
+    }
 
     sealed interface Label {
         object Cancel: Label

@@ -87,7 +87,8 @@ class LoginStoreFactory(
         private fun executeLogin(getState: () -> LoginStore.State) {
             dispatch(Msg.ValidateField(LoginField.Username))
             dispatch(Msg.ValidateField(LoginField.Password))
-            if (getState().valid) {
+            val state = getState()
+            if (state.valid) {
                 publish(LoginStore.Label.Login(getState().username.data, getState().password.data))
             }
         }
