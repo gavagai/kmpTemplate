@@ -1,6 +1,9 @@
 plugins {
     id("com.android.application")
     kotlin("android")
+    //DON: --
+    id("kotlin-parcelize")
+    // DON: --
 }
 
 val composeCompilerVersion = "1.3.0" // DON
@@ -36,6 +39,7 @@ val material3Version = "1.0.0-alpha15"
 val koinVersion = "3.2.0"
 val composeLibraryVersion = "1.2.0"
 val essentyVersion = "0.5.2"
+val decomposeVersion = "1.0.0-alpha-02"
 // DON: --
 dependencies {
     implementation(project(":shared"))
@@ -69,5 +73,8 @@ dependencies {
 
     // Essenty lifecycle (for MVIKotlin)
     implementation("com.arkivanov.essenty:lifecycle:$essentyVersion")
+    // Decompose for Compose navigation, MVI sore lifecycle etc
+    implementation("com.arkivanov.decompose:decompose:$decomposeVersion")
+    implementation("com.arkivanov.decompose:extensions-compose-jetpack:$decomposeVersion")
     // DON: --
 }

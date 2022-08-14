@@ -9,10 +9,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.teddyfreddy.kmp.Greeting
-import com.teddyfreddy.kmp.android.ui.login.LoginView
-import com.teddyfreddy.kmp.android.ui.registration.AccountView
 import com.teddyfreddy.kmp.android.ui.theme.Material3Theme
 import com.teddyfreddy.kmp.sharedModule
 import com.teddyfreddy.kmp.viewmodel.AccountComposeViewModel
@@ -20,6 +19,7 @@ import com.teddyfreddy.kmp.account.RegistrationContext
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import com.arkivanov.essenty.lifecycle.essentyLifecycle
+import com.teddyfreddy.kmp.android.ui.decompose.RootComponent
 
 fun greet(): String {
     return Greeting().greeting()
@@ -34,9 +34,8 @@ class MainActivity : ComponentActivity() {
             modules(androidModule, sharedModule)
         }
 
-        val lifecycle: Lifecycle = essentyLifecycle()
-        val registrationContext = RegistrationContext()
-        var vm = AccountComposeViewModel(lifecycle, registrationContext)
+        // Create the root component before starting Compose
+        val root = RootComponent(componentContext = defaultComponentContext())
 
         setContent {
             Material3Theme {
@@ -45,32 +44,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    RootView(component = root)
 //                    AsyncView()
-//                    LoginView(
-//                        onLogin = { user, password ->
-//
-//                        },
-//                        onSignup = {
-//                        }
-//                    )
-                    var signup = remember { mutableStateOf(false) }
-                    if (signup.value) {
-                        AccountView(vm,
-                            onCancel = {
-                                signup.value = false
-                            }
-                        )
-                        vm.onViewCreated(lifecycle)
-                    }
-                    else {
-                        LoginView(
-                            onLogin = { user, password ->
-                            },
-                            onSignup = {
-                                signup.value = true
-                            }
-                        )
-                    }
                 }
             }
         }

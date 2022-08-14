@@ -19,20 +19,18 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
+import com.teddyfreddy.kmp.android.ui.decompose.Login
 import com.teddyfreddy.kmp.android.ui.extensions.PasswordTextField
 import com.teddyfreddy.kmp.android.ui.extensions.UsernameTextField
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun LoginView(
-    onLogin: (String, String) -> Unit,
-    onSignup: () -> Unit,
+    component: Login,
     modifier: Modifier? = Modifier
 ) {
-    var username: String by remember { mutableStateOf("") }
-    var password: String by remember { mutableStateOf("") }
-    var isUsernameError by remember { mutableStateOf(false) }
-    var isPasswordError by remember { mutableStateOf(false) }
+    val state by component.model.subscribeAsState()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -51,15 +49,15 @@ fun LoginView(
 
         Spacer(modifier = Modifier.padding(20.dp))
         UsernameTextField(
-            value = username,
+            value = state.username,
             onValueChange = {
-                username = it
-                isUsernameError = username.isEmpty()
+                component.onUsernameChange(it)
+                state.isUsernameError = state.username.isEmpty()
             },
             modifier = Modifier
                 .onFocusChanged {
-                    if (it.hasFocus && !username.isEmpty()) {
-                        isUsernameError = false
+                    if (it.hasFocus && !state.username.isEmpty()) {
+                        state.isUsernameError = false
                     }
                 }
                 .onPreviewKeyEvent {
@@ -73,23 +71,23 @@ fun LoginView(
                         false
                     }
                 },
-            isError = isUsernameError,
+            isError = state.isUsernameError,
             onNext = {
-                if (username.isEmpty()) isUsernameError = true
+                if (state.username.isEmpty()) state.isUsernameError = true
                 focusManager.moveFocus(FocusDirection.Down)
             }
         )
         Spacer(modifier = Modifier.padding(4.dp))
         PasswordTextField(
-            value = password,
+            value = state.password,
             onValueChange = {
-                password = it
-                isPasswordError = password.isEmpty()
+                component.onPasswordChange(it)
+                state.isPasswordError = state.password.isEmpty()
             },
             modifier = Modifier
                 .onFocusChanged {
-                    if (it.hasFocus && !password.isEmpty()) {
-                        isPasswordError = false
+                    if (it.hasFocus && !state.password.isEmpty()) {
+                        state.isPasswordError = false
                     }
                 }
                 .onPreviewKeyEvent {
@@ -101,13 +99,18 @@ fun LoginView(
                         false
                     }
                 },
-            isError = isPasswordError,
+            isError = state.isPasswordError,
             errorText = "Your password isn't correct",
-            onGo = { if (password.isEmpty()) isPasswordError = true else onLogin(username, password) }
+            onGo = {
+                if (state.password.isEmpty()) state.isPasswordError = true
+                else component.login(state.username, state.password)
+            }
         )
         Spacer(modifier = Modifier.padding(20.dp))
         Text("Don't have an account?")
-        Button(onClick = { onSignup() }) {
+        Button(
+            onClick = { component.signup() }
+        ) {
             Text("Sign up")
         }
     }

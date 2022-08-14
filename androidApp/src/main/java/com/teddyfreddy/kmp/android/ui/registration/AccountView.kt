@@ -15,6 +15,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.teddyfreddy.kmp.account.AccountField
 import com.teddyfreddy.kmp.android.ui.extensions.ValidatedTextField
@@ -23,6 +24,7 @@ import com.teddyfreddy.kmp.viewmodel.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountView(
+    componentContext: ComponentContext,
     vm: AccountComposeViewModel,
     onCancel: () -> Unit,
     modifier: Modifier? = Modifier
