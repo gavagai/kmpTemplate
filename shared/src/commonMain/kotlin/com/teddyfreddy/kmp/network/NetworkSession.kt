@@ -3,7 +3,9 @@ package com.teddyfreddy.kmp.network
 import io.ktor.client.call.*
 import io.ktor.http.*
 import io.ktor.utils.io.core.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class NetworkSession {
@@ -11,6 +13,7 @@ class NetworkSession {
         inline fun <reified T>execute(request: NetworkRequest) : Flow<NetworkResponse<T>> {
             return request
                 .asFlow()
+                .flowOn(Dispatchers.Main)
                 .map { response ->
                     if (response.status.value !in 200..299) {
                         val payload = try {
@@ -19,29 +22,15 @@ class NetworkSession {
                         catch (e: Exception) {
                             null
                         }
-                        if (payload != null) {
-                            if (response.status.value == 422) {
-                                throw NetworkRequestError.ValidationError(payload)
-                            }
-                            else if (response.status.value in 500..599) {
-                                if (response.status.value == 503) {
-                                    throw NetworkRequestError.ServiceUnavailable(response.headers["Retry-After"])
-                                }
-                                else {
-                                    throw NetworkRequestError.ServerError(response.status.value, payload.message)
-                                }
-                            }
+                        when (response.status.value) {
+                            401 -> throw NetworkRequestError.Unauthenticated
+                            403 -> throw NetworkRequestError.Unauthorized
+                            422 -> if (payload != null) throw NetworkRequestError.ValidationError(payload)
+                                   else throw NetworkRequestError.HttpError(response.status.value)
+                            500 -> throw NetworkRequestError.ServerError(response.status.value, payload?.message ?: "")
+                            503 -> throw NetworkRequestError.ServiceUnavailable(response.headers["Retry-After"])
+                            else -> throw NetworkRequestError.HttpError(response.status.value)
                         }
-                        else {
-                            if (response.status.value == 401) {
-                                throw NetworkRequestError.Unauthenticated
-                            }
-                            else if (response.status.value == 401) {
-                                throw NetworkRequestError.Unauthorized
-                            }
-                        }
-
-                        throw NetworkRequestError.HttpError(status = response.status.value)
                     }
 
                     response
@@ -61,7 +50,7 @@ class NetworkSession {
                 }
         }
 
-        fun authorizationHeader(username: String, password: String) : String {
+        fun basicAuthorizationHeader(username: String, password: String) : String {
             val token = basicToken(username, password)
             return  "Basic $token"
         }

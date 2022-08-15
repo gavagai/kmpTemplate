@@ -2,6 +2,7 @@ package com.teddyfreddy.kmp.login
 
 import com.arkivanov.mvikotlin.core.store.Store
 import com.teddyfreddy.kmp.ValidatedStringField
+import com.teddyfreddy.kmp.network.NetworkResponse
 
 interface LoginStore : Store<LoginStore.Intent, LoginStore.State, LoginStore.Label> {
 
@@ -26,9 +27,10 @@ interface LoginStore : Store<LoginStore.Intent, LoginStore.State, LoginStore.Lab
 
 
     sealed interface Label {
-        data class Login(
-            val username: String,
-            val password: String
+        object LoginInitiated: Label
+        data class LoginComplete(
+            val response: NetworkResponse<LoginDTO>?,
+            val message: String?
         ): Label
     }
 }

@@ -4,11 +4,12 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import com.teddyfreddy.kmp.network.NetworkRequest
+import com.teddyfreddy.kmp.network.NetworkRequestError
 import com.teddyfreddy.kmp.network.NetworkSession
 import com.teddyfreddy.kmp.viewmodel.Field
-import io.ktor.client.request.*
-import io.ktor.http.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class LoginStoreFactory(
@@ -94,40 +95,25 @@ class LoginStoreFactory(
             dispatch(Msg.ValidateField(LoginField.Password))
             val state = getState()
             if (state.valid) {
+                publish(LoginStore.Label.LoginInitiated)
                 scope.launch {
-                    NetworkSession.execute<LoginDTO>(
-                        NetworkRequest("http://localhost:8080/login") {
-                            this.method = HttpMethod.Post
-                            this.header(
-                                "Authorization",
-                                NetworkSession.authorizationHeader(
-                                    state.username.data,
-                                    state.password.data
-                                )
-                            )
-                            this.header("Content-Type", "application/json")
-                        }
-                    )
-                        .collect {
-                            print("booyah")
-                        }
+                    try {
+                        NetworkSession.execute<LoginDTO>(
+                            loginRequest(state.username.data, state.password.data)
+                        )
+                            .flowOn(Dispatchers.Main)
+                            .catch { e ->
+                                publish(LoginStore.Label.LoginComplete(null, e.message))
+                            }
+                            .collect {
+                                publish(LoginStore.Label.LoginComplete(it, null))
+                            }
+                    }
+                    catch (e: NetworkRequestError) {
+                        publish(LoginStore.Label.LoginComplete(null, e.message))
+                    }
                 }
-                publish(LoginStore.Label.Login(state.username.data, state.password.data))
             }
         }
     }
 }
-/*
-guard let url = URL(string: serviceUrl(resource: "login"))
-else { preconditionFailure("Invalid URL format") }
-var request = URLRequest(url: url)
-request.httpMethod = "POST"
-request.httpShouldHandleCookies = true
-request.setValue(authorizationValue(accessToken), forHTTPHeaderField: "Authorization")
-request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-do {
-    request.httpBody = try JSONEncoderWithExposedDates().encode(loginAPIRequest)
-    }
-catch { preconditionFailure("Couldn't set JSON body") }
-return request
-*/

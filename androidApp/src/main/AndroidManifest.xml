@@ -5,7 +5,8 @@
     <application
         android:allowBackup="false"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"> <!-- DON -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -15,4 +16,8 @@
             </intent-filter>
         </activity>
     </application>
-</manifest> 
+    <!-- DON -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- DON -->
+</manifest>

@@ -28,6 +28,7 @@ sealed class NetworkRequestError : Exception() {
             is ValidationError -> "Server Validation Error"
             is StandardizedError -> "Server Request Failed"
             Unknown ->  "Unknown Error"
+            else -> null
         }
 
     override val message: String?
@@ -50,6 +51,7 @@ sealed class NetworkRequestError : Exception() {
             is ValidationError -> standardizedErrorDescription(response)
             is StandardizedError -> standardizedErrorDescription(response)
             Unknown -> null
+            else -> null
         }
 
     val recoverySuggestion: String?
@@ -81,11 +83,13 @@ sealed class NetworkRequestError : Exception() {
             is ValidationError -> "The server has rejected the request because some of the data was invalid - see if the details you a hint"
             is StandardizedError -> "See if the details in the error give you a hint"
             Unknown -> "Report this as a bug"
+            else -> null
         }
 
 
 
-    val description : String = failureReason ?: ""
+    val description : String
+        get() = failureReason ?: ""
 
     private fun standardizedErrorDescription(response: ErrorPayload) : String {
         var description = "Code: ${response.code}\nMessage: ${response.message}"

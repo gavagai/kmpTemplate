@@ -1,6 +1,5 @@
 package com.teddyfreddy.kmp.login
 
-import com.teddyfreddy.kmp.emailValidator
 import com.teddyfreddy.kmp.stringValidator
 import com.teddyfreddy.kmp.viewmodel.Field
 
@@ -11,7 +10,7 @@ enum class LoginField(
 ) : Field {
     Username("Username", true,
         validator = Field.Validator { field: Field, value: Any?, _ ->
-            emailValidator(field.label, value as? String, field.required)
+            com.teddyfreddy.kmp.stringValidator(field.label, value as? String, field.required)
         }
     ),
     Password("Password", true,

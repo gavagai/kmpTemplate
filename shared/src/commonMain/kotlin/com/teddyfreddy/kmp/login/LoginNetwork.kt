@@ -1,5 +1,9 @@
 package com.teddyfreddy.kmp.login
 
+import com.teddyfreddy.kmp.network.NetworkRequest
+import com.teddyfreddy.kmp.network.NetworkSession
+import io.ktor.client.request.*
+import io.ktor.http.*
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.KSerializer
@@ -9,6 +13,33 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+
+
+fun loginRequest(username: String, password: String) : NetworkRequest =
+    NetworkRequest("http://10.0.1.173:8080/login") {
+        method = HttpMethod.Post
+        header(
+            "Authorization",
+            NetworkSession.basicAuthorizationHeader(
+                username,
+                password
+            )
+        )
+        header("Content-Type", "application/json")
+        setBody(
+            LoginCredentialsDTO(
+                username = username,
+                password = password
+            )
+        )
+    }
+
+
+@Serializable
+data class LoginCredentialsDTO (
+    val username : String,
+    val password : String
+)
 
 @Serializable
 data class LoginDTO (

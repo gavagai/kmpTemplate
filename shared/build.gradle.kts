@@ -1,6 +1,9 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    // DON: --
+    kotlin("plugin.serialization").version("1.7.10")
+    // DON: --
 }
 
 // DON: --

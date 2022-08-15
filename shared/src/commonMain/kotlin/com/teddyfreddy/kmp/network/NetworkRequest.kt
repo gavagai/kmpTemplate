@@ -14,11 +14,17 @@ data class NetworkRequest(
 ) : KoinComponent {
     private suspend fun request() : HttpResponse {
         val client: HttpClient by inject()
-        return client.request(urlString, builder)
+        return try {
+            client.request(urlString, builder)
+        }
+        catch (e: Exception) {
+            throw NetworkRequestError.TransportError(e)
+        }
     }
 
     fun asFlow(): Flow<HttpResponse> = flow {
-        emit(request())
+        val response = request()
+        emit(response)
     }
 }
 

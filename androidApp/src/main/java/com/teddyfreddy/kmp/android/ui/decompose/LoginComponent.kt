@@ -2,22 +2,23 @@ package com.teddyfreddy.kmp.android.ui.decompose
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import com.teddyfreddy.kmp.login.LoginDTO
 import com.teddyfreddy.kmp.login.LoginField
 import com.teddyfreddy.kmp.login.LoginStore
 import com.teddyfreddy.kmp.login.LoginStoreFactory
+import com.teddyfreddy.kmp.network.NetworkResponse
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LoginComponent(
     componentContext: ComponentContext,
-    private val onLogin: () -> Unit,
+    private val onLogin: (response: NetworkResponse<LoginDTO>?, message: String?) -> Unit,
     private val onSignup: () -> Unit
 ) : Login, ComponentContext by componentContext {
 
@@ -36,7 +37,8 @@ class LoginComponent(
         scope.launch {
             store.labels.collect {
                 when (it) {
-                    is LoginStore.Label.Login -> this@LoginComponent.onLogin()
+                    is LoginStore.Label.LoginInitiated -> { }
+                    is LoginStore.Label.LoginComplete -> this@LoginComponent.onLogin(it.response, it.message)
                 }
             }
         }
