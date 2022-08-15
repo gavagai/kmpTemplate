@@ -4,7 +4,12 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
+import com.teddyfreddy.kmp.network.NetworkRequest
+import com.teddyfreddy.kmp.network.NetworkSession
 import com.teddyfreddy.kmp.viewmodel.Field
+import io.ktor.client.request.*
+import io.ktor.http.*
+import kotlinx.coroutines.launch
 
 class LoginStoreFactory(
     private val storeFactory: StoreFactory
@@ -89,8 +94,40 @@ class LoginStoreFactory(
             dispatch(Msg.ValidateField(LoginField.Password))
             val state = getState()
             if (state.valid) {
+                scope.launch {
+                    NetworkSession.execute<LoginDTO>(
+                        NetworkRequest("http://localhost:8080/login") {
+                            this.method = HttpMethod.Post
+                            this.header(
+                                "Authorization",
+                                NetworkSession.authorizationHeader(
+                                    state.username.data,
+                                    state.password.data
+                                )
+                            )
+                            this.header("Content-Type", "application/json")
+                        }
+                    )
+                        .collect {
+                            print("booyah")
+                        }
+                }
                 publish(LoginStore.Label.Login(state.username.data, state.password.data))
             }
         }
     }
 }
+/*
+guard let url = URL(string: serviceUrl(resource: "login"))
+else { preconditionFailure("Invalid URL format") }
+var request = URLRequest(url: url)
+request.httpMethod = "POST"
+request.httpShouldHandleCookies = true
+request.setValue(authorizationValue(accessToken), forHTTPHeaderField: "Authorization")
+request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+do {
+    request.httpBody = try JSONEncoderWithExposedDates().encode(loginAPIRequest)
+    }
+catch { preconditionFailure("Couldn't set JSON body") }
+return request
+*/
