@@ -4,13 +4,8 @@ import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import com.teddyfreddy.kmp.network.NetworkRequestError
-import com.teddyfreddy.kmp.network.NetworkSession
+import com.teddyfreddy.kmp.repository.AuthenticationRepository
 import com.teddyfreddy.kmp.viewmodel.Field
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
 
 class LoginStoreFactory(
     private val storeFactory: StoreFactory
@@ -96,22 +91,12 @@ class LoginStoreFactory(
             val state = getState()
             if (state.valid) {
                 publish(LoginStore.Label.LoginInitiated)
-                scope.launch {
-                    try {
-                        NetworkSession.execute<LoginDTO>(
-                            loginRequest(state.username.data, state.password.data)
-                        )
-                            .flowOn(Dispatchers.Main)
-                            .catch { e ->
-                                publish(LoginStore.Label.LoginComplete(null, e.message))
-                            }
-                            .collect {
-                                publish(LoginStore.Label.LoginComplete(it, null))
-                            }
-                    }
-                    catch (e: NetworkRequestError) {
-                        publish(LoginStore.Label.LoginComplete(null, e.message))
-                    }
+                AuthenticationRepository.authenticate(
+                    scope,
+                    state.username.data,
+                    state.password.data
+                ) { response, message ->
+                    publish(LoginStore.Label.LoginComplete(response, message))
                 }
             }
         }

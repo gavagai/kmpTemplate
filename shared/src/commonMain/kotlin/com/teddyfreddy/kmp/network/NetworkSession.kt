@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.map
 
 class NetworkSession {
     companion object {
+        var basicAuthorizationToken: BasicAuthorizationToken? = null
         inline fun <reified T>execute(request: NetworkRequest) : Flow<NetworkResponse<T>> {
             return request
                 .asFlow()
@@ -49,15 +50,13 @@ class NetworkSession {
                     }
                 }
         }
+    }
 
-        fun basicAuthorizationHeader(username: String, password: String) : String {
-            val token = basicToken(username, password)
-            return  "Basic $token"
-        }
-
-        private fun basicToken(username: String, password: String) : String {
-            return String(Base64.encoder.encode("$username:$password".toByteArray()))
-        }
-
+    data class BasicAuthorizationToken(
+        val username: String,
+        val password: String
+    ) {
+        val token: String
+            get() = String(Base64.encoder.encode("$username:$password".toByteArray()))
     }
 }

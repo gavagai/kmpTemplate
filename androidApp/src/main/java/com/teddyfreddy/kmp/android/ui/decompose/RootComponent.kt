@@ -38,7 +38,9 @@ class RootComponent(
     private fun loginComponent(componentContext: ComponentContext): LoginComponent =
         LoginComponent(
             componentContext = componentContext,
-            onLogin = { response, message -> navigation.replaceCurrent(configuration = Config.Home) },
+            onLogin = { response, message ->
+                if (response != null) navigation.replaceCurrent(configuration = Config.Home)
+            },
             onSignup = { navigation.replaceCurrent(configuration = Config.Registration()) }
         )
 

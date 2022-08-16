@@ -1,9 +1,17 @@
-package com.teddyfreddy.kmp.login
+package com.teddyfreddy.kmp.repository
 
+import com.teddyfreddy.kmp.login.LoginStore
 import com.teddyfreddy.kmp.network.NetworkRequest
+import com.teddyfreddy.kmp.network.NetworkRequestError
+import com.teddyfreddy.kmp.network.NetworkResponse
 import com.teddyfreddy.kmp.network.NetworkSession
 import io.ktor.client.request.*
 import io.ktor.http.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.KSerializer
@@ -14,25 +22,52 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
+class AuthenticationRepository {
+    companion object {
+        fun authenticate(
+            scope: CoroutineScope,
+            username: String,
+            password: String,
+            completion: (NetworkResponse<LoginDTO>?, String?) -> Unit) {
+            val authToken = NetworkSession.BasicAuthorizationToken(username, password)
+            scope.launch {
+                try {
+                    NetworkSession.execute<LoginDTO>(
+                        loginRequest(authToken)
+                    )
+                        .flowOn(Dispatchers.Main)
+                        .catch { e ->
+                            completion(null, e.message)
+                        }
+                        .collect {
+                            NetworkSession.basicAuthorizationToken = authToken
+                            completion(it, null)
+                        }
+                }
+                catch (e: NetworkRequestError.TransportError) {
+                    completion(null, e.message)
+                }
+            }
+        }
 
-fun loginRequest(username: String, password: String) : NetworkRequest =
-    NetworkRequest("http://10.0.1.173:8080/login") {
-        method = HttpMethod.Post
-        header(
-            "Authorization",
-            NetworkSession.basicAuthorizationHeader(
-                username,
-                password
-            )
-        )
-        header("Content-Type", "application/json")
-        setBody(
-            LoginCredentialsDTO(
-                username = username,
-                password = password
-            )
-        )
+        private fun loginRequest(authToken: NetworkSession.BasicAuthorizationToken) : NetworkRequest =
+            NetworkRequest("http://10.0.1.173:8080/login") {
+                method = HttpMethod.Post
+                header(
+                    "Authorization",
+                    "Basic ${authToken.token}"
+                )
+                header("Content-Type", "application/json")
+                setBody(
+                    LoginCredentialsDTO(
+                        username = authToken.username,
+                        password = authToken.password
+                    )
+                )
+            }
     }
+}
+
 
 
 @Serializable
