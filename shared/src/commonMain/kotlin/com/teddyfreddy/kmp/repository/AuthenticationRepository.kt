@@ -1,9 +1,6 @@
 package com.teddyfreddy.kmp.repository
 
-import com.teddyfreddy.common.network.NetworkRequest
-import com.teddyfreddy.common.network.NetworkRequestError
-import com.teddyfreddy.common.network.NetworkResponse
-import com.teddyfreddy.common.network.NetworkSession
+import com.teddyfreddy.common.network.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.CoroutineScope
@@ -27,12 +24,11 @@ class AuthenticationRepository {
             scope: CoroutineScope,
             username: String,
             password: String,
-            completion: (NetworkResponse<LoginDTO>?, String?) -> Unit) {
-            val authToken = NetworkSession.BasicAuthorizationToken(username, password)
+            completion: (NetworkResponse<LoginResponseDTO>?, String?) -> Unit) {
             scope.launch {
                 try {
-                    NetworkSession.execute<LoginDTO>(
-                        loginRequest(authToken)
+                    NetworkSession.execute<LoginResponseDTO>(
+                        loginRequest(username, password)
                     )
                         .flowOn(Dispatchers.Main)
                         .catch { e ->
@@ -45,7 +41,7 @@ class AuthenticationRepository {
                             }
                         }
                         .collect {
-                            NetworkSession.basicAuthorizationToken = authToken
+                            NetworkSession.basicAuthorizationToken = NetworkSession.BasicAuthorizationToken(username, password)
                             completion(it, null)
                         }
                 }
@@ -55,8 +51,9 @@ class AuthenticationRepository {
             }
         }
 
-        private fun loginRequest(authToken: NetworkSession.BasicAuthorizationToken) : NetworkRequest =
-            NetworkRequest("http://10.0.1.173:8080/login") {
+        private fun loginRequest(username: String, password: String) : NetworkRequest {
+            val authToken = NetworkSession.BasicAuthorizationToken(username, password)
+            return NetworkRequest("http://10.0.1.173:8080/login") {
                 method = HttpMethod.Post
                 header(
                     "Authorization",
@@ -70,6 +67,7 @@ class AuthenticationRepository {
                     )
                 )
             }
+        }
     }
 }
 
@@ -82,7 +80,7 @@ data class LoginCredentialsDTO (
 )
 
 @Serializable
-data class LoginDTO (
+data class LoginResponseDTO (
     val member: MemberDetailsDTO,
     val organization: OrganizationDTO
 )
@@ -108,45 +106,3 @@ data class MemberDetailsDTO (
     @Serializable(with = LocalDateSerializer::class) val dateOfBirth: LocalDate? = null,
     val username: String
 )
-
-
-
-//         Instant.parse(value).toLocalDateTime(TimeZone.UTC)
-object LocalDateTimeSerializer : KSerializer<LocalDateTime> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("LocalDateTime", PrimitiveKind.STRING)
-
-    override fun serialize(encoder: Encoder, value: LocalDateTime) {
-        val string = "${value.year}-${value.month}-${value.dayOfMonth} ${value.hour}:${value.minute}:${value.second}"
-        encoder.encodeString(string)
-    }
-
-    override fun deserialize(decoder: Decoder): LocalDateTime {
-        val string = decoder.decodeString() // yyyy-MM-ddThh:mm:ss
-        return LocalDateTime(
-            string.substring(0, 4).toInt(),
-            string.substring(5, 7).toInt(),
-            string.substring(8, 10).toInt(),
-            string.substring(11, 13).toInt(),
-            string.substring(14, 16).toInt(),
-            string.substring(17, 19).toInt()
-        )
-    }
-}
-
-object LocalDateSerializer : KSerializer<LocalDate> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("LocalDate", PrimitiveKind.STRING)
-
-    override fun serialize(encoder: Encoder, value: LocalDate) {
-        val string = "${value.year}-${value.month}-${value.dayOfMonth}"
-        encoder.encodeString(string)
-    }
-
-    override fun deserialize(decoder: Decoder): LocalDate {
-        val string = decoder.decodeString() // yyyy-MM-dd
-        return LocalDate(
-            string.substring(0, 4).toInt(),
-            string.substring(5, 7).toInt(),
-            string.substring(8, 10).toInt()
-        )
-    }
-}

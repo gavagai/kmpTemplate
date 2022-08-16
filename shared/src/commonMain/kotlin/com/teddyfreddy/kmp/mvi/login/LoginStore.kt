@@ -3,7 +3,7 @@ package com.teddyfreddy.kmp.mvi.login
 import com.arkivanov.mvikotlin.core.store.Store
 import com.teddyfreddy.common.ValidatedStringField
 import com.teddyfreddy.common.network.NetworkResponse
-import com.teddyfreddy.kmp.repository.LoginDTO
+import com.teddyfreddy.kmp.repository.LoginResponseDTO
 
 interface LoginStore : Store<LoginStore.Intent, LoginStore.State, LoginStore.Label> {
 
@@ -30,7 +30,7 @@ interface LoginStore : Store<LoginStore.Intent, LoginStore.State, LoginStore.Lab
     sealed interface Label {
         object LoginInitiated: Label
         data class LoginComplete(
-            val response: NetworkResponse<LoginDTO>?,
+            val response: NetworkResponse<LoginResponseDTO>?,
             val message: String?
         ): Label
     }

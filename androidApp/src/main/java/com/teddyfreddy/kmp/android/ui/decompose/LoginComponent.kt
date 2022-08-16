@@ -11,14 +11,14 @@ import com.teddyfreddy.kmp.mvi.login.LoginField
 import com.teddyfreddy.kmp.mvi.login.LoginStore
 import com.teddyfreddy.kmp.mvi.login.LoginStoreFactory
 import com.teddyfreddy.common.network.NetworkResponse
-import com.teddyfreddy.kmp.repository.LoginDTO
+import com.teddyfreddy.kmp.repository.LoginResponseDTO
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LoginComponent(
     componentContext: ComponentContext,
-    private val onLogin: (response: NetworkResponse<LoginDTO>?, message: String?) -> Unit,
+    private val onLogin: (response: NetworkResponse<LoginResponseDTO>?, message: String?) -> Unit,
     private val onSignup: () -> Unit
 ) : Login, ComponentContext by componentContext {
 
