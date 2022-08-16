@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import com.arkivanov.decompose.defaultComponentContext
 import com.teddyfreddy.kmp.Greeting
-import com.teddyfreddy.kmp.android.ui.theme.Material3Theme
 import com.teddyfreddy.kmp.sharedModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -22,6 +21,7 @@ import com.teddyfreddy.kmp.android.ui.decompose.RootComponent
 import com.teddyfreddy.android.ui.adaptive.AdaptiveDesign
 import com.teddyfreddy.android.ui.adaptive.devicePostureFlow
 import com.teddyfreddy.kmp.android.ui.compose.app.RootView
+import com.teddyfreddy.kmp.android.ui.theme.AppTheme
 import org.koin.core.context.stopKoin
 
 fun greet(): String {
@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
         val root = RootComponent(componentContext = defaultComponentContext())
 
         setContent {
-            Material3Theme {
+            AppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
