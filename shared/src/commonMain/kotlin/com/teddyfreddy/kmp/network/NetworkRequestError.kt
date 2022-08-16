@@ -64,7 +64,7 @@ sealed class NetworkRequestError : Exception() {
                 404 -> "Did you enter an incorrect URL somewhere?"
                 else -> null
             }
-            Unauthenticated -> "Please try again with the correct credentials"
+            Unauthenticated -> "Please try again with the correct username and password"
             Unauthorized -> "If you need this level of access contact your Administrator"
             is ServerError -> null
             is ServiceUnavailable -> {

@@ -38,7 +38,10 @@ class LoginComponent(
             store.labels.collect {
                 when (it) {
                     is LoginStore.Label.LoginInitiated -> { }
-                    is LoginStore.Label.LoginComplete -> this@LoginComponent.onLogin(it.response, it.message)
+                    is LoginStore.Label.LoginComplete -> {
+                        this@LoginComponent.onLoginComplete(it.message)
+                        this@LoginComponent.onLogin(it.response, it.message)
+                    }
                 }
             }
         }
@@ -46,7 +49,9 @@ class LoginComponent(
     }
 
 
-    override fun login() {
+    private lateinit var onLoginComplete: (message: String?) -> Unit
+    override fun login(onLoginComplete: (message: String?) -> Unit) {
+        this.onLoginComplete = onLoginComplete
         store.accept(LoginStore.Intent.Login)
     }
 

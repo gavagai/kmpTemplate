@@ -36,7 +36,13 @@ class AuthenticationRepository {
                     )
                         .flowOn(Dispatchers.Main)
                         .catch { e ->
-                            completion(null, e.message)
+                            if (e is NetworkRequestError) {
+                                completion(null,
+                                    "${e.failureReason}${if (e.recoverySuggestion != null) " - ${e.recoverySuggestion}" else ""}")
+                            }
+                            else {
+                                completion(null, e.message)
+                            }
                         }
                         .collect {
                             NetworkSession.basicAuthorizationToken = authToken
@@ -44,7 +50,7 @@ class AuthenticationRepository {
                         }
                 }
                 catch (e: NetworkRequestError.TransportError) {
-                    completion(null, e.message)
+                    completion(null, "Login failed: ${e.message}")
                 }
             }
         }
