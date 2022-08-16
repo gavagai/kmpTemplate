@@ -49,7 +49,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.0")
 
     // DON: --
-    implementation("androidx.compose.runtime:runtime:1.2.0") // DON: Compose compiler dependency (upgrade soon)
+    implementation("androidx.compose.runtime:runtime:1.2.1") // DON: Compose compiler dependency (upgrade soon)
 
     // Jetpack Compose
     implementation("androidx.activity:activity-compose:1.5.1")
@@ -60,6 +60,8 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:$material3Version")
     implementation("androidx.compose.material:material-icons-core:$composeLibraryVersion")
     implementation("androidx.compose.material:material-icons-extended:$composeLibraryVersion")
+    implementation("androidx.window:window:1.0.0") // Adaptive design
+
     // Tooling support (Previews, etc.)
     implementation("androidx.compose.ui:ui-tooling:$composeLibraryVersion")
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)

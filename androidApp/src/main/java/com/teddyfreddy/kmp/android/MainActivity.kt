@@ -7,25 +7,27 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.lifecycleScope
 import com.arkivanov.decompose.defaultComponentContext
-import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.teddyfreddy.kmp.Greeting
 import com.teddyfreddy.kmp.android.ui.theme.Material3Theme
 import com.teddyfreddy.kmp.sharedModule
-import com.teddyfreddy.kmp.viewmodel.AccountComposeViewModel
-import com.teddyfreddy.kmp.account.RegistrationContext
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import com.arkivanov.essenty.lifecycle.essentyLifecycle
 import com.teddyfreddy.kmp.android.ui.decompose.RootComponent
+import com.teddyfreddy.kmp.android.ui.geometry.AdaptiveDesign
+import com.teddyfreddy.kmp.android.ui.geometry.devicePostureFlow
 
 fun greet(): String {
     return Greeting().greeting()
 }
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -44,6 +46,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    // Determine adaptive design parameters
+                    val windowWidthSizeClass = calculateWindowSizeClass(this).widthSizeClass
+                    val devicePosture = devicePostureFlow(this, lifecycleScope).collectAsState().value
+                    val navigationType = AdaptiveDesign.navigationType(windowWidthSizeClass, devicePosture)
+                    val contentType = AdaptiveDesign.contentType(windowWidthSizeClass, devicePosture)
+
                     RootView(component = root)
 //                    AsyncView()
                 }
