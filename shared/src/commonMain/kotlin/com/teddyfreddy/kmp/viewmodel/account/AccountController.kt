@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
+@Suppress("unused")
 open class AccountController(lifecycle: Lifecycle, registrationContext: RegistrationContext) {
     private lateinit var store: AccountStore
 
@@ -28,6 +29,7 @@ open class AccountController(lifecycle: Lifecycle, registrationContext: Registra
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Suppress("unused")
     fun onViewCreated(view: AccountMviView, viewLifecycle: Lifecycle) {
         bind(viewLifecycle, BinderLifecycleMode.START_STOP, Dispatchers.Unconfined) {
             store.states.map(stateToModel).distinctUntilChanged() bindTo view

@@ -50,8 +50,9 @@ interface AccountMviView : MviView<AccountMviView.Model, AccountMviView.Event> {
 
 
 // Added for label delegation and Compose aggregation
-open class AccountBaseMviView : BaseMviView<AccountMviView.Model, AccountMviView.Event>(),
-    AccountMviView {
+@Suppress("unused")
+open class AccountBaseMviView :
+    BaseMviView<AccountMviView.Model, AccountMviView.Event>(), AccountMviView {
 
     override val onLabel: suspend (label: AccountStore.Label) -> Unit = { // Invoked via bindings in binder
         when (it) {
