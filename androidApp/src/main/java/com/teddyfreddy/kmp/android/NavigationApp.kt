@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.teddyfreddy.kmp.android.ui.decompose.RootComponent
-import com.teddyfreddy.kmp.android.ui.geometry.AdaptiveDesign
+import com.teddyfreddy.kmp.android.ui.adaptive.AdaptiveDesign
 import kotlinx.coroutines.launch
 
 

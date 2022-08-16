@@ -19,8 +19,9 @@ import com.teddyfreddy.kmp.sharedModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import com.teddyfreddy.kmp.android.ui.decompose.RootComponent
-import com.teddyfreddy.kmp.android.ui.geometry.AdaptiveDesign
-import com.teddyfreddy.kmp.android.ui.geometry.devicePostureFlow
+import com.teddyfreddy.kmp.android.ui.adaptive.AdaptiveDesign
+import com.teddyfreddy.kmp.android.ui.adaptive.devicePostureFlow
+import org.koin.core.context.stopKoin
 
 fun greet(): String {
     return Greeting().greeting()
@@ -57,6 +58,12 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        stopKoin()
     }
 }
 
