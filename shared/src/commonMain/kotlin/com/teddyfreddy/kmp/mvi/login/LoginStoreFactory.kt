@@ -12,7 +12,7 @@ class LoginStoreFactory(
 ) {
     private sealed interface Msg {
         data class ChangeField(val field: LoginField, val value: Any?) : Msg
-        data class ValidateField(val field: LoginField) : Msg
+        data class ValidateField(val field: LoginField, val forceValid: Boolean? = false) : Msg
     }
 
     fun create(): LoginStore =
@@ -50,18 +50,19 @@ class LoginStoreFactory(
                     val validator = msg.field.validator ?: Field.Validator { _, _, _ ->
                         null
                     }
+                    val forceValid = msg.forceValid != null && msg.forceValid
                     when (msg.field) {
                         LoginField.Username -> {
                             copy(
                                 username = username.copy(
-                                    error = validator.validate(msg.field, username.data)
+                                    error = if (forceValid) null else validator.validate(msg.field, username.data)
                                 )
                             )
                         }
                         LoginField.Password -> {
                             copy(
                                 password = password.copy(
-                                    error = validator.validate(msg.field, password.data)
+                                    error = if (forceValid) null else validator.validate(msg.field, password.data)
                                 )
                             )
                         }
@@ -75,7 +76,7 @@ class LoginStoreFactory(
             when (intent) {
                 is LoginStore.Intent.Login -> executeLogin(getState)
                 is LoginStore.Intent.ChangeField -> executeChangeField(intent)
-                is LoginStore.Intent.ValidateField -> dispatch(Msg.ValidateField(intent.field))
+                is LoginStore.Intent.ValidateField -> dispatch(Msg.ValidateField(intent.field, intent.forceValid))
             }
 
         private fun executeChangeField(intent: LoginStore.Intent.ChangeField) {

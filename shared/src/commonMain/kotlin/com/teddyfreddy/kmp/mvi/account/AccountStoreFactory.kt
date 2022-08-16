@@ -17,7 +17,7 @@ class AccountStoreFactory(
 ) {
     private sealed interface Msg {
         data class ChangeField(val field: AccountField, val value: Any?) : Msg
-        data class ValidateField(val field: AccountField) : Msg
+        data class ValidateField(val field: AccountField, val forceValid: Boolean? = false) : Msg
     }
 
     private sealed interface Action {
@@ -92,39 +92,40 @@ class AccountStoreFactory(
                     val validator = msg.field.validator ?: Field.Validator { _, _, _ ->
                         null
                     }
+                    val forceValid = msg.forceValid != null && msg.forceValid
                     when (msg.field) {
                         AccountField.Username -> {
                             copy(
                                 email = email.copy(
-                                    error = validator.validate(msg.field, email.data)
+                                    error = if (forceValid) null else validator.validate(msg.field, email.data)
                                 )
                             )
                         }
                         AccountField.Password -> {
                             copy(
                                 password = password.copy(
-                                    error = validator.validate(msg.field, password.data)
+                                    error = if (forceValid) null else validator.validate(msg.field, password.data)
                                 )
                             )
                         }
                         AccountField.PasswordConfirmation -> {
                             copy(
                                 passwordConfirmation = passwordConfirmation.copy(
-                                    error = validator.validate(msg.field, passwordConfirmation.data, password.data)
+                                    error = if (forceValid) null else validator.validate(msg.field, passwordConfirmation.data, password.data)
                                 )
                             )
                         }
                         AccountField.FirstName -> {
                             copy(
                                 givenName = givenName.copy(
-                                    error = validator.validate(msg.field, givenName.data)
+                                    error = if (forceValid) null else validator.validate(msg.field, givenName.data)
                                 )
                             )
                         }
                         AccountField.LastName -> {
                             copy(
                                 familyName = familyName.copy(
-                                    error = validator.validate(msg.field, familyName.data)
+                                    error = if (forceValid) null else validator.validate(msg.field, familyName.data)
                                 )
                             )
                         }
@@ -140,7 +141,7 @@ class AccountStoreFactory(
                 is AccountStore.Intent.Cancel -> publish(AccountStore.Label.Cancel)
                 is AccountStore.Intent.Continue -> executeContinue(getState)
                 is AccountStore.Intent.ChangeField -> executeChangeField(intent)
-                is AccountStore.Intent.ValidateField -> dispatch(Msg.ValidateField(intent.field))
+                is AccountStore.Intent.ValidateField -> dispatch(Msg.ValidateField(intent.field, intent.forceValid))
             }
 
         private fun executeContinue(getState: () -> AccountStore.State) {

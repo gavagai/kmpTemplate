@@ -37,13 +37,13 @@ interface AccountMviView : MviView<AccountMviView.Model, AccountMviView.Event> {
 
     sealed interface Event {
         data class ChangeField(val field: AccountField, val value: Any?, val validate: Boolean = false) : Event
-        data class ValidateField(val field: AccountField) : Event
+        data class ValidateField(val field: AccountField, val forceValid: Boolean? = false) : Event
         object Cancel : Event
         object Continue : Event
     }
 
     fun changeField(field: AccountField, value: Any?, validate: Boolean = false)
-    fun validateField(field: AccountField)
+    fun validateField(field: AccountField, forceValid: Boolean? = false)
     fun cancelPressed()
     fun continuePressed()
 
@@ -72,8 +72,8 @@ open class AccountBaseMviView : BaseMviView<AccountMviView.Model, AccountMviView
     }
 
     @Suppress("unused")
-    override fun validateField(field: AccountField) {
-        dispatch(AccountMviView.Event.ValidateField(field))
+    override fun validateField(field: AccountField, forceValid: Boolean?) {
+        dispatch(AccountMviView.Event.ValidateField(field, forceValid))
     }
 
     @Suppress("unused")

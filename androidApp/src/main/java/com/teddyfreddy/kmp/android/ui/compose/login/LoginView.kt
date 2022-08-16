@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
@@ -50,11 +49,6 @@ fun LoginView(
                 component.changeUsername(it)
             },
             modifier = Modifier
-                .onFocusChanged {
-                    if (it.isFocused && !state.value.username.data.isEmpty()) {
-                        component.validateUsername()
-                    }
-                }
                 .onPreviewKeyEvent {
                     if (it.key == Key.Tab && !it.isShiftPressed && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
                         focusManager.moveFocus(FocusDirection.Down)
@@ -69,8 +63,10 @@ fun LoginView(
             isError = state.value.username.error != null,
             errorText = state.value.username.error,
             onNext = {
-                component.validateUsername()
                 focusManager.moveFocus(FocusDirection.Down)
+            },
+            onValidate = { forceValid ->
+                component.validateUsername(forceValid)
             }
         )
         Spacer(modifier = Modifier.padding(4.dp))
@@ -80,11 +76,6 @@ fun LoginView(
                 component.changePassword(it)
             },
             modifier = Modifier
-                .onFocusChanged {
-                    if (it.isFocused && !state.value.password.data.isEmpty()) {
-                        component.validatePassword()
-                    }
-                }
                 .onPreviewKeyEvent {
                     if (it.key == Key.Tab && it.isShiftPressed && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
                         focusManager.moveFocus(FocusDirection.Up)
@@ -98,6 +89,9 @@ fun LoginView(
             errorText = state.value.password.error,
             onGo = {
                  component.login()
+            },
+            onValidate = { forceValid ->
+                component.validatePassword(forceValid)
             }
         )
         Spacer(modifier = Modifier.padding(20.dp))

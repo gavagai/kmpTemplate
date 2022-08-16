@@ -9,7 +9,7 @@ interface AccountStore : Store<AccountStore.Intent, AccountStore.State, AccountS
 
     sealed interface Intent {
         data class ChangeField(val field: AccountField, val value: Any?, val validate: Boolean = false) : Intent
-        data class ValidateField(val field: AccountField) : Intent
+        data class ValidateField(val field: AccountField, val forceValid: Boolean? = false) : Intent
         object Cancel : Intent
         object Continue : Intent
     }

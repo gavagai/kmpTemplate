@@ -8,7 +8,7 @@ interface Account {
     val state: State<AccountStore.State>
 
     fun changeField(field: AccountField, value: Any?, validate: Boolean = false)
-    fun validateField(field: AccountField)
+    fun validateField(field: AccountField, forceValid: Boolean = false)
     fun cancelPressed()
     fun continuePressed()
 }

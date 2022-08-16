@@ -46,8 +46,8 @@ class AccountComponent(
         store.accept(AccountStore.Intent.ChangeField(field, value, validate))
     }
 
-    override fun validateField(field: AccountField) {
-        store.accept(AccountStore.Intent.ValidateField(field))
+    override fun validateField(field: AccountField, forceValid: Boolean) {
+        store.accept(AccountStore.Intent.ValidateField(field, forceValid))
     }
 
     override fun cancelPressed() {

@@ -57,13 +57,13 @@ class LoginComponent(
     override fun changeUsername(newVal: String) {
         store.accept(LoginStore.Intent.ChangeField(LoginField.Username, newVal, false))
     }
-    override fun validateUsername() {
-        store.accept(LoginStore.Intent.ValidateField(LoginField.Username))
+    override fun validateUsername(forceValid: Boolean) {
+        store.accept(LoginStore.Intent.ValidateField(LoginField.Username, forceValid))
     }
     override fun changePassword(newVal: String) {
         store.accept(LoginStore.Intent.ChangeField(LoginField.Password, newVal, false))
     }
-    override fun validatePassword() {
-        store.accept(LoginStore.Intent.ValidateField(LoginField.Password))
+    override fun validatePassword(forceValid: Boolean) {
+        store.accept(LoginStore.Intent.ValidateField(LoginField.Password, forceValid))
     }
 }

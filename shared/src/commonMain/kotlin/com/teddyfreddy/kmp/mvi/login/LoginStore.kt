@@ -9,7 +9,7 @@ interface LoginStore : Store<LoginStore.Intent, LoginStore.State, LoginStore.Lab
 
     sealed interface Intent {
         data class ChangeField(val field: LoginField, val value: Any?, val validate: Boolean = false) : Intent
-        data class ValidateField(val field: LoginField) : Intent
+        data class ValidateField(val field: LoginField, val forceValid: Boolean? = false) : Intent
         object Login : Intent
     }
 

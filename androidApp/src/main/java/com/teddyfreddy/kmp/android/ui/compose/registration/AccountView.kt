@@ -59,13 +59,15 @@ fun AccountView(
             ),
             keyboardActions = KeyboardActions(
                 onNext = {
-                    component.validateField(AccountField.Username)
                     focusManager.moveFocus(FocusDirection.Down)
                 }
             ),
             errorText = state.value.email.error,
             isError = state.value.email.error != null,
-            required = true
+            required = true,
+            onValidate = { forceValid ->
+                component.validateField(AccountField.Username, forceValid)
+            }
         )
 
         ValidatedTextField(
@@ -83,13 +85,15 @@ fun AccountView(
             ),
             keyboardActions = KeyboardActions(
                 onNext = {
-                    component.validateField(AccountField.Password)
                     focusManager.moveFocus(FocusDirection.Down)
                 }
             ),
             errorText = state.value.password.error,
             isError = state.value.password.error != null,
-            required = true
+            required = true,
+            onValidate = { forceValid ->
+                component.validateField(AccountField.Password, forceValid)
+            }
         )
 
         ValidatedTextField(
@@ -107,13 +111,15 @@ fun AccountView(
             ),
             keyboardActions = KeyboardActions(
                 onNext = {
-                    component.validateField(AccountField.PasswordConfirmation)
                     focusManager.moveFocus(FocusDirection.Down)
                 }
             ),
             errorText = state.value.passwordConfirmation.error,
             isError = state.value.passwordConfirmation.error != null,
-            required = true
+            required = true,
+            onValidate = { forceValid ->
+                component.validateField(AccountField.PasswordConfirmation, forceValid)
+            }
         )
 
         ValidatedTextField(
@@ -131,13 +137,15 @@ fun AccountView(
             ),
             keyboardActions = KeyboardActions(
                 onNext = {
-                    component.validateField(AccountField.FirstName)
                     focusManager.moveFocus(FocusDirection.Down)
                 }
             ),
             errorText = state.value.givenName.error,
             isError = state.value.givenName.error != null,
-            required = true
+            required = true,
+            onValidate = { forceValid ->
+                component.validateField(AccountField.FirstName, forceValid)
+            }
         )
 
         ValidatedTextField(
@@ -155,13 +163,15 @@ fun AccountView(
             ),
             keyboardActions = KeyboardActions(
                 onNext = {
-                    component.validateField(AccountField.LastName)
                     focusManager.moveFocus(FocusDirection.Down)
                 }
             ),
             errorText = state.value.familyName.error,
             isError = state.value.familyName.error != null,
-            required = true
+            required = true,
+            onValidate = { forceValid ->
+                component.validateField(AccountField.LastName, forceValid)
+            }
         )
 
         TextField(

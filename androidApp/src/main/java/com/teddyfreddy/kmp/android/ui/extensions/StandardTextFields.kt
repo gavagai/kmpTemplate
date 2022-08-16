@@ -99,13 +99,18 @@ fun ValidatedTextField(
     colors: TextFieldColors = TextFieldDefaults.textFieldColors(),
     supportingText: String? = null,
     errorText: String? = null,
-    required: Boolean? = false
+    required: Boolean? = false,
+    onValidate: ((Boolean) -> Unit)? = null
 ) {
     var focused by remember { mutableStateOf(false) }
+
+    fun isRequired(): Boolean {
+        return required != null && required
+    }
     fun computeSupportingText(): String {
         return if (isError && errorText != null) {
             errorText
-        } else if (focused && required != null && required && (value == null || value.isEmpty())) {
+        } else if (focused && isRequired() && value.isEmpty()) {
             "*required"
         } else {
             supportingText ?: ""
@@ -121,6 +126,16 @@ fun ValidatedTextField(
             onValueChange(it)
         },
         modifier = modifier.onFocusChanged {
+            if (it.isFocused) {
+                if (value.isEmpty()) {
+                    if (onValidate != null) onValidate(true)
+                }
+            }
+            else {
+                if (focused) { // Skip initial redundant "unfocus"
+                    if (onValidate != null) onValidate(false)
+                }
+            }
             focused = it.isFocused
         },
         enabled = enabled,
@@ -156,7 +171,8 @@ fun UsernameTextField(
     isError: Boolean = false,
     supportingText: String? = null,
     errorText: String? = null,
-    onNext: (() -> Unit)?
+    onNext: (() -> Unit)?,
+    onValidate: ((Boolean) -> Unit)? = null
 ) {
     ValidatedTextField(
         value = value,
@@ -178,7 +194,8 @@ fun UsernameTextField(
         ),
         supportingText = supportingText,
         errorText = errorText ?: "Please enter your username",
-        required = true
+        required = true,
+        onValidate = onValidate
     )
 }
 
@@ -197,7 +214,8 @@ fun PasswordTextField(
     supportingText: String? = null,
     errorText: String? = null,
     onNext: (() -> Unit)? = null,
-    onGo: (() -> Unit)? = null
+    onGo: (() -> Unit)? = null,
+    onValidate: ((Boolean) -> Unit)? = null
 ) {
     ValidatedTextField(
         value = value,
@@ -227,6 +245,7 @@ fun PasswordTextField(
         ),
         supportingText = supportingText,
         errorText = errorText ?: "Please enter your password",
-        required = true
+        required = true,
+        onValidate = onValidate
     )
 }

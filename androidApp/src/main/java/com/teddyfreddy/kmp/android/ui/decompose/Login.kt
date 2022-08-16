@@ -10,7 +10,7 @@ interface Login {
     val state: State<LoginStore.State>
 
     fun changeUsername(newVal: String)
-    fun validateUsername()
+    fun validateUsername(forceValid: Boolean)
     fun changePassword(newVal: String)
-    fun validatePassword()
+    fun validatePassword(forceValid: Boolean)
 }
