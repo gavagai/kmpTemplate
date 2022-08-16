@@ -10,10 +10,13 @@ import androidx.compose.material.icons.outlined.ArrowCircleRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.input.key.*
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.*
 
@@ -200,7 +203,7 @@ fun UsernameTextField(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun PasswordTextField(
     value: String,
@@ -220,7 +223,15 @@ fun PasswordTextField(
     ValidatedTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier,
+        modifier = modifier
+            .onPreviewKeyEvent {
+                if (it.key == Key.Enter && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
+                    if (onGo != null) onGo()
+                    true
+                } else {
+                    false
+                }
+            },
         label = label ?: { Text("Password") },
         placeholder = placeholder ?: { Text("Password*") },
         leadingIcon = leadingIcon ?: { Icon(Icons.Default.Lock, "password") },
