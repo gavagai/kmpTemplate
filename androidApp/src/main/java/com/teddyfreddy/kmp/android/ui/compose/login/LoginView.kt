@@ -13,8 +13,8 @@ import androidx.compose.ui.input.key.*
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.teddyfreddy.kmp.android.ui.decompose.Login
-import com.teddyfreddy.kmp.android.ui.extensions.PasswordTextField
-import com.teddyfreddy.kmp.android.ui.extensions.UsernameTextField
+import com.teddyfreddy.android.ui.extensions.PasswordTextField
+import com.teddyfreddy.android.ui.extensions.UsernameTextField
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)

@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.android.ui.adaptive
+package com.teddyfreddy.android.ui.adaptive
 
 import android.graphics.Rect
 import androidx.activity.ComponentActivity

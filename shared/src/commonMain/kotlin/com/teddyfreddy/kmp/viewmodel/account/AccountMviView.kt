@@ -1,16 +1,11 @@
-package com.teddyfreddy.kmp.mvi.account
+package com.teddyfreddy.kmp.viewmodel.account
 
 import com.arkivanov.mvikotlin.core.view.BaseMviView
 import com.arkivanov.mvikotlin.core.view.MviView
-import com.teddyfreddy.kmp.ValidatedStringField
+import com.teddyfreddy.common.ValidatedStringField
+import com.teddyfreddy.kmp.mvi.account.AccountField
+import com.teddyfreddy.kmp.mvi.account.AccountStore
 import kotlinx.datetime.LocalDate
-
-data class RegistrationContext(
-    var email: String? = null,
-    var givenName: String? = null,
-    var familyName: String? = null
-)
-
 
 interface AccountMviView : MviView<AccountMviView.Model, AccountMviView.Event> {
 
@@ -36,7 +31,8 @@ interface AccountMviView : MviView<AccountMviView.Model, AccountMviView.Event> {
     }
 
     sealed interface Event {
-        data class ChangeField(val field: AccountField, val value: Any?, val validate: Boolean = false) : Event
+        data class ChangeField(val field: AccountField, val value: Any?, val validate: Boolean = false) :
+            Event
         data class ValidateField(val field: AccountField, val forceValid: Boolean? = false) : Event
         object Cancel : Event
         object Continue : Event
@@ -54,7 +50,8 @@ interface AccountMviView : MviView<AccountMviView.Model, AccountMviView.Event> {
 
 
 // Added for label delegation and Compose aggregation
-open class AccountBaseMviView : BaseMviView<AccountMviView.Model, AccountMviView.Event>(), AccountMviView {
+open class AccountBaseMviView : BaseMviView<AccountMviView.Model, AccountMviView.Event>(),
+    AccountMviView {
 
     override val onLabel: suspend (label: AccountStore.Label) -> Unit = { // Invoked via bindings in binder
         when (it) {

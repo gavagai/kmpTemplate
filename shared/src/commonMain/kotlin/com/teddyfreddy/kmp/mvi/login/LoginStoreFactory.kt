@@ -5,7 +5,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.teddyfreddy.kmp.repository.AuthenticationRepository
-import com.teddyfreddy.kmp.viewmodel.Field
+import com.teddyfreddy.common.Field
 
 class LoginStoreFactory(
     private val storeFactory: StoreFactory

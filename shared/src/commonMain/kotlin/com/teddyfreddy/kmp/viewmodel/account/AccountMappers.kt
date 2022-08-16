@@ -1,4 +1,6 @@
-package com.teddyfreddy.kmp.mvi.account
+package com.teddyfreddy.kmp.viewmodel.account
+
+import com.teddyfreddy.kmp.mvi.account.AccountStore
 
 internal val stateToModel: AccountStore.State.() -> AccountMviView.Model =
     {
@@ -21,7 +23,10 @@ internal val eventToIntent: AccountMviView.Event.() -> AccountStore.Intent =
                 value,
                 validate
             )
-            is AccountMviView.Event.ValidateField -> AccountStore.Intent.ValidateField(field, forceValid)
+            is AccountMviView.Event.ValidateField -> AccountStore.Intent.ValidateField(
+                field,
+                forceValid
+            )
             AccountMviView.Event.Cancel -> AccountStore.Intent.Cancel
             AccountMviView.Event.Continue -> AccountStore.Intent.Continue
         }

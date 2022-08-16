@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.network
+package com.teddyfreddy.common.network
 
 import io.ktor.client.call.*
 import io.ktor.http.*

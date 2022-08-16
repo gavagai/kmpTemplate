@@ -10,7 +10,7 @@ import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.teddyfreddy.kmp.mvi.login.LoginField
 import com.teddyfreddy.kmp.mvi.login.LoginStore
 import com.teddyfreddy.kmp.mvi.login.LoginStoreFactory
-import com.teddyfreddy.kmp.network.NetworkResponse
+import com.teddyfreddy.common.network.NetworkResponse
 import com.teddyfreddy.kmp.repository.LoginDTO
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.distinctUntilChanged

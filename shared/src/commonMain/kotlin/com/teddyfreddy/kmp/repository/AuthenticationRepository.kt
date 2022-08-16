@@ -1,9 +1,9 @@
 package com.teddyfreddy.kmp.repository
 
-import com.teddyfreddy.kmp.network.NetworkRequest
-import com.teddyfreddy.kmp.network.NetworkRequestError
-import com.teddyfreddy.kmp.network.NetworkResponse
-import com.teddyfreddy.kmp.network.NetworkSession
+import com.teddyfreddy.common.network.NetworkRequest
+import com.teddyfreddy.common.network.NetworkRequestError
+import com.teddyfreddy.common.network.NetworkResponse
+import com.teddyfreddy.common.network.NetworkSession
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.CoroutineScope

@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.android.ui.adaptive
+package com.teddyfreddy.android.ui.adaptive
 
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 

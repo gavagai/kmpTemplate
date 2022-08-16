@@ -1,7 +1,7 @@
 package com.teddyfreddy.kmp.mvi.account
 
 import com.arkivanov.mvikotlin.core.store.Store
-import com.teddyfreddy.kmp.ValidatedStringField
+import com.teddyfreddy.common.ValidatedStringField
 import kotlinx.datetime.LocalDate
 
 

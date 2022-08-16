@@ -1,7 +1,7 @@
 package com.teddyfreddy.kmp.mvi.login
 
-import com.teddyfreddy.kmp.stringValidator
-import com.teddyfreddy.kmp.viewmodel.Field
+import com.teddyfreddy.common.stringValidator
+import com.teddyfreddy.common.Field
 
 enum class LoginField(
     override val label: String,
@@ -10,7 +10,7 @@ enum class LoginField(
 ) : Field {
     Username("Username", true,
         validator = Field.Validator { field: Field, value: Any?, _ ->
-            com.teddyfreddy.kmp.stringValidator(field.label, value as? String, field.required)
+            stringValidator(field.label, value as? String, field.required)
         }
     ),
     Password("Password", true,

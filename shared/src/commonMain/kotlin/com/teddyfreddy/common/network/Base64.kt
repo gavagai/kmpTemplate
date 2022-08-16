@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.network
+package com.teddyfreddy.common.network
 
 /*
  * Copyright (c) 2012, 2018, Oracle and/or its affiliates. All rights reserved.

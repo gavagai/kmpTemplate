@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.mvi.account
+package com.teddyfreddy.kmp.viewmodel.account
 
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.doOnDestroy
@@ -8,6 +8,9 @@ import com.arkivanov.mvikotlin.extensions.coroutines.events
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import com.teddyfreddy.kmp.mvi.RegistrationContext
+import com.teddyfreddy.kmp.mvi.account.AccountStore
+import com.teddyfreddy.kmp.mvi.account.AccountStoreFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged

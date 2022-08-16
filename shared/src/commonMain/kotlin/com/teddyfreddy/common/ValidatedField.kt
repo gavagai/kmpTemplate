@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp
+package com.teddyfreddy.common
 
 data class ValidatedStringField(
     val data: String,

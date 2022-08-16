@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.viewmodel
+package com.teddyfreddy.common
 
 interface Field {
     val label: String

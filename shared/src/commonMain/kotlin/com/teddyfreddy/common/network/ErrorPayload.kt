@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.network
+package com.teddyfreddy.common.network
 
 import kotlinx.serialization.Serializable
 

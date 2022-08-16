@@ -1,8 +1,8 @@
 package com.teddyfreddy.kmp.mvi.account
 
-import com.teddyfreddy.kmp.emailValidator
-import com.teddyfreddy.kmp.stringValidator
-import com.teddyfreddy.kmp.viewmodel.Field
+import com.teddyfreddy.common.emailValidator
+import com.teddyfreddy.common.stringValidator
+import com.teddyfreddy.common.Field
 
 enum class AccountField(
     override val label: String,

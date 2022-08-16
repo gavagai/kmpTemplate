@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.network
+package com.teddyfreddy.common.network
 
 sealed class NetworkRequestError : Exception() {
     data class InvalidRequest(val error: String) : NetworkRequestError()

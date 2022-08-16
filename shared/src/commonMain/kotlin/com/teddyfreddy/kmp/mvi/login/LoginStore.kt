@@ -1,8 +1,8 @@
 package com.teddyfreddy.kmp.mvi.login
 
 import com.arkivanov.mvikotlin.core.store.Store
-import com.teddyfreddy.kmp.ValidatedStringField
-import com.teddyfreddy.kmp.network.NetworkResponse
+import com.teddyfreddy.common.ValidatedStringField
+import com.teddyfreddy.common.network.NetworkResponse
 import com.teddyfreddy.kmp.repository.LoginDTO
 
 interface LoginStore : Store<LoginStore.Intent, LoginStore.State, LoginStore.Label> {

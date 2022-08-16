@@ -19,8 +19,8 @@ import com.teddyfreddy.kmp.sharedModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import com.teddyfreddy.kmp.android.ui.decompose.RootComponent
-import com.teddyfreddy.kmp.android.ui.adaptive.AdaptiveDesign
-import com.teddyfreddy.kmp.android.ui.adaptive.devicePostureFlow
+import com.teddyfreddy.android.ui.adaptive.AdaptiveDesign
+import com.teddyfreddy.android.ui.adaptive.devicePostureFlow
 import com.teddyfreddy.kmp.android.ui.compose.app.RootView
 import org.koin.core.context.stopKoin
 

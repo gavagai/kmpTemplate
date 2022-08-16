@@ -7,7 +7,7 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
-import com.teddyfreddy.kmp.mvi.account.RegistrationContext
+import com.teddyfreddy.kmp.mvi.RegistrationContext
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 

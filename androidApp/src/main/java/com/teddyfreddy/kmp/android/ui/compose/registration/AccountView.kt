@@ -18,7 +18,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.teddyfreddy.kmp.mvi.account.AccountField
 import com.teddyfreddy.kmp.android.ui.decompose.Account
-import com.teddyfreddy.kmp.android.ui.extensions.ValidatedTextField
+import com.teddyfreddy.android.ui.extensions.ValidatedTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
