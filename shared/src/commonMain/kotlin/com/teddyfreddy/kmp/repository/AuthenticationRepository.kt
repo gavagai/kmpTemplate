@@ -1,6 +1,5 @@
 package com.teddyfreddy.kmp.repository
 
-import com.teddyfreddy.kmp.login.LoginStore
 import com.teddyfreddy.kmp.network.NetworkRequest
 import com.teddyfreddy.kmp.network.NetworkRequestError
 import com.teddyfreddy.kmp.network.NetworkResponse

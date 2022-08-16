@@ -3,7 +3,7 @@ package com.teddyfreddy.kmp.viewmodel
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.arkivanov.essenty.lifecycle.Lifecycle
-import com.teddyfreddy.kmp.account.*
+import com.teddyfreddy.kmp.mvi.account.*
 import org.koin.core.component.KoinComponent
 
 class AccountComposeViewModel(

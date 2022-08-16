@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.account
+package com.teddyfreddy.kmp.mvi.account
 
 import com.teddyfreddy.kmp.emailValidator
 import com.teddyfreddy.kmp.stringValidator

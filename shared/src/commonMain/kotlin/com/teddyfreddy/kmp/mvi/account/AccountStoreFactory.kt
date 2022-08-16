@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.account
+package com.teddyfreddy.kmp.mvi.account
 
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store

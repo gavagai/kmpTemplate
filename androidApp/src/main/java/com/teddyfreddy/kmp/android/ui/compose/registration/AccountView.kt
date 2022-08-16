@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.android.ui.registration
+package com.teddyfreddy.kmp.android.ui.compose.registration
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -16,7 +16,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.teddyfreddy.kmp.account.AccountField
+import com.teddyfreddy.kmp.mvi.account.AccountField
 import com.teddyfreddy.kmp.android.ui.decompose.Account
 import com.teddyfreddy.kmp.android.ui.extensions.ValidatedTextField
 

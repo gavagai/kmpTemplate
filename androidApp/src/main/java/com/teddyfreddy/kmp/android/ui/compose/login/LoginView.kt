@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.android.ui.login
+package com.teddyfreddy.kmp.android.ui.compose.login
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons

@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.account
+package com.teddyfreddy.kmp.mvi.account
 
 import com.arkivanov.essenty.lifecycle.Lifecycle
 import com.arkivanov.essenty.lifecycle.doOnDestroy

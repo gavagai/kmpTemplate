@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.android.ui.registration
+package com.teddyfreddy.kmp.android.ui.compose.registration
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button

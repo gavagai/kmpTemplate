@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.account
+package com.teddyfreddy.kmp.mvi.account
 
 internal val stateToModel: AccountStore.State.() -> AccountMviView.Model =
     {

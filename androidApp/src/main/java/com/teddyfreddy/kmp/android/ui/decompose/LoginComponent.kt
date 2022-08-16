@@ -7,9 +7,9 @@ import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
-import com.teddyfreddy.kmp.login.LoginField
-import com.teddyfreddy.kmp.login.LoginStore
-import com.teddyfreddy.kmp.login.LoginStoreFactory
+import com.teddyfreddy.kmp.mvi.login.LoginField
+import com.teddyfreddy.kmp.mvi.login.LoginStore
+import com.teddyfreddy.kmp.mvi.login.LoginStoreFactory
 import com.teddyfreddy.kmp.network.NetworkResponse
 import com.teddyfreddy.kmp.repository.LoginDTO
 import kotlinx.coroutines.*

@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.login
+package com.teddyfreddy.kmp.mvi.login
 
 import com.teddyfreddy.kmp.stringValidator
 import com.teddyfreddy.kmp.viewmodel.Field

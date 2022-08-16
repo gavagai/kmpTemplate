@@ -1,7 +1,7 @@
 package com.teddyfreddy.kmp.android.ui.decompose
 
 import androidx.compose.runtime.State
-import com.teddyfreddy.kmp.login.LoginStore
+import com.teddyfreddy.kmp.mvi.login.LoginStore
 
 interface Login {
     fun login()

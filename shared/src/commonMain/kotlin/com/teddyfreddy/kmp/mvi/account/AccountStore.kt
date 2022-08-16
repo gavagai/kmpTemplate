@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.account
+package com.teddyfreddy.kmp.mvi.account
 
 import com.arkivanov.mvikotlin.core.store.Store
 import com.teddyfreddy.kmp.ValidatedStringField

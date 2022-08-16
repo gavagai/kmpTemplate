@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.android.ui.registration
+package com.teddyfreddy.kmp.android.ui.compose.registration
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

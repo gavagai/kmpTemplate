@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.android.ui.app
+package com.teddyfreddy.kmp.android.ui.compose.app
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button

@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.android
+package com.teddyfreddy.kmp.android.ui.compose.app
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background

@@ -1,8 +1,8 @@
 package com.teddyfreddy.kmp.android.ui.decompose
 
 import androidx.compose.runtime.State
-import com.teddyfreddy.kmp.account.AccountField
-import com.teddyfreddy.kmp.account.AccountStore
+import com.teddyfreddy.kmp.mvi.account.AccountField
+import com.teddyfreddy.kmp.mvi.account.AccountStore
 
 interface Account {
     val state: State<AccountStore.State>

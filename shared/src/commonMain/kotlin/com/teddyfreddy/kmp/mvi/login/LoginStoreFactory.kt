@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.login
+package com.teddyfreddy.kmp.mvi.login
 
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
