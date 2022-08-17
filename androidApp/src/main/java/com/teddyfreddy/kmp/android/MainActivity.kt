@@ -45,8 +45,7 @@ class MainActivity : ComponentActivity() {
             AppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     // Determine adaptive design parameters
                     val windowWidthSizeClass = calculateWindowSizeClass(this).widthSizeClass
