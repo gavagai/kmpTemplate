@@ -28,8 +28,20 @@ fun LoginView(
     val state = remember { component.state }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    var snackbarMessage: MutableState<String?> = mutableStateOf(null)
 
-    var loginErrorMessage: MutableState<String?> = mutableStateOf(null)
+    fun showSnackbar() {
+        if (snackbarMessage.value != null) {
+            scope.launch {
+                snackbarHostState.showSnackbar(object : SnackbarVisuals {
+                    override val actionLabel: String? = null
+                    override val duration: SnackbarDuration = SnackbarDuration.Short
+                    override val message: String = snackbarMessage.value!!
+                    override val withDismissAction: Boolean = false
+                })
+            }
+        }
+    }
 
     fun doLogin() {
         component.login { exception ->
@@ -45,24 +57,15 @@ fun LoginView(
                             }
                             else -> {}
                         }
-                        loginErrorMessage.value = "${exception.failureReason!!}${if (exception.recoverySuggestion != null) " - ${exception.recoverySuggestion!!}" else ""}"
+                        snackbarMessage.value = "${exception.failureReason!!}${if (exception.recoverySuggestion != null) " - ${exception.recoverySuggestion!!}" else ""}"
                     }
-                    else -> loginErrorMessage.value = exception.message
+                    else -> snackbarMessage.value = exception.message
                 }
-                scope.launch {
-                    snackbarHostState.showSnackbar(object : SnackbarVisuals {
-                        override val actionLabel: String? = null
-                        override val duration: SnackbarDuration = SnackbarDuration.Short
-                        override val message: String = loginErrorMessage.value ?: ""
-                        override val withDismissAction: Boolean = false
-                    }
-                    )
-                }
+                showSnackbar()
             }
         }
 
     }
-
 
     Scaffold(
         snackbarHost = {
@@ -75,7 +78,7 @@ fun LoginView(
                                 get() = object : SnackbarVisuals {
                                     override val actionLabel: String? = null
                                     override val duration: SnackbarDuration = SnackbarDuration.Short
-                                    override val message: String = loginErrorMessage.value ?: ""
+                                    override val message: String = snackbarMessage.value ?: ""
                                     override val withDismissAction: Boolean = false
                                 }
                             override fun dismiss() {}
@@ -189,7 +192,11 @@ fun LoginView(
                 Spacer(modifier = Modifier.padding(10.dp))
                 Text("Need a new verification code?")
                 Button(
-                    onClick = { component.getNewCode() }
+                    onClick = {
+                        snackbarMessage.value = "Check your email for a new verification code - don't forget the Junk folder"
+                        showSnackbar()
+                        component.getNewCode()
+                    }
                 ) {
                     Text("Get code")
                 }
