@@ -11,6 +11,7 @@ interface LoginStore : Store<LoginStore.Intent, LoginStore.State, LoginStore.Lab
         data class ChangeField(val field: LoginField, val value: Any?, val validate: Boolean = false) : Intent
         data class ValidateField(val field: LoginField, val forceValid: Boolean? = false) : Intent
         data class SetFieldError(val field: LoginField, val error: String) : Intent
+        data class SetEmailVerificationRequired(val required: Boolean) : Intent
         object Login : Intent
     }
 

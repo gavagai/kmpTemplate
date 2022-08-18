@@ -10,7 +10,8 @@ import com.teddyfreddy.common.Field
 import kotlinx.coroutines.launch
 
 class LoginStoreFactory(
-    private val storeFactory: StoreFactory
+    private val storeFactory: StoreFactory,
+    private val emailVerified: Boolean = false
 ) {
     private sealed interface Msg {
         data class ChangeField(val field: LoginField, val value: Any?) : Msg
@@ -28,7 +29,7 @@ class LoginStoreFactory(
             Store<LoginStore.Intent, LoginStore.State, LoginStore.Label> by storeFactory.create(
                 name = "LoginStore",
                 initialState = LoginStore.State(),
-                bootstrapper = BootstrapperImpl(),
+                bootstrapper = BootstrapperImpl(emailVerified),
                 executorFactory = LoginStoreFactory::ExecutorImpl,
                 reducer = ReducerImpl
             ) {}
@@ -135,6 +136,7 @@ class LoginStoreFactory(
                 is LoginStore.Intent.ChangeField -> executeChangeField(intent)
                 is LoginStore.Intent.ValidateField -> dispatch(Msg.ValidateField(intent.field, intent.forceValid))
                 is LoginStore.Intent.SetFieldError -> dispatch(Msg.SetFieldError(intent.field, intent.error))
+                is LoginStore.Intent.SetEmailVerificationRequired -> dispatch(Msg.SetEmailVerificationRequired(intent.required))
             }
 
         private fun executeChangeField(intent: LoginStore.Intent.ChangeField) {
@@ -171,9 +173,8 @@ class LoginStoreFactory(
     }
 
 
-    private class BootstrapperImpl : CoroutineBootstrapper<Action>() {
+    private class BootstrapperImpl(private val emailVerified: Boolean) : CoroutineBootstrapper<Action>() {
         override fun invoke() {
-            val emailVerified = false // TODO: From shared preferences in reality
             scope.launch {
                 dispatch(Action.SetEmailVerificationRequired(!emailVerified))
             }

@@ -185,6 +185,15 @@ fun LoginView(
                         component.validateVerificationCode(forceValid)
                     }
                 )
+
+                Spacer(modifier = Modifier.padding(10.dp))
+                Text("Need a new verification code?")
+                Button(
+                    onClick = { component.getNewCode() }
+                ) {
+                    Text("Get code")
+                }
+                Spacer(modifier = Modifier.padding(20.dp))
             }
             Spacer(modifier = Modifier.padding(20.dp))
             Text("Don't have an account?")
