@@ -15,15 +15,21 @@ interface LoginStore : Store<LoginStore.Intent, LoginStore.State, LoginStore.Lab
 
     data class State(
         val username: ValidatedStringField,
-        val password: ValidatedStringField
+        val password: ValidatedStringField,
+        val verificationCode: ValidatedStringField,
+        val emailVerificationRequired: Boolean
     ) {
         constructor() : this(
             username = ValidatedStringField(data = ""),
-            password = ValidatedStringField(data = "")
+            password = ValidatedStringField(data = ""),
+            verificationCode = ValidatedStringField(data = ""),
+            emailVerificationRequired = false
         )
 
         val valid: Boolean
-            get() = username.error == null && password.error == null
+            get() = username.error == null &&
+                    password.error == null &&
+                    (!emailVerificationRequired || verificationCode.error == null)
     }
 
 

@@ -71,4 +71,11 @@ class LoginComponent(
     override fun validatePassword(forceValid: Boolean) {
         store.accept(LoginStore.Intent.ValidateField(LoginField.Password, forceValid))
     }
+    override fun changeVerificationCode(newVal: String) {
+        store.accept(LoginStore.Intent.ChangeField(LoginField.VerificationCode, newVal, false))
+    }
+    override fun validateVerificationCode(forceValid: Boolean) {
+        store.accept(LoginStore.Intent.ValidateField(LoginField.VerificationCode, forceValid))
+    }
+
 }

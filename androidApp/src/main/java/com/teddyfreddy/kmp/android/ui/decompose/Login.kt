@@ -14,4 +14,7 @@ interface Login {
     fun validateUsername(forceValid: Boolean)
     fun changePassword(newVal: String)
     fun validatePassword(forceValid: Boolean)
+    fun changeVerificationCode(newVal: String)
+    fun validateVerificationCode(forceValid: Boolean)
+
 }

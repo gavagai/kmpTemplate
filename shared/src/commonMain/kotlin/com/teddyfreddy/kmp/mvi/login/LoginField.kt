@@ -17,5 +17,10 @@ enum class LoginField(
         validator = Field.Validator { field: Field, value: Any?, _ ->
             stringValidator(field.label, value as? String, field.required)
         }
+    ),
+    VerificationCode("Verification code", true,
+        validator = Field.Validator { field: Field, value: Any?, _ ->
+            stringValidator(field.label, value as? String, field.required, "[1-9][0-9]{5}".toRegex())
+        }
     )
 }

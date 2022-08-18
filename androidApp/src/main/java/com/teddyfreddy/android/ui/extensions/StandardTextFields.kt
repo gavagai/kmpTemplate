@@ -1,7 +1,10 @@
 package com.teddyfreddy.android.ui.extensions
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -10,6 +13,7 @@ import androidx.compose.material.icons.outlined.ArrowCircleRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
@@ -18,6 +22,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.*
+import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,7 +48,7 @@ fun TextFieldWithSupportingText(
     colors: TextFieldColors = TextFieldDefaults.textFieldColors(),
     supportingText: String? = null
 ) {
-    Column {
+    Column(horizontalAlignment = Alignment.Start) {
         TextField(
             value = value,
             onValueChange = onValueChange,
@@ -113,7 +118,7 @@ fun ValidatedTextField(
         return if (isError && errorText != null) {
             errorText
         } else if (focused && isRequired() && value.isEmpty()) {
-            "*required"
+            supportingText ?: "*required"
         } else {
             supportingText ?: ""
         }
@@ -259,3 +264,55 @@ fun PasswordTextField(
         onValidate = onValidate
     )
 }
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun OneTimeCodeTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    label: @Composable (() -> Unit)? = null,
+    placeholder: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    isError: Boolean = false,
+    supportingText: String? = null,
+    errorText: String? = null,
+    onNext: (() -> Unit)? = null,
+    onGo: (() -> Unit)? = null,
+    onValidate: ((Boolean) -> Unit)? = null
+) {
+    ValidatedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier,
+        label = label ?: { Text("Verification code") },
+        placeholder = placeholder ?: { Text("Verification code*") },
+        leadingIcon = leadingIcon ?: { Icon(Icons.Default.Check, "verification code") },
+        trailingIcon = trailingIcon ?: {
+            IconButton(
+                onClick = { if (onGo != null) onGo() }
+            ) {
+                Icon(Icons.Outlined.ArrowCircleRight, "login")
+            }
+        },
+        isError = isError,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            capitalization = KeyboardCapitalization.None,
+            autoCorrect = false,
+            imeAction = if (onNext != null) ImeAction.Next else ImeAction.Go
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = { if (onNext != null) onNext() },
+            onGo = { if (onGo != null) onGo() }
+        ),
+        supportingText = supportingText,
+        errorText = errorText ?: "Please enter the one time verification code that you were sent",
+        required = true,
+        onValidate = onValidate
+    )
+}
+
+

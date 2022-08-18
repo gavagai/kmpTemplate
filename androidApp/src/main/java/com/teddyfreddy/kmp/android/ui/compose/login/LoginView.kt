@@ -12,6 +12,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
+import com.teddyfreddy.android.ui.extensions.OneTimeCodeTextField
 import com.teddyfreddy.kmp.android.ui.decompose.Login
 import com.teddyfreddy.android.ui.extensions.PasswordTextField
 import com.teddyfreddy.android.ui.extensions.UsernameTextField
@@ -93,6 +94,7 @@ fun LoginView(
                     component.validateUsername(forceValid)
                 }
             )
+
             Spacer(modifier = Modifier.padding(4.dp))
             PasswordTextField(
                 value = state.value.password.data,
@@ -101,36 +103,82 @@ fun LoginView(
                 },
                 modifier = Modifier
                     .onPreviewKeyEvent {
-                        if (it.key == Key.Tab && it.isShiftPressed && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
-                            focusManager.moveFocus(FocusDirection.Up)
+                        if (it.key == Key.Tab && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
+                            focusManager.moveFocus(if (it.isShiftPressed) FocusDirection.Up else FocusDirection.Down)
                             true
                         }
                         else {
                             false
                         }
                     },
+                trailingIcon = if (state.value.emailVerificationRequired) { {} } else null,
                 isError = state.value.password.error != null,
                 errorText = state.value.password.error,
-                onGo = {
-                    component.login { message ->
-                        if (message != null) {
-                            loginErrorMessage.value = message
-                            scope.launch {
-                                snackbarHostState.showSnackbar(object : SnackbarVisuals {
+                onGo = if (!state.value.emailVerificationRequired) {
+                    {
+                        component.login { message ->
+                            if (message != null) {
+                                loginErrorMessage.value = message
+                                scope.launch {
+                                    snackbarHostState.showSnackbar(object : SnackbarVisuals {
+                                        override val actionLabel: String? = null
+                                        override val duration: SnackbarDuration =
+                                            SnackbarDuration.Short
+                                        override val message: String = loginErrorMessage.value ?: ""
+                                        override val withDismissAction: Boolean = false
+                                    }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                } else null,
+                onValidate = { forceValid ->
+                    component.validatePassword(forceValid)
+                }
+            )
+
+            if (state.value.emailVerificationRequired) {
+                Spacer(modifier = Modifier.padding(4.dp))
+                OneTimeCodeTextField(
+                    value = state.value.verificationCode.data,
+                    onValueChange = {
+                        component.changeVerificationCode(it)
+                    },
+                    modifier = Modifier
+                        .onPreviewKeyEvent {
+                            if (it.key == Key.Tab && it.isShiftPressed && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
+                                focusManager.moveFocus(FocusDirection.Up)
+                                true
+                            }
+                            else {
+                                false
+                            }
+                        },
+                    isError = state.value.verificationCode.error != null,
+                    supportingText = "Your code was sent to you when you signed up",
+                    errorText = state.value.verificationCode.error,
+                    onGo = {
+                        component.login { message ->
+                            if (message != null) {
+                                loginErrorMessage.value = message
+                                scope.launch {
+                                    snackbarHostState.showSnackbar(object : SnackbarVisuals {
                                         override val actionLabel: String? = null
                                         override val duration: SnackbarDuration = SnackbarDuration.Short
                                         override val message: String = loginErrorMessage.value ?: ""
                                         override val withDismissAction: Boolean = false
                                     }
-                                )
+                                    )
+                                }
                             }
                         }
+                    },
+                    onValidate = { forceValid ->
+                        component.validateVerificationCode(forceValid)
                     }
-                },
-                onValidate = { forceValid ->
-                    component.validatePassword(forceValid)
-                }
-            )
+                )
+            }
             Spacer(modifier = Modifier.padding(20.dp))
             Text("Don't have an account?")
             Button(

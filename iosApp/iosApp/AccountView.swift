@@ -3,6 +3,9 @@ import shared
 
 struct AccountView: View {
 
+    @AppStorage("EmailVerified")
+    private var emailVerified = false
+
     @StateObject
     private var viewModel: ViewProxy = ViewProxy()
 

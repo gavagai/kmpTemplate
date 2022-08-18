@@ -1,10 +1,10 @@
 package com.teddyfreddy.kmp.android
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -13,10 +13,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import com.arkivanov.decompose.defaultComponentContext
-import com.teddyfreddy.kmp.Greeting
-import com.teddyfreddy.kmp.sharedModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+import com.teddyfreddy.kmp.Greeting
+import com.teddyfreddy.kmp.sharedModule
 import com.teddyfreddy.kmp.android.ui.decompose.RootComponent
 import com.teddyfreddy.android.ui.adaptive.AdaptiveDesign
 import com.teddyfreddy.android.ui.adaptive.devicePostureFlow
@@ -37,6 +37,11 @@ class MainActivity : ComponentActivity() {
             androidContext(applicationContext)
             modules(androidModule, sharedModule)
         }
+
+        val sharedPrefs = getSharedPreferences(
+            getString(R.string.preference_file_key),
+            Context.MODE_PRIVATE
+        )
 
         // Create the root component before starting Compose
         val root = RootComponent(componentContext = defaultComponentContext())
