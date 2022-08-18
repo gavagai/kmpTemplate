@@ -1,6 +1,7 @@
 package com.teddyfreddy.kmp.mvi.login
 
 import com.teddyfreddy.common.stringValidator
+import com.teddyfreddy.common.oneTimeCodeValidator
 import com.teddyfreddy.common.Field
 
 enum class LoginField(
@@ -20,7 +21,7 @@ enum class LoginField(
     ),
     VerificationCode("Verification code", true,
         validator = Field.Validator { field: Field, value: Any?, _ ->
-            stringValidator(field.label, value as? String, field.required, "[1-9][0-9]{5}".toRegex())
+            oneTimeCodeValidator(field.label, value as? String, field.required)
         }
     )
 }
