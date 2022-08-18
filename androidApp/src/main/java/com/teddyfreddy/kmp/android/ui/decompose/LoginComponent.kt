@@ -31,6 +31,7 @@ class LoginComponent(
 
     private val store = LoginStoreFactory(
                             DefaultStoreFactory(),
+                            preferences.getString(SharedPreferenceKeys.RecentUsername.key, null),
                             preferences.getBoolean(SharedPreferenceKeys.EmailVerified.key, false)
                         ).create()
 
@@ -52,6 +53,7 @@ class LoginComponent(
                         if (it.exception == null) {
                             with (preferences.edit()) {
                                 putBoolean(SharedPreferenceKeys.EmailVerified.key, true)
+                                putString(SharedPreferenceKeys.RecentUsername.key, store.state.username.data)
                                 apply()
                             }
                             store.accept(LoginStore.Intent.SetEmailVerificationRequired(false))

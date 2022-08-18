@@ -11,17 +11,19 @@ import kotlinx.coroutines.launch
 
 class LoginStoreFactory(
     private val storeFactory: StoreFactory,
+    private val recentUsername: String?,
     private val emailVerified: Boolean = false
 ) {
     private sealed interface Msg {
         data class ChangeField(val field: LoginField, val value: Any?) : Msg
         data class ValidateField(val field: LoginField, val forceValid: Boolean? = false) : Msg
         data class SetFieldError(val field: LoginField, val error: String) : Msg
-        data class SetEmailVerificationRequired(val required: Boolean = true): Msg
+        data class SetEmailVerificationRequired(val required: Boolean = true) : Msg
     }
 
     private sealed interface Action {
-        data class SetEmailVerificationRequired(val required: Boolean = false): Action
+        data class SetEmailVerificationRequired(val required: Boolean = false) : Action
+        data class SetRecentUsername(val recentUsername: String) : Action
     }
 
     fun create(): LoginStore =
@@ -29,7 +31,7 @@ class LoginStoreFactory(
             Store<LoginStore.Intent, LoginStore.State, LoginStore.Label> by storeFactory.create(
                 name = "LoginStore",
                 initialState = LoginStore.State(),
-                bootstrapper = BootstrapperImpl(emailVerified),
+                bootstrapper = BootstrapperImpl(recentUsername, emailVerified),
                 executorFactory = LoginStoreFactory::ExecutorImpl,
                 reducer = ReducerImpl
             ) {}
@@ -168,14 +170,20 @@ class LoginStoreFactory(
         override fun executeAction(action: Action, getState: () -> LoginStore.State) =
             when (action) {
                 is Action.SetEmailVerificationRequired -> dispatch(Msg.SetEmailVerificationRequired(action.required))
+                is Action.SetRecentUsername -> dispatch(Msg.ChangeField(LoginField.Username, action.recentUsername))
             }
-
     }
 
 
-    private class BootstrapperImpl(private val emailVerified: Boolean) : CoroutineBootstrapper<Action>() {
+    private class BootstrapperImpl(
+        private val recentUsername: String?,
+        private val emailVerified: Boolean
+        ) : CoroutineBootstrapper<Action>() {
         override fun invoke() {
             scope.launch {
+                if (recentUsername != null) {
+                    dispatch(Action.SetRecentUsername(recentUsername))
+                }
                 dispatch(Action.SetEmailVerificationRequired(!emailVerified))
             }
         }
