@@ -127,7 +127,8 @@ class LoginStoreFactory(
                 AuthenticationRepository.authenticate(
                     scope,
                     state.username.data,
-                    state.password.data
+                    state.password.data,
+                    state.verificationCode.data
                 ) { response, message ->
                     publish(LoginStore.Label.LoginComplete(response, message))
                 }

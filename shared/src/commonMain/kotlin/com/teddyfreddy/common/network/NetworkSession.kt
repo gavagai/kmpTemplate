@@ -1,6 +1,7 @@
 package com.teddyfreddy.common.network
 
 import io.ktor.client.call.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.utils.io.core.*
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +25,7 @@ class NetworkSession {
                             null
                         }
                         when (response.status.value) {
-                            401 -> throw NetworkRequestError.Unauthenticated
+                            401 -> throw NetworkRequestError.Unauthenticated(payload?.message)
                             403 -> throw NetworkRequestError.Unauthorized
                             422 -> if (payload != null) throw NetworkRequestError.ValidationError(payload)
                                    else throw NetworkRequestError.HttpError(response.status.value)

@@ -38,3 +38,14 @@ data class ErrorPayload(
     }
 }
 
+enum class ErrorCodes {
+    BadRequest,
+    UnauthorizedEmailVerificationFailed,
+    UnauthorizedEmailVerificationCodeExpired,
+    Forbidden,
+    NotFound,
+    Conflict, // PUT
+    ValidationFailed,
+    InternalServerError,
+    ServiceUnavailable
+}

@@ -5,7 +5,7 @@ sealed class NetworkRequestError : Exception() {
     data class TransportError(val error: Exception) : NetworkRequestError()
     object InvalidResponse : NetworkRequestError()
     data class HttpError(val status: Int) : NetworkRequestError()
-    object Unauthenticated : NetworkRequestError()
+    data class Unauthenticated(val error: String? = null) : NetworkRequestError()
     object Unauthorized : NetworkRequestError()
     data class ServerError(val status: Int, val reason: String) : NetworkRequestError()
     data class ServiceUnavailable(val retry: String?) : NetworkRequestError()
@@ -21,14 +21,13 @@ sealed class NetworkRequestError : Exception() {
             InvalidResponse -> "Invalid Server Response"
             DecodingError -> "Server Response Decoding Error"
             is HttpError -> "HTTP Error"
-            Unauthenticated -> "Not Authenticated"
+            is Unauthenticated -> "Not Authenticated"
             Unauthorized -> "Not Authorized"
             is ServerError -> "Unexpected Server Error"
             is ServiceUnavailable -> "Service Unavailable"
             is ValidationError -> "Server Validation Error"
             is StandardizedError -> "Server Request Failed"
             Unknown ->  "Unknown Error"
-            else -> null
         }
 
     override val message: String?
@@ -44,14 +43,13 @@ sealed class NetworkRequestError : Exception() {
                 404 -> "Resource not found"
                 else -> "HTTP error status $status"
             }
-            Unauthenticated -> "Incorrect credentials"
+            is Unauthenticated -> error ?: "Incorrect credentials"
             Unauthorized -> "Cannot perform this operation"
             is ServerError -> "Server error ($status): $reason"
             is ServiceUnavailable -> "Service temporarily unavailable"
             is ValidationError -> standardizedErrorDescription(response)
             is StandardizedError -> standardizedErrorDescription(response)
             Unknown -> null
-            else -> null
         }
 
     val recoverySuggestion: String?
@@ -64,7 +62,7 @@ sealed class NetworkRequestError : Exception() {
                 404 -> "Did you enter an incorrect URL somewhere?"
                 else -> null
             }
-            Unauthenticated -> "Please try again with the correct username and password"
+            is Unauthenticated -> if (error != null) null else "Please try again with the correct username and password"
             Unauthorized -> "If you need this level of access contact your Administrator"
             is ServerError -> null
             is ServiceUnavailable -> {
@@ -83,7 +81,6 @@ sealed class NetworkRequestError : Exception() {
             is ValidationError -> "The server has rejected the request because some of the data was invalid - see if the details you a hint"
             is StandardizedError -> "See if the details in the error give you a hint"
             Unknown -> "Report this as a bug"
-            else -> null
         }
 
 

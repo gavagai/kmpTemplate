@@ -24,11 +24,12 @@ class AuthenticationRepository {
             scope: CoroutineScope,
             username: String,
             password: String,
+            emailVerificationCode: String? = null,
             completion: (NetworkResponse<LoginResponseDTO>?, String?) -> Unit) {
             scope.launch {
                 try {
                     NetworkSession.execute<LoginResponseDTO>(
-                        loginRequest(username, password)
+                        loginRequest(username, password, emailVerificationCode)
                     )
                         .flowOn(Dispatchers.Main)
                         .catch { e ->
@@ -51,7 +52,9 @@ class AuthenticationRepository {
             }
         }
 
-        private fun loginRequest(username: String, password: String) : NetworkRequest {
+        private fun loginRequest(username: String,
+                                 password: String,
+                                 emailVerificationCode: String? = null) : NetworkRequest {
             val authToken = NetworkSession.BasicAuthorizationToken(username, password)
             return NetworkRequest("http://10.0.1.173:8080/login") {
                 method = HttpMethod.Post
@@ -62,8 +65,9 @@ class AuthenticationRepository {
                 header("Content-Type", "application/json")
                 setBody(
                     LoginCredentialsDTO(
-                        username = authToken.username,
-                        password = authToken.password
+                        username = username,
+                        password = password,
+                        emailVerificationCode = emailVerificationCode
                     )
                 )
             }
@@ -76,7 +80,8 @@ class AuthenticationRepository {
 @Serializable
 data class LoginCredentialsDTO (
     val username : String,
-    val password : String
+    val password : String,
+    val emailVerificationCode : String?
 )
 
 @Serializable
