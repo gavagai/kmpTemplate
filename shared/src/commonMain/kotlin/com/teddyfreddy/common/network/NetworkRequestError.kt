@@ -5,7 +5,9 @@ sealed class NetworkRequestError : Exception() {
     data class TransportError(val error: Exception) : NetworkRequestError()
     object InvalidResponse : NetworkRequestError()
     data class HttpError(val status: Int) : NetworkRequestError()
-    data class Unauthenticated(val error: String? = null) : NetworkRequestError()
+    object Unauthenticated : NetworkRequestError()
+    object EmailVerificationFailed : NetworkRequestError()
+    object EmailVerificationCodeExpired : NetworkRequestError()
     object Unauthorized : NetworkRequestError()
     data class ServerError(val status: Int, val reason: String) : NetworkRequestError()
     data class ServiceUnavailable(val retry: String?) : NetworkRequestError()
@@ -21,7 +23,9 @@ sealed class NetworkRequestError : Exception() {
             InvalidResponse -> "Invalid Server Response"
             DecodingError -> "Server Response Decoding Error"
             is HttpError -> "HTTP Error"
-            is Unauthenticated -> "Not Authenticated"
+            Unauthenticated -> "Not Authenticated"
+            EmailVerificationFailed -> "Email Verification Failed"
+            EmailVerificationCodeExpired -> "Email Verification Code Expired"
             Unauthorized -> "Not Authorized"
             is ServerError -> "Unexpected Server Error"
             is ServiceUnavailable -> "Service Unavailable"
@@ -43,7 +47,9 @@ sealed class NetworkRequestError : Exception() {
                 404 -> "Resource not found"
                 else -> "HTTP error status $status"
             }
-            is Unauthenticated -> error ?: "Incorrect credentials"
+            Unauthenticated -> "Incorrect credentials"
+            EmailVerificationFailed -> "Email verification code didn't match"
+            EmailVerificationCodeExpired -> "Email verification code has expired"
             Unauthorized -> "Cannot perform this operation"
             is ServerError -> "Server error ($status): $reason"
             is ServiceUnavailable -> "Service temporarily unavailable"
@@ -62,7 +68,9 @@ sealed class NetworkRequestError : Exception() {
                 404 -> "Did you enter an incorrect URL somewhere?"
                 else -> null
             }
-            is Unauthenticated -> if (error != null) null else "Please try again with the correct username and password"
+            Unauthenticated -> "Please try again with the correct username and password"
+            EmailVerificationFailed -> "Please try again with the correct code"
+            EmailVerificationCodeExpired -> "Please request another code"
             Unauthorized -> "If you need this level of access contact your Administrator"
             is ServerError -> null
             is ServiceUnavailable -> {

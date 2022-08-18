@@ -16,6 +16,7 @@ import com.teddyfreddy.android.ui.extensions.OneTimeCodeTextField
 import com.teddyfreddy.kmp.android.ui.decompose.Login
 import com.teddyfreddy.android.ui.extensions.PasswordTextField
 import com.teddyfreddy.android.ui.extensions.UsernameTextField
+import com.teddyfreddy.common.network.NetworkRequestError
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
@@ -29,6 +30,39 @@ fun LoginView(
     val snackbarHostState = remember { SnackbarHostState() }
 
     var loginErrorMessage: MutableState<String?> = mutableStateOf(null)
+
+    fun doLogin() {
+        component.login { exception ->
+            if (exception != null) {
+                when (exception) {
+                    is NetworkRequestError -> {
+                        when (exception) {
+                            NetworkRequestError.EmailVerificationFailed -> {
+                                component.setEmailVerificationCodeError(exception.failureReason!!)
+                            }
+                            NetworkRequestError.EmailVerificationCodeExpired -> {
+                                component.setEmailVerificationCodeError(exception.failureReason!!)
+                            }
+                            else -> {}
+                        }
+                        loginErrorMessage.value = "${exception.failureReason!!}${if (exception.recoverySuggestion != null) " - ${exception.recoverySuggestion!!}" else ""}"
+                    }
+                    else -> loginErrorMessage.value = exception.message
+                }
+                scope.launch {
+                    snackbarHostState.showSnackbar(object : SnackbarVisuals {
+                        override val actionLabel: String? = null
+                        override val duration: SnackbarDuration = SnackbarDuration.Short
+                        override val message: String = loginErrorMessage.value ?: ""
+                        override val withDismissAction: Boolean = false
+                    }
+                    )
+                }
+            }
+        }
+
+    }
+
 
     Scaffold(
         snackbarHost = {
@@ -116,21 +150,7 @@ fun LoginView(
                 errorText = state.value.password.error,
                 onGo = if (!state.value.emailVerificationRequired) {
                     {
-                        component.login { message ->
-                            if (message != null) {
-                                loginErrorMessage.value = message
-                                scope.launch {
-                                    snackbarHostState.showSnackbar(object : SnackbarVisuals {
-                                        override val actionLabel: String? = null
-                                        override val duration: SnackbarDuration =
-                                            SnackbarDuration.Short
-                                        override val message: String = loginErrorMessage.value ?: ""
-                                        override val withDismissAction: Boolean = false
-                                    }
-                                    )
-                                }
-                            }
-                        }
+                        doLogin()
                     }
                 } else null,
                 onValidate = { forceValid ->
@@ -159,20 +179,7 @@ fun LoginView(
                     supportingText = "Your code was sent to you when you signed up",
                     errorText = state.value.verificationCode.error,
                     onGo = {
-                        component.login { message ->
-                            if (message != null) {
-                                loginErrorMessage.value = message
-                                scope.launch {
-                                    snackbarHostState.showSnackbar(object : SnackbarVisuals {
-                                        override val actionLabel: String? = null
-                                        override val duration: SnackbarDuration = SnackbarDuration.Short
-                                        override val message: String = loginErrorMessage.value ?: ""
-                                        override val withDismissAction: Boolean = false
-                                    }
-                                    )
-                                }
-                            }
-                        }
+                        doLogin()
                     },
                     onValidate = { forceValid ->
                         component.validateVerificationCode(forceValid)

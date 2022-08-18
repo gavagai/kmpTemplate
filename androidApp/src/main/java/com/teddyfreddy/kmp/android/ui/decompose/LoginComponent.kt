@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 @OptIn(ExperimentalCoroutinesApi::class)
 class LoginComponent(
     componentContext: ComponentContext,
-    private val onLogin: (response: NetworkResponse<LoginResponseDTO>?, message: String?) -> Unit,
+    private val onLogin: (response: NetworkResponse<LoginResponseDTO>?, exception: Throwable?) -> Unit,
     private val onSignup: () -> Unit
 ) : Login, ComponentContext by componentContext {
 
@@ -39,8 +39,11 @@ class LoginComponent(
                 when (it) {
                     is LoginStore.Label.LoginInitiated -> { }
                     is LoginStore.Label.LoginComplete -> {
-                        this@LoginComponent.onLoginComplete(it.message)
-                        this@LoginComponent.onLogin(it.response, it.message)
+                        if (it.exception != null) {
+
+                        }
+                        this@LoginComponent.onLoginComplete(it.exception)
+                        this@LoginComponent.onLogin(it.response, it.exception)
                     }
                 }
             }
@@ -49,8 +52,8 @@ class LoginComponent(
     }
 
 
-    private lateinit var onLoginComplete: (message: String?) -> Unit
-    override fun login(onLoginComplete: (message: String?) -> Unit) {
+    private lateinit var onLoginComplete: (exception: Throwable?) -> Unit
+    override fun login(onLoginComplete: (exception: Throwable?) -> Unit) {
         this.onLoginComplete = onLoginComplete
         store.accept(LoginStore.Intent.Login)
     }
@@ -77,5 +80,8 @@ class LoginComponent(
     override fun validateVerificationCode(forceValid: Boolean) {
         store.accept(LoginStore.Intent.ValidateField(LoginField.VerificationCode, forceValid))
     }
-
+    override fun setEmailVerificationCodeError(error: String) {
+        store.accept(LoginStore.Intent.SetFieldError(LoginField.VerificationCode, error))
+    }
 }
+

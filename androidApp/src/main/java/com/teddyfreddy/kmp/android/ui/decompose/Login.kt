@@ -5,7 +5,7 @@ import androidx.compose.runtime.State
 import com.teddyfreddy.kmp.mvi.login.LoginStore
 
 interface Login {
-    fun login(onLoginComplete: (message: String?) -> Unit)
+    fun login(onLoginComplete: (exception: Throwable?) -> Unit)
     fun signup()
 
     val state: State<LoginStore.State>
@@ -16,5 +16,5 @@ interface Login {
     fun validatePassword(forceValid: Boolean)
     fun changeVerificationCode(newVal: String)
     fun validateVerificationCode(forceValid: Boolean)
-
+    fun setEmailVerificationCodeError(error: String)
 }

@@ -22,7 +22,6 @@ val sharedModule = module {
                     prettyPrint = true
                     isLenient = true
                     ignoreUnknownKeys = true
-                    explicitNulls = false
                 })
             }
         }

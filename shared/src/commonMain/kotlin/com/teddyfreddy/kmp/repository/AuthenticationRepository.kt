@@ -25,7 +25,7 @@ class AuthenticationRepository {
             username: String,
             password: String,
             emailVerificationCode: String? = null,
-            completion: (NetworkResponse<LoginResponseDTO>?, String?) -> Unit) {
+            completion: (NetworkResponse<LoginResponseDTO>?, Throwable?) -> Unit) {
             scope.launch {
                 try {
                     NetworkSession.execute<LoginResponseDTO>(
@@ -33,13 +33,7 @@ class AuthenticationRepository {
                     )
                         .flowOn(Dispatchers.Main)
                         .catch { e ->
-                            if (e is NetworkRequestError) {
-                                completion(null,
-                                    "${e.failureReason}${if (e.recoverySuggestion != null) " - ${e.recoverySuggestion}" else ""}")
-                            }
-                            else {
-                                completion(null, e.message)
-                            }
+                            completion(null, e)
                         }
                         .collect {
                             NetworkSession.basicAuthorizationToken = NetworkSession.BasicAuthorizationToken(username, password)
@@ -47,7 +41,7 @@ class AuthenticationRepository {
                         }
                 }
                 catch (e: NetworkRequestError.TransportError) {
-                    completion(null, "Login failed: ${e.message}")
+                    completion(null, e)
                 }
             }
         }

@@ -15,6 +15,7 @@ class LoginStoreFactory(
     private sealed interface Msg {
         data class ChangeField(val field: LoginField, val value: Any?) : Msg
         data class ValidateField(val field: LoginField, val forceValid: Boolean? = false) : Msg
+        data class SetFieldError(val field: LoginField, val error: String) : Msg
         data class SetEmailVerificationRequired(val required: Boolean = true): Msg
     }
 
@@ -98,6 +99,31 @@ class LoginStoreFactory(
                         }
                     }
                 }
+                is Msg.SetFieldError -> {
+                     when (msg.field) {
+                        LoginField.Username -> {
+                            copy(
+                                username = username.copy(
+                                    error = msg.error
+                                )
+                            )
+                        }
+                        LoginField.Password -> {
+                            copy(
+                                password = password.copy(
+                                    error = msg.error
+                                )
+                            )
+                        }
+                        LoginField.VerificationCode -> {
+                            copy(
+                                verificationCode = verificationCode.copy(
+                                    error = msg.error
+                                )
+                            )
+                        }
+                    }
+                }
                 is Msg.SetEmailVerificationRequired -> copy(emailVerificationRequired = msg.required)
             }
     }
@@ -108,6 +134,7 @@ class LoginStoreFactory(
                 is LoginStore.Intent.Login -> executeLogin(getState)
                 is LoginStore.Intent.ChangeField -> executeChangeField(intent)
                 is LoginStore.Intent.ValidateField -> dispatch(Msg.ValidateField(intent.field, intent.forceValid))
+                is LoginStore.Intent.SetFieldError -> dispatch(Msg.SetFieldError(intent.field, intent.error))
             }
 
         private fun executeChangeField(intent: LoginStore.Intent.ChangeField) {
@@ -129,8 +156,8 @@ class LoginStoreFactory(
                     state.username.data,
                     state.password.data,
                     state.verificationCode.data
-                ) { response, message ->
-                    publish(LoginStore.Label.LoginComplete(response, message))
+                ) { response, exception ->
+                    publish(LoginStore.Label.LoginComplete(response, exception))
                 }
             }
         }

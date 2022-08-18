@@ -25,7 +25,11 @@ class NetworkSession {
                             null
                         }
                         when (response.status.value) {
-                            401 -> throw NetworkRequestError.Unauthenticated(payload?.message)
+                            401 ->  if (payload != null) when (payload.code) {
+                                        ErrorCodes.UnauthorizedEmailVerificationFailed.ordinal -> throw NetworkRequestError.EmailVerificationFailed
+                                        ErrorCodes.UnauthorizedEmailVerificationCodeExpired.ordinal -> throw NetworkRequestError.EmailVerificationCodeExpired
+                                    }
+                                    else throw NetworkRequestError.Unauthenticated
                             403 -> throw NetworkRequestError.Unauthorized
                             422 -> if (payload != null) throw NetworkRequestError.ValidationError(payload)
                                    else throw NetworkRequestError.HttpError(response.status.value)

@@ -10,6 +10,7 @@ interface LoginStore : Store<LoginStore.Intent, LoginStore.State, LoginStore.Lab
     sealed interface Intent {
         data class ChangeField(val field: LoginField, val value: Any?, val validate: Boolean = false) : Intent
         data class ValidateField(val field: LoginField, val forceValid: Boolean? = false) : Intent
+        data class SetFieldError(val field: LoginField, val error: String) : Intent
         object Login : Intent
     }
 
@@ -37,7 +38,7 @@ interface LoginStore : Store<LoginStore.Intent, LoginStore.State, LoginStore.Lab
         object LoginInitiated: Label
         data class LoginComplete(
             val response: NetworkResponse<LoginResponseDTO>?,
-            val message: String?
+            val exception: Throwable?
         ): Label
     }
 }
