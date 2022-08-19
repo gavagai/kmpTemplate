@@ -3,7 +3,6 @@ package com.teddyfreddy.kmp.android.ui.compose.app
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Chat
@@ -44,97 +43,83 @@ fun NavigationApp(
     val scope = rememberCoroutineScope()
 
     val selectedDestination = AppDestinations.INBOX
-    if (navigationType == AdaptiveDesign.NavigationType.PermanentNavigationDrawer) {
-        PermanentNavigationDrawer(
-            drawerContent = {
-                AppNavigationDrawerContent(selectedDestination, permanent = true)
+
+    when (navigationType) {
+        AdaptiveDesign.NavigationType.PermanentNavigationDrawer -> {
+            PermanentNavigationDrawer(
+                drawerContent = {
+                    AppNavigationDrawerContent(selectedDestination, permanent = true)
+                }
+            ) {
+                AppContent(component, expanded = contentType == AdaptiveDesign.ContentType.Expanded)
             }
-        ) {
-            NavigationAppContent(navigationType, contentType, component)
         }
-    } else {
-        ModalNavigationDrawer(
-            drawerContent = {
-                AppNavigationDrawerContent(
-                    selectedDestination,
-                    permanent = false,
-                    onDrawerClicked = {
-                        scope.launch {
-                            drawerState.close()
+        else -> {
+            ModalNavigationDrawer(
+                drawerContent = {
+                    AppNavigationDrawerContent(
+                        selectedDestination,
+                        permanent = false,
+                        onDrawerCloseClicked = {
+                            scope.launch {
+                                drawerState.close()
+                            }
+                        }
+                    )
+                },
+                drawerState = drawerState
+            ) {
+                when (navigationType) {
+                    AdaptiveDesign.NavigationType.NavigationRail -> {
+                        Row(modifier = Modifier.fillMaxSize()) {
+                            AppNavigationRail(
+                                onDrawerOpenClicked = {
+                                    scope.launch {
+                                        drawerState.open()
+                                    }
+                                }
+                            )
+                            Column(modifier = Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colorScheme.inverseOnSurface)
+                            ) {
+                                AppContent(
+                                    component = component,
+                                    expanded = contentType == AdaptiveDesign.ContentType.Expanded,
+                                    modifier = Modifier.weight(1f),
+                                )
+                            }
                         }
                     }
-                )
-            },
-            drawerState = drawerState
-        ) {
-            NavigationAppContent(
-                navigationType, contentType, component,
-                onDrawerClicked = {
-                    scope.launch {
-                        drawerState.open()
+                    AdaptiveDesign.NavigationType.BottomNavigation -> {
+                        Scaffold(
+                            bottomBar = { AppBottomNavigationBar() },
+                        ) {
+                            AppContent(
+                                component = component,
+                                expanded = contentType == AdaptiveDesign.ContentType.Expanded,
+                                modifier = Modifier.padding(paddingValues = it)
+                            )
+                        }
                     }
+                    else -> {}
                 }
-            )
+            }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun NavigationAppContent(
-    navigationType: AdaptiveDesign.NavigationType,
-    contentType: AdaptiveDesign.ContentType,
-    component: RootComponent,
-    onDrawerClicked: () -> Unit = {}
-) {
-    Row(modifier = Modifier.fillMaxSize()) {
-        AnimatedVisibility(visible = navigationType == AdaptiveDesign.NavigationType.NavigationRail) {
-            AppNavigationRail(
-                onDrawerClicked = onDrawerClicked
-            )
-        }
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.inverseOnSurface)
-        ) {
-            if (navigationType == AdaptiveDesign.NavigationType.BottomNavigation) {
-                Scaffold(
-                    bottomBar = {
-                        AnimatedVisibility(visible = true) {
-                            AppBottomNavigationBar()
-                        }
-                    },
-                ) {
-                    AppContent(
-                        component = component,
-                        expanded = contentType == AdaptiveDesign.ContentType.Expanded,
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(paddingValues = it)
-                    )
-                }
-            }
-            else {
-                AppContent(
-                    component = component,
-                    expanded = contentType == AdaptiveDesign.ContentType.Expanded,
-                    modifier = Modifier.weight(1f),
-                )
-            }
-        }
-    }
-}
 
 
 @Composable
 @Preview
 fun AppNavigationRail(
-    onDrawerClicked: () -> Unit = {},
+    onDrawerOpenClicked: () -> Unit = {},
 ) {
     NavigationRail(modifier = Modifier.fillMaxHeight()) {
         NavigationRailItem(
             selected = false,
-            onClick = onDrawerClicked,
+            onClick = onDrawerOpenClicked,
             icon =  { Icon(imageVector = Icons.Default.Menu, contentDescription = "stringResource(id = R.string.navigation_drawer)") }
         )
         NavigationRailItem(
@@ -193,7 +178,7 @@ fun AppNavigationDrawerContent(
     selectedDestination: String,
     permanent: Boolean,
     modifier: Modifier = Modifier,
-    onDrawerClicked: () -> Unit = {}
+    onDrawerCloseClicked: () -> Unit = {}
 ) {
     Column(
         modifier
@@ -215,7 +200,7 @@ fun AppNavigationDrawerContent(
                 color = MaterialTheme.colorScheme.primary
             )
             if (!permanent) {
-                IconButton(onClick = onDrawerClicked) {
+                IconButton(onClick = onDrawerCloseClicked) {
                     Icon(
                         imageVector = Icons.Default.MenuOpen,
                         contentDescription = "stringResource(id = R.string.navigation_drawer)"
@@ -262,7 +247,7 @@ fun AppContent(
     expanded: Boolean,
     modifier: Modifier = Modifier
 ) {
-    Column{
+    Column {
         Text(if (expanded) "Expanded" else "Compact")
     }
 }
