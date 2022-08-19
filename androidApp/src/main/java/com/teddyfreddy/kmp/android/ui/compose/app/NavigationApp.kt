@@ -15,10 +15,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.teddyfreddy.kmp.android.ui.decompose.RootComponent
 import com.teddyfreddy.android.ui.adaptive.AdaptiveDesign
+import com.teddyfreddy.kmp.android.R
 import kotlinx.coroutines.launch
 
 
@@ -45,7 +47,7 @@ fun NavigationApp(
     if (navigationType == AdaptiveDesign.NavigationType.PermanentNavigationDrawer) {
         PermanentNavigationDrawer(
             drawerContent = {
-                AppNavigationDrawerContent(selectedDestination)
+                AppNavigationDrawerContent(selectedDestination, permanent = true)
             }
         ) {
             NavigationAppContent(navigationType, contentType, component)
@@ -55,6 +57,7 @@ fun NavigationApp(
             drawerContent = {
                 AppNavigationDrawerContent(
                     selectedDestination,
+                    permanent = false,
                     onDrawerClicked = {
                         scope.launch {
                             drawerState.close()
@@ -76,6 +79,7 @@ fun NavigationApp(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavigationAppContent(
     navigationType: AdaptiveDesign.NavigationType,
@@ -93,20 +97,29 @@ fun NavigationAppContent(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.inverseOnSurface)
         ) {
-            if (contentType == AdaptiveDesign.ContentType.Expanded) {
-                AppExpandedContent(
+            if (navigationType == AdaptiveDesign.NavigationType.BottomNavigation) {
+                Scaffold(
+                    bottomBar = {
+                        AnimatedVisibility(visible = true) {
+                            AppBottomNavigationBar()
+                        }
+                    },
+                ) {
+                    AppContent(
+                        component = component,
+                        expanded = contentType == AdaptiveDesign.ContentType.Expanded,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(paddingValues = it)
+                    )
+                }
+            }
+            else {
+                AppContent(
                     component = component,
+                    expanded = contentType == AdaptiveDesign.ContentType.Expanded,
                     modifier = Modifier.weight(1f),
                 )
-            } else {
-                AppCompactContent(
-                    component = component,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-
-            AnimatedVisibility(visible = navigationType == AdaptiveDesign.NavigationType.BottomNavigation) {
-                AppBottomNavigationBar()
             }
         }
     }
@@ -178,6 +191,7 @@ fun AppBottomNavigationBar() {
 @Composable
 fun AppNavigationDrawerContent(
     selectedDestination: String,
+    permanent: Boolean,
     modifier: Modifier = Modifier,
     onDrawerClicked: () -> Unit = {}
 ) {
@@ -196,15 +210,17 @@ fun AppNavigationDrawerContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "stringResource(id = R.string.app_name).uppercase()",
+                text = stringResource(id = R.string.app_name).uppercase(),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )
-            IconButton(onClick = onDrawerClicked) {
-                Icon(
-                    imageVector = Icons.Default.MenuOpen,
-                    contentDescription = "stringResource(id = R.string.navigation_drawer)"
-                )
+            if (!permanent) {
+                IconButton(onClick = onDrawerClicked) {
+                    Icon(
+                        imageVector = Icons.Default.MenuOpen,
+                        contentDescription = "stringResource(id = R.string.navigation_drawer)"
+                    )
+                }
             }
         }
 
@@ -241,24 +257,12 @@ fun AppNavigationDrawerContent(
 
 
 @Composable
-fun AppCompactContent(
+fun AppContent(
     component: RootComponent,
+    expanded: Boolean,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(modifier = modifier) {
-        item {
-            Text("Compact")
-        }
-        item {
-            Text("Compact 2")
-        }
+    Column{
+        Text(if (expanded) "Expanded" else "Compact")
     }
-}
-
-@Composable
-fun AppExpandedContent(
-    component: RootComponent,
-    modifier: Modifier = Modifier
-) {
-    Text("Expanded")
 }

@@ -41,8 +41,7 @@ fun LoginView(
     fun doLogin() {
         component.login { exception ->
             if (exception != null) {
-                var snackbarMessage: String?
-                when (exception) {
+                  val snackbarMessage = when (exception) {
                     is NetworkRequestError -> {
                         when (exception) {
                             NetworkRequestError.EmailVerificationFailed -> {
@@ -53,14 +52,13 @@ fun LoginView(
                             }
                             else -> {}
                         }
-                        snackbarMessage = "${exception.failureReason!!}${if (exception.recoverySuggestion != null) " - ${exception.recoverySuggestion!!}" else ""}"
+                        "${exception.failureReason!!}${if (exception.recoverySuggestion != null) " - ${exception.recoverySuggestion!!}" else ""}"
                     }
-                    else -> snackbarMessage = exception.message
+                    else -> exception.message
                 }
                 showSnackbar(snackbarMessage ?: "")
             }
         }
-
     }
 
     Scaffold(
@@ -172,12 +170,11 @@ fun LoginView(
                     onClick = {
                         component.getNewCode { exception ->
                             if (exception != null) {
-                                var snackbarMessage: String?
-                                when (exception) {
+                                val snackbarMessage = when (exception) {
                                     is NetworkRequestError -> {
-                                        snackbarMessage = "${exception.failureReason!!}${if (exception.recoverySuggestion != null) " - ${exception.recoverySuggestion!!}" else ""}"
+                                        "${exception.failureReason!!}${if (exception.recoverySuggestion != null) " - ${exception.recoverySuggestion!!}" else ""}"
                                     }
-                                    else -> snackbarMessage = exception.message
+                                    else -> exception.message
                                 }
                                 showSnackbar(snackbarMessage ?: "")
                             }

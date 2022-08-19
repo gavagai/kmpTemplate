@@ -54,9 +54,9 @@ class MainActivity : ComponentActivity() {
                     val navigationType = AdaptiveDesign.navigationType(windowWidthSizeClass, devicePosture)
                     val contentType = AdaptiveDesign.contentType(windowWidthSizeClass, devicePosture)
 
-                    RootView(component = root, navigationType = navigationType, contentType = contentType)
+//                    RootView(component = root, navigationType = navigationType, contentType = contentType)
 //                    AsyncView()
-//                    NavigationApp(navigationType = navigationType, contentType = contentType, component = root)
+                    NavigationApp(navigationType = navigationType, contentType = contentType, component = root)
                 }
             }
         }
