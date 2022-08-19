@@ -1,6 +1,5 @@
 package com.teddyfreddy.kmp.android.ui.compose.app
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -16,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.teddyfreddy.kmp.android.ui.decompose.RootComponent
 import com.teddyfreddy.android.ui.adaptive.AdaptiveDesign
@@ -33,7 +34,7 @@ object AppDestinations {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavigationApp(
+fun AdaptiveNavigationApp(
     navigationType: AdaptiveDesign.NavigationType,
     contentType: AdaptiveDesign.ContentType,
     component: RootComponent
@@ -42,13 +43,13 @@ fun NavigationApp(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    val selectedDestination = AppDestinations.INBOX
+    val selectedDestination = AppDestinations.ARTICLES
 
     when (navigationType) {
         AdaptiveDesign.NavigationType.PermanentNavigationDrawer -> {
             PermanentNavigationDrawer(
                 drawerContent = {
-                    AppNavigationDrawerContent(selectedDestination, permanent = true)
+                    AppNavigationDrawerContent(/* rootComponent.initialDestination */selectedDestination, permanent = true)
                 }
             ) {
                 AppContent(component, expanded = contentType == AdaptiveDesign.ContentType.Expanded)
@@ -58,7 +59,7 @@ fun NavigationApp(
             ModalNavigationDrawer(
                 drawerContent = {
                     AppNavigationDrawerContent(
-                        selectedDestination,
+                        /* rootComponent.initialDestination */selectedDestination,
                         permanent = false,
                         onDrawerCloseClicked = {
                             scope.launch {
@@ -77,7 +78,8 @@ fun NavigationApp(
                                     scope.launch {
                                         drawerState.open()
                                     }
-                                }
+                                },
+                                selectedDestination
                             )
                             Column(modifier = Modifier
                                 .fillMaxSize()
@@ -93,7 +95,7 @@ fun NavigationApp(
                     }
                     AdaptiveDesign.NavigationType.BottomNavigation -> {
                         Scaffold(
-                            bottomBar = { AppBottomNavigationBar() },
+                            bottomBar = { AppBottomNavigationBar(selectedDestination) },
                         ) {
                             AppContent(
                                 component = component,
@@ -115,57 +117,62 @@ fun NavigationApp(
 @Preview
 fun AppNavigationRail(
     onDrawerOpenClicked: () -> Unit = {},
+    @PreviewParameter(SampleAppDestinationsProvider::class) selectedDestination: String,
 ) {
     NavigationRail(modifier = Modifier.fillMaxHeight()) {
+        // Standard item to open modal drawer
         NavigationRailItem(
             selected = false,
             onClick = onDrawerOpenClicked,
             icon =  { Icon(imageVector = Icons.Default.Menu, contentDescription = "stringResource(id = R.string.navigation_drawer)") }
         )
+
         NavigationRailItem(
-            selected = true,
+            selected = selectedDestination == AppDestinations.INBOX,
             onClick = { /*TODO*/ },
             icon =  { Icon(imageVector = Icons.Default.Inbox, contentDescription = "stringResource(id = R.string.tab_inbox)") }
         )
         NavigationRailItem(
-            selected = false,
+            selected = selectedDestination == AppDestinations.ARTICLES,
             onClick = {/*TODO*/ },
-            icon =  { Icon(imageVector = Icons.Default.Article, "stringResource(id = R.string.tab_article)") }
+            icon =  { Icon(imageVector = Icons.Default.Article, contentDescription = "stringResource(id = R.string.tab_article)") }
         )
         NavigationRailItem(
-            selected = false,
+            selected = selectedDestination == AppDestinations.DM,
             onClick = { /*TODO*/ },
-            icon =  { Icon(imageVector = Icons.Outlined.Chat, "stringResource(id = R.string.tab_dm)") }
+            icon =  { Icon(imageVector = Icons.Outlined.Chat, contentDescription = "stringResource(id = R.string.tab_dm)") }
         )
         NavigationRailItem(
-            selected = false,
+            selected = selectedDestination == AppDestinations.GROUPS,
             onClick = { /*TODO*/ },
-            icon =  { Icon(imageVector = Icons.Outlined.People, "stringResource(id = R.string.tab_groups)") }
+            icon =  { Icon(imageVector = Icons.Outlined.People, contentDescription = "stringResource(id = R.string.tab_groups)") }
         )
     }
 }
 
 @Composable
 @Preview
-fun AppBottomNavigationBar() {
+fun AppBottomNavigationBar(
+    @PreviewParameter(SampleAppDestinationsProvider::class) selectedDestination: String,
+) {
     NavigationBar(modifier = Modifier.fillMaxWidth()) {
         NavigationBarItem(
-            selected = true,
+            selected = selectedDestination == AppDestinations.INBOX,
             onClick = { /*TODO*/ },
             icon = { Icon(imageVector = Icons.Default.Inbox, contentDescription = "stringResource(id = R.string.tab_inbox)") }
         )
         NavigationBarItem(
-            selected = false,
+            selected = selectedDestination == AppDestinations.ARTICLES,
             onClick = { /*TODO*/ },
             icon = { Icon(imageVector = Icons.Default.Article, contentDescription = "stringResource(id = R.string.tab_inbox)") }
         )
         NavigationBarItem(
-            selected = false,
+            selected = selectedDestination == AppDestinations.DM,
             onClick = { /*TODO*/ },
             icon = { Icon(imageVector = Icons.Outlined.Chat, contentDescription = "stringResource(id = R.string.tab_inbox)") }
         )
         NavigationBarItem(
-            selected = false,
+            selected = selectedDestination == AppDestinations.GROUPS,
             onClick = { /*TODO*/ },
             icon = { Icon(imageVector = Icons.Outlined.Videocam, contentDescription = "stringResource(id = R.string.tab_inbox)") }
         )
@@ -175,7 +182,7 @@ fun AppBottomNavigationBar() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigationDrawerContent(
-    selectedDestination: String,
+    @PreviewParameter(SampleAppDestinationsProvider::class) selectedDestination: String,
     permanent: Boolean,
     modifier: Modifier = Modifier,
     onDrawerCloseClicked: () -> Unit = {}
@@ -250,4 +257,9 @@ fun AppContent(
     Column {
         Text(if (expanded) "Expanded" else "Compact")
     }
+}
+
+
+class SampleAppDestinationsProvider: PreviewParameterProvider<String> {
+    override val values = sequenceOf(AppDestinations.INBOX)
 }
