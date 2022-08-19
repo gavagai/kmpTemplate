@@ -9,14 +9,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalDateTime
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
 
 class AuthenticationRepository {
     companion object {
@@ -25,7 +18,8 @@ class AuthenticationRepository {
             username: String,
             password: String,
             emailVerificationCode: String? = null,
-            completion: (NetworkResponse<LoginResponseDTO>?, Throwable?) -> Unit) {
+            completion: (NetworkResponse<LoginResponseDTO>?, Throwable?) -> Unit
+        ) {
             scope.launch {
                 try {
                     NetworkSession.execute<LoginResponseDTO>(
@@ -46,9 +40,11 @@ class AuthenticationRepository {
             }
         }
 
-        private fun loginRequest(username: String,
-                                 password: String,
-                                 emailVerificationCode: String? = null) : NetworkRequest {
+        private fun loginRequest(
+            username: String,
+            password: String,
+            emailVerificationCode: String? = null
+        ) : NetworkRequest {
             val authToken = NetworkSession.BasicAuthorizationToken(username, password)
             return NetworkRequest("http://10.0.1.173:8080/login") {
                 method = HttpMethod.Post
@@ -63,6 +59,45 @@ class AuthenticationRepository {
                         password = password,
                         emailVerificationCode = emailVerificationCode
                     )
+                )
+            }
+        }
+
+        fun sendVerificationCode(
+            scope: CoroutineScope,
+            username: String,
+            password: String,
+            completion: (NetworkResponse<Unit>?, Throwable?) -> Unit
+        ) {
+            scope.launch {
+                try {
+                    NetworkSession.execute<Unit>(
+                        sendVerificationCodeRequest(username, password)
+                    )
+                        .flowOn(Dispatchers.Main)
+                        .catch { e ->
+                            completion(null, e)
+                        }
+                        .collect {
+                            completion(it, null)
+                        }
+                }
+                catch (e: NetworkRequestError.TransportError) {
+                    completion(null, e)
+                }
+            }
+        }
+
+        private fun sendVerificationCodeRequest(
+            username: String,
+            password: String
+        ) : NetworkRequest {
+            val authToken = NetworkSession.BasicAuthorizationToken(username, password)
+            return NetworkRequest("http://10.0.1.173:8080/code/email?username=$username") {
+                method = HttpMethod.Post
+                header(
+                    "Authorization",
+                    "Basic ${authToken.token}"
                 )
             }
         }

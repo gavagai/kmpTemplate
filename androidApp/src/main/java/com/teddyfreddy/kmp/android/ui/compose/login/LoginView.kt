@@ -28,24 +28,20 @@ fun LoginView(
     val state = remember { component.state }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    var snackbarMessage: MutableState<String?> = mutableStateOf(null)
 
-    fun showSnackbar() {
-        if (snackbarMessage.value != null) {
-            scope.launch {
-                snackbarHostState.showSnackbar(object : SnackbarVisuals {
-                    override val actionLabel: String? = null
-                    override val duration: SnackbarDuration = SnackbarDuration.Short
-                    override val message: String = snackbarMessage.value!!
-                    override val withDismissAction: Boolean = false
-                })
-            }
+    fun showSnackbar(message: String) {
+         scope.launch {
+            snackbarHostState.showSnackbar(
+                message = message,
+                duration = SnackbarDuration.Short
+            )
         }
     }
 
     fun doLogin() {
         component.login { exception ->
             if (exception != null) {
+                var snackbarMessage: String?
                 when (exception) {
                     is NetworkRequestError -> {
                         when (exception) {
@@ -57,37 +53,18 @@ fun LoginView(
                             }
                             else -> {}
                         }
-                        snackbarMessage.value = "${exception.failureReason!!}${if (exception.recoverySuggestion != null) " - ${exception.recoverySuggestion!!}" else ""}"
+                        snackbarMessage = "${exception.failureReason!!}${if (exception.recoverySuggestion != null) " - ${exception.recoverySuggestion!!}" else ""}"
                     }
-                    else -> snackbarMessage.value = exception.message
+                    else -> snackbarMessage = exception.message
                 }
-                showSnackbar()
+                showSnackbar(snackbarMessage ?: "")
             }
         }
 
     }
 
     Scaffold(
-        snackbarHost = {
-            SnackbarHost(
-                hostState = snackbarHostState,
-                snackbar = {
-                    Snackbar(snackbarData =
-                        object : SnackbarData {
-                            override val visuals: SnackbarVisuals
-                                get() = object : SnackbarVisuals {
-                                    override val actionLabel: String? = null
-                                    override val duration: SnackbarDuration = SnackbarDuration.Short
-                                    override val message: String = snackbarMessage.value ?: ""
-                                    override val withDismissAction: Boolean = false
-                                }
-                            override fun dismiss() {}
-                            override fun performAction() {}
-                        }
-                    )
-                }
-            )
-        }
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -193,9 +170,21 @@ fun LoginView(
                 Text("Need a new verification code?")
                 Button(
                     onClick = {
-                        snackbarMessage.value = "Check your email for a new verification code - don't forget the Junk folder"
-                        showSnackbar()
-                        component.getNewCode()
+                        component.getNewCode { exception ->
+                            if (exception != null) {
+                                var snackbarMessage: String?
+                                when (exception) {
+                                    is NetworkRequestError -> {
+                                        snackbarMessage = "${exception.failureReason!!}${if (exception.recoverySuggestion != null) " - ${exception.recoverySuggestion!!}" else ""}"
+                                    }
+                                    else -> snackbarMessage = exception.message
+                                }
+                                showSnackbar(snackbarMessage ?: "")
+                            }
+                            else {
+                                showSnackbar("Check your email for a new verification code - don't forget the Junk folder")
+                            }
+                        }
                     }
                 ) {
                     Text("Get code")

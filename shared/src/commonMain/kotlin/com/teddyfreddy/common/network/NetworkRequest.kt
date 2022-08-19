@@ -17,7 +17,7 @@ data class NetworkRequest(
         return try {
             client.request(urlString, builder)
         }
-        catch (e: Exception) {
+        catch (e: Throwable) {
             throw NetworkRequestError.TransportError(e)
         }
     }

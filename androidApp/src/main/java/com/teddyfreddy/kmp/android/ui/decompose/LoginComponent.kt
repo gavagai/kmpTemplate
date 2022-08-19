@@ -48,19 +48,22 @@ class LoginComponent(
         scope.launch {
             store.labels.collect {
                 when (it) {
-                    is LoginStore.Label.LoginInitiated -> { }
+                    is LoginStore.Label.LoginInitiated -> {}
                     is LoginStore.Label.LoginComplete -> {
                         if (it.exception == null) {
-                            with (preferences.edit()) {
+                            with(preferences.edit()) {
                                 putBoolean(SharedPreferenceKeys.EmailVerified.key, true)
-                                putString(SharedPreferenceKeys.RecentUsername.key, store.state.username.data)
+                                putString(
+                                    SharedPreferenceKeys.RecentUsername.key,
+                                    store.state.username.data
+                                )
                                 apply()
                             }
                             store.accept(LoginStore.Intent.SetEmailVerificationRequired(false))
-                        }
-                        else if (it.exception is NetworkRequestError.EmailVerificationFailed ||
-                                 it.exception is NetworkRequestError.EmailVerificationCodeExpired) {
-                            with (preferences.edit()) {
+                        } else if (it.exception is NetworkRequestError.EmailVerificationFailed ||
+                            it.exception is NetworkRequestError.EmailVerificationCodeExpired
+                        ) {
+                            with(preferences.edit()) {
                                 putBoolean(SharedPreferenceKeys.EmailVerified.key, false)
                                 apply()
                             }
@@ -68,6 +71,9 @@ class LoginComponent(
                         }
                         this@LoginComponent.onLoginComplete(it.exception)
                         this@LoginComponent.onLogin(it.response, it.exception)
+                    }
+                    is LoginStore.Label.EmailVerificationCodeSent -> {
+                        this@LoginComponent.onEmailVerificationCodeSent(it.exception)
                     }
                 }
             }
@@ -85,8 +91,11 @@ class LoginComponent(
     override fun signup() {
         this.onSignup()
     }
-    override fun getNewCode() {
 
+    private lateinit var onEmailVerificationCodeSent: (exception: Throwable?) -> Unit
+    override fun getNewCode(onEmailVerificationCodeSent: (exception: Throwable?) -> Unit) {
+        this.onEmailVerificationCodeSent = onEmailVerificationCodeSent
+        store.accept(LoginStore.Intent.SendEmailVerificationCode)
     }
 
     override fun changeUsername(newVal: String) {

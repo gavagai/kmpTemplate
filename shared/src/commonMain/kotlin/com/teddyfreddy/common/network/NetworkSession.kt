@@ -42,11 +42,11 @@ class NetworkSession {
                     response
                 }
                 .map { response ->
-                    if (response.contentLength()!! > 0) {
+                    if (response.status.value != 204) {
                         try {
                             NetworkResponse<T>(response.body<T>(), response)
                         }
-                        catch (e: Exception) {
+                        catch (e: Throwable) {
                             throw NetworkRequestError.DecodingError
                         }
                     }

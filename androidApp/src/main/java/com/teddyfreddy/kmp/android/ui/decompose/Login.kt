@@ -7,7 +7,7 @@ import com.teddyfreddy.kmp.mvi.login.LoginStore
 interface Login {
     fun login(onLoginComplete: (exception: Throwable?) -> Unit)
     fun signup()
-    fun getNewCode()
+    fun getNewCode(onEmailVerificationCodeSent: (exception: Throwable?) -> Unit)
 
     val state: State<LoginStore.State>
 

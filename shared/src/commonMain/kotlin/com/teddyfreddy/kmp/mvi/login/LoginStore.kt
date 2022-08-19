@@ -13,6 +13,7 @@ interface LoginStore : Store<LoginStore.Intent, LoginStore.State, LoginStore.Lab
         data class SetFieldError(val field: LoginField, val error: String) : Intent
         data class SetEmailVerificationRequired(val required: Boolean) : Intent
         object Login : Intent
+        object SendEmailVerificationCode: Intent
     }
 
     data class State(
@@ -39,6 +40,10 @@ interface LoginStore : Store<LoginStore.Intent, LoginStore.State, LoginStore.Lab
         object LoginInitiated: Label
         data class LoginComplete(
             val response: NetworkResponse<LoginResponseDTO>?,
+            val exception: Throwable?
+        ): Label
+        data class EmailVerificationCodeSent(
+            val response: NetworkResponse<Unit>?,
             val exception: Throwable?
         ): Label
     }

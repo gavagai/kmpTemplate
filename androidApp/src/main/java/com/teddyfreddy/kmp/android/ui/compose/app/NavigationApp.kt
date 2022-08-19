@@ -3,6 +3,7 @@ package com.teddyfreddy.kmp.android.ui.compose.app
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Chat
@@ -39,12 +40,14 @@ fun NavigationApp(
     // App drawer state
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+
     val selectedDestination = AppDestinations.INBOX
-
-
-
     if (navigationType == AdaptiveDesign.NavigationType.PermanentNavigationDrawer) {
-        PermanentNavigationDrawer(drawerContent = { AppNavigationDrawerContent(selectedDestination) }) {
+        PermanentNavigationDrawer(
+            drawerContent = {
+                AppNavigationDrawerContent(selectedDestination)
+            }
+        ) {
             NavigationAppContent(navigationType, contentType, component)
         }
     } else {
@@ -242,6 +245,14 @@ fun AppCompactContent(
     component: RootComponent,
     modifier: Modifier = Modifier
 ) {
+    LazyColumn(modifier = modifier) {
+        item {
+            Text("Compact")
+        }
+        item {
+            Text("Compact 2")
+        }
+    }
 }
 
 @Composable
@@ -249,4 +260,5 @@ fun AppExpandedContent(
     component: RootComponent,
     modifier: Modifier = Modifier
 ) {
+    Text("Expanded")
 }

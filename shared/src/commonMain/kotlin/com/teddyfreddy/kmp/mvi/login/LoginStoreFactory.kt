@@ -139,6 +139,7 @@ class LoginStoreFactory(
                 is LoginStore.Intent.ValidateField -> dispatch(Msg.ValidateField(intent.field, intent.forceValid))
                 is LoginStore.Intent.SetFieldError -> dispatch(Msg.SetFieldError(intent.field, intent.error))
                 is LoginStore.Intent.SetEmailVerificationRequired -> dispatch(Msg.SetEmailVerificationRequired(intent.required))
+                is LoginStore.Intent.SendEmailVerificationCode -> executeSendEmailVerificationCode(getState)
             }
 
         private fun executeChangeField(intent: LoginStore.Intent.ChangeField) {
@@ -165,6 +166,17 @@ class LoginStoreFactory(
                 }
             }
         }
+
+        private fun executeSendEmailVerificationCode(getState: () -> LoginStore.State) {
+            AuthenticationRepository.sendVerificationCode(
+                scope,
+                getState().username.data,
+                getState().password.data,
+            ) { response, exception ->
+                publish(LoginStore.Label.EmailVerificationCodeSent(response, exception))
+            }
+        }
+
 
 
         override fun executeAction(action: Action, getState: () -> LoginStore.State) =

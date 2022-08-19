@@ -2,7 +2,7 @@ package com.teddyfreddy.common.network
 
 sealed class NetworkRequestError : Exception() {
     data class InvalidRequest(val error: String) : NetworkRequestError()
-    data class TransportError(val error: Exception) : NetworkRequestError()
+    data class TransportError(val error: Throwable) : NetworkRequestError()
     object InvalidResponse : NetworkRequestError()
     data class HttpError(val status: Int) : NetworkRequestError()
     object Unauthenticated : NetworkRequestError()

@@ -20,6 +20,7 @@ import com.teddyfreddy.kmp.sharedModule
 import com.teddyfreddy.kmp.android.ui.decompose.RootComponent
 import com.teddyfreddy.android.ui.adaptive.AdaptiveDesign
 import com.teddyfreddy.android.ui.adaptive.devicePostureFlow
+import com.teddyfreddy.kmp.android.ui.compose.app.NavigationApp
 import com.teddyfreddy.kmp.android.ui.compose.app.RootView
 import com.teddyfreddy.kmp.android.ui.theme.AppTheme
 import org.koin.core.context.stopKoin
@@ -38,11 +39,6 @@ class MainActivity : ComponentActivity() {
             modules(androidModule, sharedModule)
         }
 
-        val sharedPrefs = getSharedPreferences(
-            getString(R.string.preference_file_key),
-            Context.MODE_PRIVATE
-        )
-
         // Create the root component before starting Compose
         val root = RootComponent(componentContext = defaultComponentContext())
 
@@ -58,8 +54,9 @@ class MainActivity : ComponentActivity() {
                     val navigationType = AdaptiveDesign.navigationType(windowWidthSizeClass, devicePosture)
                     val contentType = AdaptiveDesign.contentType(windowWidthSizeClass, devicePosture)
 
-                    RootView(component = root)
+                    RootView(component = root, navigationType = navigationType, contentType = contentType)
 //                    AsyncView()
+//                    NavigationApp(navigationType = navigationType, contentType = contentType, component = root)
                 }
             }
         }
