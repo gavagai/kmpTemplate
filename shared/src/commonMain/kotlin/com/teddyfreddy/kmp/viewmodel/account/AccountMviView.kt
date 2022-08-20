@@ -19,6 +19,7 @@ interface AccountMviView : MviView<AccountMviView.Model, AccountMviView.Event> {
         var dateOfBirth: LocalDate?,
     ) {
         // No-arg constructor for Swift.
+        @Suppress("unused")
         constructor() : this(
             email = ValidatedStringField(data = ""),
             password = ValidatedStringField(data = ""),
