@@ -45,8 +45,6 @@ struct LoginView: View {
                     }
                 )
                 StandardUsernameTextField("Username", username: usernameBinding)
-//                TextField("Username", text: usernameBinding)
-//                    .autocapitalization(.none)
                 let passwordBinding = Binding<String>(
                     get: {
                         viewModel.viewState.password.data as String
@@ -60,8 +58,6 @@ struct LoginView: View {
                         snackbarText = message ?? "" //showSnackbar(snackbarMessage ?: "")
                     }
                 }
-//                TextField("Password", text: passwordBinding)
-//                    .autocapitalization(.none)
                 if viewModel.viewState.emailVerificationRequired {
                     let verificationCodeBinding = Binding<String>(
                         get: {
@@ -72,30 +68,41 @@ struct LoginView: View {
                         }
                     )
                     StandardOneTimeCodeTextField("Verification code", code: verificationCodeBinding)
-//                    TextField("Verification code", text: verificationCodeBinding)
-//                        .keyboardType(.numberPad)
                 }
             }
             .padding(.horizontal, 30)
             .padding(.top, 10)
 
+            if !emailVerified {
+                VStack {
+                     Text("Need a new verification code?")
+                         .padding(.top, 30)
+                   Button("Get code") {
+                        viewModel.getNewCode { message in
+                            snackbarText = message ?? "" //showSnackbar(snackbarMessage ?: "")
+                        }
+                    }
+                    .buttonStyle(StandardButtonStyle())
+                        .frame(width: 150)
+                }
+                .padding(.horizontal, 30)
+                .padding(.top, 10)
+            }
+
             VStack {
-                Button("Login") {
-                    viewModel.login { message in
-                        snackbarText = message ?? "" //showSnackbar(snackbarMessage ?: "")                        
-                    }
+                Text("Don't have an account?")
+                    .padding(.top, 30)
+                Button("Sign up") {
                 }
-                .buttonStyle(StandardButtonStyle())
-                Button("Get code") {
-                    viewModel.getNewCode { message in
-                        snackbarText = message ?? "" //showSnackbar(snackbarMessage ?: "")
-                    }
-                }
+                .buttonStyle(StandardButtonStyle(foregroundColor: .white, backgroundColor: .red))
+                    .frame(width: 150)
             }
             .padding(.horizontal, 30)
-            .padding(.top, 25)
+            .padding(.top, 30)
 
             Text(snackbarText ?? "Nothing to report here")
+            .padding(.top, 20)
+            .foregroundColor(Color.red)
         }
         .onFirstAppear { holder.controller.onViewCreated(view: viewModel, viewLifecycle: holder.lifecycle) }
         .onAppear { LifecycleRegistryExtKt.resume(holder.lifecycle) }
