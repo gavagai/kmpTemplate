@@ -88,7 +88,10 @@ open class LoginBaseMviView :
                 }
                 val snackbarMessage = when (it.exception) {
                     is NetworkRequestError -> {
-                        "${it.exception.failureReason!!}${if (it.exception.recoverySuggestion != null) " - ${it.exception.recoverySuggestion!!}" else ""}"
+                        when (it.exception) {
+                            is NetworkRequestError.TransportError -> "Trouble connecting to the server" // iOS specific messages are unreadable
+                            else -> "${it.exception.failureReason!!}${if (it.exception.recoverySuggestion != null) " - ${it.exception.recoverySuggestion!!}" else ""}"
+                        }
                     }
                     else -> it.exception?.message
                 }
@@ -98,10 +101,13 @@ open class LoginBaseMviView :
             is LoginStore.Label.EmailVerificationCodeSent -> {
                 val snackbarMessage = when (it.exception) {
                     is NetworkRequestError -> {
-                        "${it.exception.failureReason!!}${if (it.exception.recoverySuggestion != null) " - ${it.exception.recoverySuggestion!!}" else ""}"
+                        when (it.exception) {
+                            is NetworkRequestError.TransportError -> "Trouble connecting to the server" // iOS specific messages are unreadable
+                            else -> "${it.exception.failureReason!!}${if (it.exception.recoverySuggestion != null) " - ${it.exception.recoverySuggestion!!}" else ""}"
+                        }
                     }
                     null -> null
-                    else -> it.exception?.message
+                    else -> it.exception.message
                 }
 
                 this@LoginBaseMviView.onEmailVerificationCodeSent(snackbarMessage)
