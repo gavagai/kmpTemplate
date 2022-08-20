@@ -1,5 +1,6 @@
 import SwiftUI
 import shared
+import StandardWidgets
 
 struct LoginView: View {
 
@@ -43,8 +44,9 @@ struct LoginView: View {
                         viewModel.changeUsername(newVal: $0)
                     }
                 )
-                TextField("Username", text: usernameBinding)
-                    .autocapitalization(.none)
+                StandardUsernameTextField("Username", username: usernameBinding)
+//                TextField("Username", text: usernameBinding)
+//                    .autocapitalization(.none)
                 let passwordBinding = Binding<String>(
                     get: {
                         viewModel.viewState.password.data as String
@@ -53,8 +55,13 @@ struct LoginView: View {
                         viewModel.changePassword(newVal: $0)
                     }
                 )
-                TextField("Password", text: passwordBinding)
-                    .autocapitalization(.none)
+                StandardPasswordTextField("Password", password: passwordBinding) {
+                    viewModel.login { message in
+                        snackbarText = message ?? "" //showSnackbar(snackbarMessage ?: "")
+                    }
+                }
+//                TextField("Password", text: passwordBinding)
+//                    .autocapitalization(.none)
                 if viewModel.viewState.emailVerificationRequired {
                     let verificationCodeBinding = Binding<String>(
                         get: {
@@ -64,8 +71,9 @@ struct LoginView: View {
                             viewModel.changeVerificationCode(newVal: $0)
                         }
                     )
-                    TextField("Verification code", text: verificationCodeBinding)
-                        .keyboardType(.numberPad)
+                    StandardOneTimeCodeTextField("Verification code", code: verificationCodeBinding)
+//                    TextField("Verification code", text: verificationCodeBinding)
+//                        .keyboardType(.numberPad)
                 }
             }
             .padding(.horizontal, 30)
@@ -77,6 +85,7 @@ struct LoginView: View {
                         snackbarText = message ?? "" //showSnackbar(snackbarMessage ?: "")                        
                     }
                 }
+                .buttonStyle(StandardButtonStyle())
                 Button("Get code") {
                     viewModel.getNewCode { message in
                         snackbarText = message ?? "" //showSnackbar(snackbarMessage ?: "")

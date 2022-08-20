@@ -20,6 +20,7 @@ import com.teddyfreddy.kmp.android.ui.decompose.RootComponent
 import com.teddyfreddy.android.ui.adaptive.AdaptiveDesign
 import com.teddyfreddy.android.ui.adaptive.devicePostureFlow
 import com.teddyfreddy.kmp.android.ui.compose.app.AdaptiveNavigationApp
+import com.teddyfreddy.kmp.android.ui.compose.app.RootView
 import com.teddyfreddy.kmp.android.ui.theme.AppTheme
 import org.koin.core.context.stopKoin
 
@@ -52,9 +53,9 @@ class MainActivity : ComponentActivity() {
                     val navigationType = AdaptiveDesign.navigationType(windowWidthSizeClass, devicePosture)
                     val contentType = AdaptiveDesign.contentType(windowWidthSizeClass, devicePosture)
 
-//                    RootView(component = root, navigationType = navigationType, contentType = contentType)
+                    RootView(component = root, navigationType = navigationType, contentType = contentType)
 //                    AsyncView()
-                    AdaptiveNavigationApp(navigationType = navigationType, contentType = contentType, component = root)
+//                    AdaptiveNavigationApp(navigationType = navigationType, contentType = contentType, component = root)
                 }
             }
         }

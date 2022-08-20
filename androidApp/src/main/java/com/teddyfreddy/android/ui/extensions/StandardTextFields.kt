@@ -289,7 +289,7 @@ fun OneTimeCodeTextField(
         modifier = modifier,
         label = label ?: { Text("Verification code") },
         placeholder = placeholder ?: { Text("Verification code*") },
-        leadingIcon = leadingIcon ?: { Icon(Icons.Default.Check, "verification code") },
+        leadingIcon = leadingIcon ?: { Icon(Icons.Default.Key, "verification code") },
         trailingIcon = trailingIcon ?: {
             IconButton(
                 onClick = { if (onGo != null) onGo() }
