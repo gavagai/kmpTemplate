@@ -10,20 +10,16 @@ import com.arkivanov.mvikotlin.extensions.coroutines.states
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.teddyfreddy.kmp.mvi.login.LoginStore
 import com.teddyfreddy.kmp.mvi.login.LoginStoreFactory
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
+
 
 @Suppress("unused")
 open class LoginController(lifecycle: Lifecycle) {
-    private lateinit var store: LoginStore
+    private var store: LoginStore = LoginStoreFactory(DefaultStoreFactory(), null/* TODO */).create()
 
     init {
-        runBlocking { // Bootstrapper needs a coroutine context for launch in SwiftUI.
-            store = LoginStoreFactory(DefaultStoreFactory(), null/* TODO */).create()
-        }
         lifecycle.doOnDestroy(store::dispose)
     }
 

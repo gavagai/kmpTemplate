@@ -37,8 +37,7 @@ kotlin {
         val commonMain by getting {
             // DON: --
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2")
-
+                implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
                 // Kotlin datetime
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.3")
 

@@ -15,16 +15,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
 
 @Suppress("unused")
 open class AccountController(lifecycle: Lifecycle, registrationContext: RegistrationContext) {
-    private lateinit var store: AccountStore
+    private var store: AccountStore = AccountStoreFactory(DefaultStoreFactory(), registrationContext).create()
 
     init {
-        runBlocking { // Bootstrapper needs a coroutine context for launch in SwiftUI. Seriously?
-            store = AccountStoreFactory(DefaultStoreFactory(), registrationContext).create()
-        }
         lifecycle.doOnDestroy(store::dispose)
     }
 
