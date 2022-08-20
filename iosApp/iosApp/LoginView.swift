@@ -4,6 +4,8 @@ import StandardWidgets
 
 struct LoginView: View {
 
+    @Environment(\.colorScheme) var colorScheme
+
     @AppStorage("EmailVerified")
     private var emailVerified = false
 
@@ -17,7 +19,9 @@ struct LoginView: View {
     private var holder: ControllerHolder
 
     @State
-    private var snackbarText: String? = nil
+    private var snackbarShowing = false
+    @State
+    private var snackbarText = ""
 
     init() {
         self._holder = StateObject(
@@ -30,84 +34,121 @@ struct LoginView: View {
     }
 
     var body: some View {
-
-        VStack {
-//             ProductImageView()
-//                 .padding(.top, 15)
-
+        
+        ZStack {
             VStack {
-                let usernameBinding = Binding<String>(
-                    get: {
-                        viewModel.viewState.username.data as String
-                    },
-                    set: {
-                        viewModel.changeUsername(newVal: $0)
-                    }
-                )
-                StandardUsernameTextField("Username", username: usernameBinding)
-                let passwordBinding = Binding<String>(
-                    get: {
-                        viewModel.viewState.password.data as String
-                    },
-                    set: {
-                        viewModel.changePassword(newVal: $0)
-                    }
-                )
-                StandardPasswordTextField("Password", password: passwordBinding) {
-                    viewModel.login { message in
-                        snackbarText = message ?? "" //showSnackbar(snackbarMessage ?: "")
-                    }
-                }
-                if viewModel.viewState.emailVerificationRequired {
-                    let verificationCodeBinding = Binding<String>(
+    //             ProductImageView()
+    //                 .padding(.top, 15)
+
+                VStack {
+                    let usernameBinding = Binding<String>(
                         get: {
-                            viewModel.viewState.verificationCode.data as String
+                            viewModel.viewState.username.data as String
                         },
                         set: {
-                            viewModel.changeVerificationCode(newVal: $0)
+                            viewModel.changeUsername(newVal: $0)
                         }
                     )
-                    StandardOneTimeCodeTextField("Verification code", code: verificationCodeBinding)
-                }
-            }
-            .padding(.horizontal, 30)
-            .padding(.top, 10)
-
-            if !emailVerified {
-                VStack {
-                     Text("Need a new verification code?")
-                         .padding(.top, 30)
-                   Button("Get code") {
-                        viewModel.getNewCode { message in
-                            snackbarText = message ?? "" //showSnackbar(snackbarMessage ?: "")
+                    StandardUsernameTextField("Username", username: usernameBinding)
+                    let passwordBinding = Binding<String>(
+                        get: {
+                            viewModel.viewState.password.data as String
+                        },
+                        set: {
+                            viewModel.changePassword(newVal: $0)
+                        }
+                    )
+                    if viewModel.viewState.emailVerificationRequired {
+                        StandardPasswordTextField("Password", password: passwordBinding, trailingImage: nil)
+                    }
+                    else {
+                        StandardPasswordTextField("Password", password: passwordBinding) {
+                            viewModel.login { message in
+                                showSnackbar(message ?? "", seconds: 5)
+                            }
                         }
                     }
-                    .buttonStyle(StandardButtonStyle())
-                        .frame(width: 150)
+
+                    if viewModel.viewState.emailVerificationRequired {
+                        let verificationCodeBinding = Binding<String>(
+                            get: {
+                                viewModel.viewState.verificationCode.data as String
+                            },
+                            set: {
+                                viewModel.changeVerificationCode(newVal: $0)
+                            }
+                        )
+                        StandardOneTimeCodeTextField("Verification code", code: verificationCodeBinding,
+                                                     trailingImage: { Image(systemName: "arrow.forward.circle") }
+                        ) {
+                            viewModel.login { message in
+                                showSnackbar(message ?? "", seconds: 5)
+                            }
+                        }
+                    }
                 }
                 .padding(.horizontal, 30)
                 .padding(.top, 10)
-            }
-
-            VStack {
-                Text("Don't have an account?")
-                    .padding(.top, 30)
-                Button("Sign up") {
+                
+                if !emailVerified {
+                    VStack {
+                         Text("Need a new verification code?")
+                             .padding(.top, 30)
+                       Button("Get code") {
+                            viewModel.getNewCode { message in
+                                showSnackbar(message ?? "", seconds: 5)
+                            }
+                        }
+                        .buttonStyle(StandardButtonStyle())
+                            .frame(width: 150)
+                    }
+                    .padding(.horizontal, 30)
+                    .padding(.top, 10)
                 }
-                .buttonStyle(StandardButtonStyle(foregroundColor: .white, backgroundColor: .red))
-                    .frame(width: 150)
-            }
-            .padding(.horizontal, 30)
-            .padding(.top, 30)
 
-            Text(snackbarText ?? "Nothing to report here")
-            .padding(.top, 20)
-            .foregroundColor(Color.red)
+                VStack {
+                    Text("Don't have an account?")
+                        .padding(.top, 30)
+                    Button("Sign up") {
+                    }
+                    .buttonStyle(StandardButtonStyle(foregroundColor: .white, backgroundColor: .red))
+                        .frame(width: 150)
+                }
+                .padding(.horizontal, 30)
+                .padding(.top, 30)
+            }
+            .onFirstAppear { holder.controller.onViewCreated(view: viewModel, viewLifecycle: holder.lifecycle) }
+            .onAppear { LifecycleRegistryExtKt.resume(holder.lifecycle) }
+            .onDisappear { LifecycleRegistryExtKt.stop(holder.lifecycle) }
+            
+            VStack {
+                Spacer()
+                if snackbarShowing {
+                    Text(snackbarText)
+                        .lineLimit(3)
+                        .frame(maxWidth: .infinity)
+                        .padding(10)
+                        .foregroundColor(snackbarForeground())
+                        .background(snackbarBackground())
+                        .cornerRadius(10)
+                        .padding(20)
+                }
+            }
+            .frame(maxHeight: .infinity)
         }
-        .onFirstAppear { holder.controller.onViewCreated(view: viewModel, viewLifecycle: holder.lifecycle) }
-        .onAppear { LifecycleRegistryExtKt.resume(holder.lifecycle) }
-        .onDisappear { LifecycleRegistryExtKt.stop(holder.lifecycle) }
     }
+    
+    private func showSnackbar(_ text: String, seconds: Double = 3) {
+        snackbarText = text
+        snackbarShowing = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
+            snackbarShowing = false
+        }
+    }
+
+    private func snackbarForeground() -> Color { colorScheme == .dark ? .black : .white }
+    private func snackbarBackground() -> Color { colorScheme == .dark ? .white : .black }
+
 }
 
 struct LoginView_Previews: PreviewProvider {
