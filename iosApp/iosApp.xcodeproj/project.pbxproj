@@ -15,6 +15,10 @@
 		F61170F528B05BEF00215C48 /* StandardWidgets in Frameworks */ = {isa = PBXBuildFile; productRef = F61170F428B05BEF00215C48 /* StandardWidgets */; };
 		F65232DD28A4B7E700260300 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F65232DC28A4B7E700260300 /* AccountView.swift */; };
 		F65232DF28A6848400260300 /* FirstAppearModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F65232DE28A6848400260300 /* FirstAppearModifier.swift */; };
+		F658493728B1EA2200D543E2 /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F658493628B1EA2200D543E2 /* RegistrationView.swift */; };
+		F658493928B1EDFC00D543E2 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F658493828B1EDFC00D543E2 /* RootView.swift */; };
+		F658493B28B1EE3100D543E2 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F658493A28B1EE3100D543E2 /* HomeView.swift */; };
+		F6F6983D28B1FB4500EDAA91 /* ProductImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F6983C28B1FB4500EDAA91 /* ProductImageView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,6 +44,10 @@
 		F61170F128B04EE200215C48 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		F65232DC28A4B7E700260300 /* AccountView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		F65232DE28A6848400260300 /* FirstAppearModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FirstAppearModifier.swift; path = Extensions/FirstAppearModifier.swift; sourceTree = "<group>"; };
+		F658493628B1EA2200D543E2 /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
+		F658493828B1EDFC00D543E2 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		F658493A28B1EE3100D543E2 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		F6F6983C28B1FB4500EDAA91 /* ProductImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +98,10 @@
 				7555FF8C242A565B00829871 /* Info.plist */,
 				2152FB032600AC8F00CF470E /* iOSApp.swift */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
+				F658493628B1EA2200D543E2 /* RegistrationView.swift */,
+				F658493828B1EDFC00D543E2 /* RootView.swift */,
+				F658493A28B1EE3100D543E2 /* HomeView.swift */,
+				F6F6983C28B1FB4500EDAA91 /* ProductImageView.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -202,8 +214,12 @@
 				F65232DF28A6848400260300 /* FirstAppearModifier.swift in Sources */,
 				F65232DD28A4B7E700260300 /* AccountView.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
+				F658493728B1EA2200D543E2 /* RegistrationView.swift in Sources */,
+				F658493928B1EDFC00D543E2 /* RootView.swift in Sources */,
+				F658493B28B1EE3100D543E2 /* HomeView.swift in Sources */,
 				F61170F228B04EE200215C48 /* LoginView.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
+				F6F6983D28B1FB4500EDAA91 /* ProductImageView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,4 +1,5 @@
 import SwiftUI
+import StandardWidgets
 import shared
 
 struct AccountView: View {
@@ -11,8 +12,10 @@ struct AccountView: View {
 
     @StateObject
     private var holder: ControllerHolder
+    
+    private let onComplete: () -> Void
 
-    init(registrationContext: RegistrationContext = RegistrationContext(email: nil, givenName: nil, familyName: nil)) {
+    init(registrationContext: RegistrationContext = RegistrationContext(email: nil, givenName: nil, familyName: nil), onComplete: @escaping () -> Void) {
         self._holder = StateObject(
             wrappedValue: ControllerHolder { lifecycle in
                 AccountController(
@@ -21,13 +24,14 @@ struct AccountView: View {
                 )
             }
         )
+        self.onComplete = onComplete
     }
 
     var body: some View {
 
         VStack {
-//             ProductImageView()
-//                 .padding(.top, 15)
+             ProductImageView()
+                 .padding(.top, 15)
 
             VStack {
                 Section(header:
@@ -48,8 +52,9 @@ struct AccountView: View {
                                                   validate: true)
                         }
                     )
-                    TextField("Username", text: emailBinding)
-                    Text("Rendered: \(viewModel.rendered) #\(viewModel.viewState.email.error ?? "No error")#")
+                    StandardEmailAddressTextField(email: emailBinding, leadingImage: nil)
+                        .validated(errorMessage: viewModel.viewState.email.error)
+
                     let passwordBinding = Binding<String>(
                         get: {
                             viewModel.viewState.password.data as String
@@ -60,7 +65,9 @@ struct AccountView: View {
                                                   validate: false)
                         }
                     )
-                    TextField("Password", text: passwordBinding)
+                    StandardPasswordTextField(password: passwordBinding, leadingImage: nil)
+                        .validated(errorMessage: viewModel.viewState.password.error)
+
                     let passwordConfirmationBinding = Binding<String>(
                         get: {
                             viewModel.viewState.passwordConfirmation.data as String
@@ -71,7 +78,10 @@ struct AccountView: View {
                                                   validate: false)
                         }
                     )
-                    TextField("Password confirmation", text: passwordConfirmationBinding)
+                    StandardPasswordTextField("Confirm password",
+                                              password: passwordConfirmationBinding,
+                                              leadingImage: nil)
+                    .validated(errorMessage: viewModel.viewState.passwordConfirmation.error)
                 }
                 VStack {}
                     .padding(.top, 20)
@@ -93,7 +103,9 @@ struct AccountView: View {
                                                   validate: false)
                         }
                     )
-                    TextField("First name", text: givenNameBinding)
+                    StandardGivenNameTextField("First name", givenName: givenNameBinding)
+                        .validated(errorMessage: viewModel.viewState.givenName.error)
+                    
                     let familyNameBinding = Binding<String>(
                         get: {
                             viewModel.viewState.familyName.data as String
@@ -104,7 +116,9 @@ struct AccountView: View {
                                                   validate: false)
                         }
                     )
-                    TextField("Last name", text: familyNameBinding)
+                    StandardFamilyNameTextField("Last name", familyName: familyNameBinding)
+                        .validated(errorMessage: viewModel.viewState.familyName.error)
+
                     let phoneBinding = Binding<String>(
                         get: {
                             viewModel.viewState.phone
@@ -115,20 +129,25 @@ struct AccountView: View {
                                                   validate: false)
                         }
                     )
-                    TextField("Phone number", text: phoneBinding)
+                    StandardPhoneNumberTextField(phoneNumber: phoneBinding, leadingImage: nil)
                 }
             }
             .padding(.horizontal, 30)
             .padding(.top, 10)
 
             HStack {
-                Button("Cancel: \(viewModel.canceled)", role: .cancel) {
+                Button("Cancel", role: .cancel) {
                     viewModel.cancelPressed()
+                    onComplete()
                 }
+                .buttonStyle(StandardButtonStyle())
+                    .frame(width: 150)
 
-                Button("Continue: \(viewModel.continued)") {
+                Button("Continue") {
                      viewModel.continuePressed()
                 }
+                .buttonStyle(StandardButtonStyle())
+                    .frame(width: 150)
             }
             .padding(.horizontal, 30)
             .padding(.top, 25)
@@ -141,7 +160,7 @@ struct AccountView: View {
 
 struct AccountView_Previews: PreviewProvider {
 	static var previews: some View {
-		AccountView()
+        AccountView() {}
 	}
 }
 
@@ -151,23 +170,15 @@ extension AccountView {
 
         @Published
         var viewState: AccountMviViewModel = AccountMviViewModel()
-        @Published
-        var rendered: Int = 0
-        
-        @Published var continued = 0
-        @Published var canceled = 0
 
 
         override func render(model: AccountMviViewModel) {
-            rendered = rendered + 1
             viewState = model
         }
 
         override func onContinue() {
-            continued += 1
         }
         override func onCancel() {
-            canceled += 1
         }
     }
 

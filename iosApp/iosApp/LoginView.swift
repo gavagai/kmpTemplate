@@ -17,13 +17,16 @@ struct LoginView: View {
 
     @StateObject
     private var holder: ControllerHolder
-
+    
     @State
     private var snackbarShowing = false
     @State
     private var snackbarText = ""
-
-    init() {
+    
+    private let onSignup: () -> Void
+    private let onLogin: () -> Void
+    
+    init(onSignup: @escaping () -> Void, onLogin: @escaping () -> Void) {
         self._holder = StateObject(
             wrappedValue: ControllerHolder { lifecycle in
                 LoginController(
@@ -31,14 +34,16 @@ struct LoginView: View {
                 )
             }
         )
+        self.onSignup = onSignup
+        self.onLogin = onLogin
     }
 
     var body: some View {
         
         ZStack {
             VStack {
-    //             ProductImageView()
-    //                 .padding(.top, 15)
+                 ProductImageView()
+                     .padding(.top, 15)
 
                 VStack {
                     let usernameBinding = Binding<String>(
@@ -50,6 +55,8 @@ struct LoginView: View {
                         }
                     )
                     StandardUsernameTextField("Username", username: usernameBinding)
+                        .validated(errorMessage: viewModel.viewState.username.error)
+                    
                     let passwordBinding = Binding<String>(
                         get: {
                             viewModel.viewState.password.data as String
@@ -60,6 +67,7 @@ struct LoginView: View {
                     )
                     if viewModel.viewState.emailVerificationRequired {
                         StandardPasswordTextField("Password", password: passwordBinding, preventNewPasswordContentType: true, trailingImage: nil)
+                            .validated(errorMessage: viewModel.viewState.password.error)
                     }
                     else {
                         StandardPasswordTextField(
@@ -68,6 +76,7 @@ struct LoginView: View {
                                 doLogin()
                             }
                         )
+                        .validated(errorMessage: viewModel.viewState.password.error)
                     }
 
                     if viewModel.viewState.emailVerificationRequired {
@@ -84,6 +93,7 @@ struct LoginView: View {
                         ) {
                             doLogin()
                         }
+                        .validated(errorMessage: viewModel.viewState.verificationCode.error)
                     }
                 }
                 .padding(.horizontal, 30)
@@ -111,6 +121,7 @@ struct LoginView: View {
                     Text("Don't have an account?")
                         .padding(.top, 30)
                     Button("Sign up") {
+                        onSignup()
                     }
                     .buttonStyle(StandardButtonStyle(foregroundColor: .white, backgroundColor: .red))
                         .frame(width: 150)
@@ -144,6 +155,9 @@ struct LoginView: View {
             if message != nil {
                 showSnackbar(message ?? "", seconds: 3)
             }
+            else {
+                onLogin()
+            }
         }
     }
     
@@ -162,7 +176,7 @@ struct LoginView: View {
 
 struct LoginView_Previews: PreviewProvider {
 	static var previews: some View {
-		LoginView()
+        LoginView(onSignup: {}, onLogin: {})
 	}
 }
 
