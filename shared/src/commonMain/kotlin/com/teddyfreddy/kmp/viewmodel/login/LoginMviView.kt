@@ -51,11 +51,8 @@ interface LoginMviView : MviView<LoginMviView.Model, LoginMviView.Event> {
 
     val onLabel: suspend (label: LoginStore.Label) -> Unit
 
-    fun onLogin(response: NetworkResponse<LoginResponseDTO>?, exception: Throwable?)
+    fun onSuccessfulLogin()
     fun onSignup()
-
-    fun onSetRecentUser(username: String)
-    fun onSetEmailVerified(verified: Boolean)
 }
 
 
@@ -73,15 +70,12 @@ open class LoginBaseMviView :
                     is NetworkRequestError.EmailVerificationFailed -> {
                         setEmailVerificationCodeError(it.exception.failureReason!!)
                         dispatch(LoginMviView.Event.SetEmailVerificationRequired(true))
-                        this@LoginBaseMviView.onSetEmailVerified(false)
                     }
                     is NetworkRequestError.EmailVerificationCodeExpired -> {
                         setEmailVerificationCodeError(it.exception.failureReason!!)
                         dispatch(LoginMviView.Event.SetEmailVerificationRequired(true))
-                        this@LoginBaseMviView.onSetEmailVerified(false)
                     }
                     null -> {
-                        this@LoginBaseMviView.onSetEmailVerified(true)
                         dispatch(LoginMviView.Event.SetEmailVerificationRequired(false))
                     }
                     else -> {}
@@ -96,7 +90,7 @@ open class LoginBaseMviView :
                     else -> it.exception?.message
                 }
                 this@LoginBaseMviView.onLoginComplete(snackbarMessage)
-                this@LoginBaseMviView.onLogin(it.response, it.exception)
+                this@LoginBaseMviView.onSuccessfulLogin()
             }
             is LoginStore.Label.EmailVerificationCodeSent -> {
                 val snackbarMessage = when (it.exception) {
@@ -115,16 +109,10 @@ open class LoginBaseMviView :
         }
     }
 
-    override fun onLogin(response: NetworkResponse<LoginResponseDTO>?, exception: Throwable?) {
+    override fun onSuccessfulLogin() {
 
     }
     override fun onSignup() {
-
-    }
-    override fun onSetRecentUser(username: String) {
-
-    }
-    override fun onSetEmailVerified(verified: Boolean) {
 
     }
 

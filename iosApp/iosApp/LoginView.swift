@@ -59,14 +59,15 @@ struct LoginView: View {
                         }
                     )
                     if viewModel.viewState.emailVerificationRequired {
-                        StandardPasswordTextField("Password", password: passwordBinding, trailingImage: nil)
+                        StandardPasswordTextField("Password", password: passwordBinding, preventNewPasswordContentType: true, trailingImage: nil)
                     }
                     else {
-                        StandardPasswordTextField("Password", password: passwordBinding) {
-                            viewModel.login { message in
-                                showSnackbar(message ?? "", seconds: 5)
+                        StandardPasswordTextField(
+                            "Password", password: passwordBinding,
+                            onAction: {
+                                doLogin()
                             }
-                        }
+                        )
                     }
 
                     if viewModel.viewState.emailVerificationRequired {
@@ -81,9 +82,7 @@ struct LoginView: View {
                         StandardOneTimeCodeTextField("Verification code", code: verificationCodeBinding,
                                                      trailingImage: { Image(systemName: "arrow.forward.circle") }
                         ) {
-                            viewModel.login { message in
-                                showSnackbar(message ?? "", seconds: 5)
-                            }
+                            doLogin()
                         }
                     }
                 }
@@ -92,11 +91,13 @@ struct LoginView: View {
                 
                 if !emailVerified {
                     VStack {
-                         Text("Need a new verification code?")
+                        Text("Need a new verification code?")
                              .padding(.top, 30)
-                       Button("Get code") {
+                        Button("Get code") {
                             viewModel.getNewCode { message in
-                                showSnackbar(message ?? "", seconds: 5)
+                                if message != nil {
+                                    showSnackbar(message ?? "", seconds: 3)
+                                }
                             }
                         }
                         .buttonStyle(StandardButtonStyle())
@@ -137,6 +138,18 @@ struct LoginView: View {
             .frame(maxHeight: .infinity)
         }
     }
+
+    private func doLogin() {
+        viewModel.login { message in
+            if message != nil {
+                showSnackbar(message ?? "", seconds: 3)
+            }
+            else {
+                recentUsername = viewModel.viewState.username.data
+                emailVerified = true
+            }
+        }
+    }
     
     private func showSnackbar(_ text: String, seconds: Double = 3) {
         snackbarText = text
@@ -166,6 +179,12 @@ extension LoginView {
 
         override func render(model: LoginMviViewModel) {
             viewState = model
+        }
+
+        override func onSuccessfulLogin() {
+        }
+
+        override func onSignup() {
         }
     }
 
