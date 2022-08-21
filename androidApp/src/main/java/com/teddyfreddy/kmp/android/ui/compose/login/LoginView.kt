@@ -6,10 +6,8 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.input.key.*
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.teddyfreddy.android.ui.extensions.*
@@ -17,7 +15,7 @@ import com.teddyfreddy.kmp.android.ui.decompose.Login
 import com.teddyfreddy.common.network.NetworkRequestError
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginView(
     component: Login,
@@ -90,8 +88,8 @@ fun LoginView(
                 onNext = {
                     focusManager.moveFocus(FocusDirection.Down)
                 },
-                onValidate = { forceValid ->
-                    component.validateUsername(forceValid)
+                onFocusChange = { focused ->
+                    component.focusChangeUsername(focused)
                 }
             )
 
@@ -113,8 +111,8 @@ fun LoginView(
                 onGo = if (!state.value.emailVerificationRequired) {
                     { doLogin() }
                 } else null,
-                onValidate = { forceValid ->
-                    component.validatePassword(forceValid)
+                onFocusChange = { focused ->
+                    component.focusChangePassword(focused)
                 }
             )
 
@@ -137,8 +135,8 @@ fun LoginView(
                     onGo = {
                         doLogin()
                     },
-                    onValidate = { forceValid ->
-                        component.validateVerificationCode(forceValid)
+                    onFocusChange = { focused ->
+                        component.focusChangeVerificationCode(focused)
                     }
                 )
 

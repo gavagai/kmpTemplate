@@ -46,13 +46,26 @@ fun TextFieldWithSupportingText(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = TextFieldDefaults.filledShape,
     colors: TextFieldColors = TextFieldDefaults.textFieldColors(),
-    supportingText: String? = null
+    supportingText: String? = null,
+    onFocusChange: ((Boolean) -> Unit)? = null
 ) {
+    var focused by remember { mutableStateOf(false) }
+
     Column(horizontalAlignment = Alignment.Start) {
         TextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = modifier,
+            modifier = modifier.onFocusChanged {
+                if (it.isFocused) {
+                    if (onFocusChange != null) onFocusChange(true)
+                }
+                else {
+                    if (focused) { // Skip initial redundant "unfocus"
+                        if (onFocusChange != null) onFocusChange(false)
+                    }
+                }
+                focused = it.isFocused
+            },
             enabled = enabled,
             readOnly = readOnly,
             textStyle = textStyle,
@@ -107,7 +120,7 @@ fun ValidatedTextField(
     supportingText: String? = null,
     errorText: String? = null,
     required: Boolean? = false,
-    onValidate: ((Boolean) -> Unit)? = null
+    onFocusChange: ((Boolean) -> Unit)? = null
 ) {
     var focused by remember { mutableStateOf(false) }
 
@@ -132,19 +145,6 @@ fun ValidatedTextField(
         onValueChange = {
             onValueChange(it)
         },
-        modifier = modifier.onFocusChanged {
-            if (it.isFocused) {
-                if (value.isEmpty()) {
-                    if (onValidate != null) onValidate(true)
-                }
-            }
-            else {
-                if (focused) { // Skip initial redundant "unfocus"
-                    if (onValidate != null) onValidate(false)
-                }
-            }
-            focused = it.isFocused
-        },
         enabled = enabled,
         readOnly = readOnly,
         textStyle = textStyle,
@@ -161,7 +161,11 @@ fun ValidatedTextField(
         interactionSource = interactionSource,
         shape = shape,
         colors = colors,
-        supportingText = computeSupportingText()
+        supportingText = computeSupportingText(),
+        onFocusChange = {
+            focused = it
+            if (onFocusChange != null) onFocusChange(it)
+        }
     )
 }
 
@@ -181,7 +185,7 @@ fun UsernameTextField(
     required: Boolean = false,
     decorations: Boolean = true,
     onNext: (() -> Unit)?,
-    onValidate: ((Boolean) -> Unit)? = null
+    onFocusChange: ((Boolean) -> Unit)? = null
 ) {
     ValidatedTextField(
         value = value,
@@ -204,7 +208,7 @@ fun UsernameTextField(
         supportingText = supportingText,
         errorText = errorText ?: "Please enter your username",
         required = required,
-        onValidate = onValidate
+        onFocusChange = onFocusChange
     )
 }
 
@@ -227,7 +231,7 @@ fun PasswordTextField(
     showPassword: Boolean = false,
     onNext: (() -> Unit)? = null,
     onGo: (() -> Unit)? = null,
-    onValidate: ((Boolean) -> Unit)? = null
+    onFocusChange: ((Boolean) -> Unit)? = null
 ) {
     ValidatedTextField(
         value = value,
@@ -266,7 +270,7 @@ fun PasswordTextField(
         supportingText = supportingText,
         errorText = errorText ?: "Please enter your password",
         required = required,
-        onValidate = onValidate
+        onFocusChange = onFocusChange
     )
 }
 
@@ -288,7 +292,7 @@ fun OneTimeCodeTextField(
     decorations: Boolean = true,
     onNext: (() -> Unit)? = null,
     onGo: (() -> Unit)? = null,
-    onValidate: ((Boolean) -> Unit)? = null
+    onFocusChange: ((Boolean) -> Unit)? = null
 ) {
     ValidatedTextField(
         value = value,
@@ -318,7 +322,7 @@ fun OneTimeCodeTextField(
         supportingText = supportingText,
         errorText = errorText ?: "Please enter the one time verification code that you were sent",
         required = required,
-        onValidate = onValidate
+        onFocusChange = onFocusChange
     )
 }
 
@@ -338,7 +342,7 @@ fun EmailTextField(
     required: Boolean = false,
     decorations: Boolean = true,
     onNext: (() -> Unit)? = null,
-    onValidate: ((Boolean) -> Unit)? = null
+    onFocusChange: ((Boolean) -> Unit)? = null
 ) {
     ValidatedTextField(
         value = value,
@@ -361,7 +365,7 @@ fun EmailTextField(
         supportingText = supportingText,
         errorText = errorText ?: "Please enter your email address",
         required = required,
-        onValidate = onValidate
+        onFocusChange = onFocusChange
     )
 }
 

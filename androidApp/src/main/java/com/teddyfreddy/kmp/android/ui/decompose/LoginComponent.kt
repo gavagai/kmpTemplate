@@ -101,20 +101,20 @@ class LoginComponent(
     override fun changeUsername(newVal: String) {
         store.accept(LoginStore.Intent.ChangeField(LoginField.Username, newVal, false))
     }
-    override fun validateUsername(forceValid: Boolean) {
-        store.accept(LoginStore.Intent.ValidateField(LoginField.Username, forceValid))
+    override fun focusChangeUsername(focused: Boolean) {
+        store.accept(LoginStore.Intent.ValidateField(LoginField.Username, focused && store.state.username.data.isEmpty()))
     }
     override fun changePassword(newVal: String) {
         store.accept(LoginStore.Intent.ChangeField(LoginField.Password, newVal, false))
     }
-    override fun validatePassword(forceValid: Boolean) {
-        store.accept(LoginStore.Intent.ValidateField(LoginField.Password, forceValid))
+    override fun focusChangePassword(focused: Boolean) {
+        store.accept(LoginStore.Intent.ValidateField(LoginField.Password, focused && store.state.password.data.isEmpty()))
     }
     override fun changeVerificationCode(newVal: String) {
         store.accept(LoginStore.Intent.ChangeField(LoginField.VerificationCode, newVal, false))
     }
-    override fun validateVerificationCode(forceValid: Boolean) {
-        store.accept(LoginStore.Intent.ValidateField(LoginField.VerificationCode, forceValid))
+    override fun focusChangeVerificationCode(focused: Boolean) {
+        store.accept(LoginStore.Intent.ValidateField(LoginField.VerificationCode, focused && store.state.verificationCode.data.isEmpty()))
     }
     override fun setEmailVerificationCodeError(error: String) {
         store.accept(LoginStore.Intent.SetFieldError(LoginField.VerificationCode, error))

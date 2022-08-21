@@ -47,32 +47,32 @@ class AccountComponent(
     override fun changeEmail(newVal: String) {
         store.accept(AccountStore.Intent.ChangeField(AccountField.Email, newVal, false))
     }
-    override fun validateEmail(forceValid: Boolean) {
-        store.accept(AccountStore.Intent.ValidateField(AccountField.Email, forceValid))
+    override fun focusChangeEmail(focused: Boolean) {
+        store.accept(AccountStore.Intent.ValidateField(AccountField.Email, focused && store.state.email.data.isEmpty()))
     }
     override fun changePassword(newVal: String) {
         store.accept(AccountStore.Intent.ChangeField(AccountField.Password, newVal, false))
     }
-    override fun validatePassword(forceValid: Boolean) {
-        store.accept(AccountStore.Intent.ValidateField(AccountField.Password, forceValid))
+    override fun focusChangePassword(focused: Boolean) {
+        store.accept(AccountStore.Intent.ValidateField(AccountField.Password, focused && store.state.password.data.isEmpty()))
     }
     override fun changePasswordConfirmation(newVal: String) {
         store.accept(AccountStore.Intent.ChangeField(AccountField.PasswordConfirmation, newVal, false))
     }
-    override fun validatePasswordConfirmation(forceValid: Boolean) {
-        store.accept(AccountStore.Intent.ValidateField(AccountField.PasswordConfirmation, forceValid))
+    override fun focusChangePasswordConfirmation(focused: Boolean) {
+        store.accept(AccountStore.Intent.ValidateField(AccountField.PasswordConfirmation, focused && store.state.passwordConfirmation.data.isEmpty()))
     }
     override fun changeFirstName(newVal: String) {
         store.accept(AccountStore.Intent.ChangeField(AccountField.FirstName, newVal, false))
     }
-    override fun validateFirstName(forceValid: Boolean) {
-        store.accept(AccountStore.Intent.ValidateField(AccountField.FirstName, forceValid))
+    override fun focusChangeFirstName(focused: Boolean) {
+        store.accept(AccountStore.Intent.ValidateField(AccountField.FirstName, focused && store.state.givenName.data.isEmpty()))
     }
     override fun changeLastName(newVal: String) {
         store.accept(AccountStore.Intent.ChangeField(AccountField.LastName, newVal, false))
     }
-    override fun validateLastName(forceValid: Boolean) {
-        store.accept(AccountStore.Intent.ValidateField(AccountField.LastName, forceValid))
+    override fun focusChangeLastName(focused: Boolean) {
+        store.accept(AccountStore.Intent.ValidateField(AccountField.LastName, focused && store.state.familyName.data.isEmpty()))
     }
     override fun changePhoneNumber(newVal: String) {
         store.accept(AccountStore.Intent.ChangeField(AccountField.PhoneNumber, newVal))

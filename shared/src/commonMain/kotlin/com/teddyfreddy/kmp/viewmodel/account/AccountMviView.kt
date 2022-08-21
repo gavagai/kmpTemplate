@@ -39,8 +39,18 @@ interface AccountMviView : MviView<AccountMviView.Model, AccountMviView.Event> {
         object Continue : Event
     }
 
-    fun changeField(field: AccountField, value: Any?, validate: Boolean = false)
-    fun validateField(field: AccountField, forceValid: Boolean? = false)
+    fun changeEmail(newVal: String)
+    fun focusChangeEmail(focused: Boolean)
+    fun changePassword(newVal: String)
+    fun focusChangePassword(focused: Boolean)
+    fun changePasswordConfirmation(newVal: String)
+    fun focusChangePasswordConfirmation(focused: Boolean)
+    fun changeGivenName(newVal: String)
+    fun focusChangeGivenName(focused: Boolean)
+    fun changeFamilyName(newVal: String)
+    fun focusChangeFamilyName(focused: Boolean)
+    fun changePhoneNumber(newVal: String)
+
     fun cancelPressed()
     fun continuePressed()
 
@@ -55,6 +65,11 @@ interface AccountMviView : MviView<AccountMviView.Model, AccountMviView.Event> {
 open class AccountBaseMviView :
     BaseMviView<AccountMviView.Model, AccountMviView.Event>(), AccountMviView {
 
+    private var model: AccountMviView.Model = AccountMviView.Model()
+    override fun render(model: AccountMviView.Model) {
+        this.model = model
+    }
+
     override val onLabel: suspend (label: AccountStore.Label) -> Unit = { // Invoked via bindings in binder
         when (it) {
             AccountStore.Label.Continue -> this.onContinue()
@@ -66,13 +81,48 @@ open class AccountBaseMviView :
     override fun onCancel() {}
 
     @Suppress("unused")
-    override fun changeField(field: AccountField, value: Any?, validate: Boolean) {
-        dispatch(AccountMviView.Event.ChangeField(field, value, validate))
+    override fun changeEmail(newVal: String) {
+        dispatch(AccountMviView.Event.ChangeField(AccountField.Email, newVal, false))
     }
-
     @Suppress("unused")
-    override fun validateField(field: AccountField, forceValid: Boolean?) {
-        dispatch(AccountMviView.Event.ValidateField(field, forceValid))
+    override fun focusChangeEmail(focused: Boolean) {
+        dispatch(AccountMviView.Event.ValidateField(AccountField.Email, focused && model.email.data.isEmpty()))
+    }
+    @Suppress("unused")
+    override fun changePassword(newVal: String) {
+        dispatch(AccountMviView.Event.ChangeField(AccountField.Password, newVal, false))
+    }
+    @Suppress("unused")
+    override fun focusChangePassword(focused: Boolean) {
+        dispatch(AccountMviView.Event.ValidateField(AccountField.Password, focused && model.password.data.isEmpty()))
+    }
+    @Suppress("unused")
+    override fun changePasswordConfirmation(newVal: String) {
+        dispatch(AccountMviView.Event.ChangeField(AccountField.PasswordConfirmation, newVal, false))
+    }
+    @Suppress("unused")
+    override fun focusChangePasswordConfirmation(focused: Boolean) {
+        dispatch(AccountMviView.Event.ValidateField(AccountField.PasswordConfirmation, focused && model.passwordConfirmation.data.isEmpty()))
+    }
+    @Suppress("unused")
+    override fun changeGivenName(newVal: String) {
+        dispatch(AccountMviView.Event.ChangeField(AccountField.FirstName, newVal, false))
+    }
+    @Suppress("unused")
+    override fun focusChangeGivenName(focused: Boolean) {
+        dispatch(AccountMviView.Event.ValidateField(AccountField.FirstName, focused && model.givenName.data.isEmpty()))
+    }
+    @Suppress("unused")
+    override fun changeFamilyName(newVal: String) {
+        dispatch(AccountMviView.Event.ChangeField(AccountField.LastName, newVal, false))
+    }
+    @Suppress("unused")
+    override fun focusChangeFamilyName(focused: Boolean) {
+        dispatch(AccountMviView.Event.ValidateField(AccountField.LastName, focused && model.familyName.data.isEmpty()))
+    }
+    @Suppress("unused")
+    override fun changePhoneNumber(newVal: String) {
+        dispatch(AccountMviView.Event.ChangeField(AccountField.PhoneNumber, newVal, false))
     }
 
     @Suppress("unused")

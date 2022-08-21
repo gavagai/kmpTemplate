@@ -11,10 +11,10 @@ interface Login {
     val state: State<LoginStore.State>
 
     fun changeUsername(newVal: String)
-    fun validateUsername(forceValid: Boolean)
+    fun focusChangeUsername(focused: Boolean)
     fun changePassword(newVal: String)
-    fun validatePassword(forceValid: Boolean)
+    fun focusChangePassword(focused: Boolean)
     fun changeVerificationCode(newVal: String)
-    fun validateVerificationCode(forceValid: Boolean)
+    fun focusChangeVerificationCode(focused: Boolean)
     fun setEmailVerificationCodeError(error: String)
 }

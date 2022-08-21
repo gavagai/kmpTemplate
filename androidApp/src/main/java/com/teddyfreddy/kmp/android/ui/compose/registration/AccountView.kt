@@ -9,7 +9,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
@@ -22,7 +21,7 @@ import com.teddyfreddy.kmp.android.ui.decompose.Account
 import com.teddyfreddy.android.ui.extensions.ValidatedTextField
 import com.teddyfreddy.android.ui.extensions.standardKeyNavigation
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountView(
     component: Account,
@@ -59,8 +58,8 @@ fun AccountView(
             onNext = {
                 focusManager.moveFocus(FocusDirection.Down)
             },
-            onValidate = { forceValid ->
-                component.validateEmail(forceValid)
+            onFocusChange = { focused ->
+                component.focusChangeEmail(focused)
             }
         )
 
@@ -86,8 +85,8 @@ fun AccountView(
             errorText = state.value.password.error,
             isError = state.value.password.error != null,
             required = true,
-            onValidate = { forceValid ->
-                component.validatePassword(forceValid)
+            onFocusChange = { focused ->
+                component.focusChangePassword(focused)
             }
         )
 
@@ -113,8 +112,8 @@ fun AccountView(
             errorText = state.value.passwordConfirmation.error,
             isError = state.value.passwordConfirmation.error != null,
             required = true,
-            onValidate = { forceValid ->
-                component.validatePasswordConfirmation(forceValid)
+            onFocusChange = { focused ->
+                component.focusChangePasswordConfirmation(focused)
             }
         )
 
@@ -140,8 +139,8 @@ fun AccountView(
             errorText = state.value.givenName.error,
             isError = state.value.givenName.error != null,
             required = true,
-            onValidate = { forceValid ->
-                component.validateFirstName(forceValid)
+            onFocusChange = { focused ->
+                component.focusChangeFirstName(focused)
             }
         )
 
@@ -167,8 +166,8 @@ fun AccountView(
             errorText = state.value.familyName.error,
             isError = state.value.familyName.error != null,
             required = true,
-            onValidate = { forceValid ->
-                component.validateLastName(forceValid)
+            onFocusChange = { focused ->
+                component.focusChangeLastName(focused)
             }
         )
 

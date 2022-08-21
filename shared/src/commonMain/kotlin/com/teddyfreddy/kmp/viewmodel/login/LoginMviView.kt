@@ -40,11 +40,11 @@ interface LoginMviView : MviView<LoginMviView.Model, LoginMviView.Event> {
     fun getNewCode(onEmailVerificationCodeSent: (message: String?) -> Unit)
 
     fun changeUsername(newVal: String)
-    fun validateUsername(forceValid: Boolean)
+    fun focusChangeUsername(focused: Boolean)
     fun changePassword(newVal: String)
-    fun validatePassword(forceValid: Boolean)
+    fun focusChangePassword(focused: Boolean)
     fun changeVerificationCode(newVal: String)
-    fun validateVerificationCode(forceValid: Boolean)
+    fun focusChangeVerificationCode(focused: Boolean)
     fun setEmailVerificationCodeError(error: String)
 
     val onLabel: suspend (label: LoginStore.Label) -> Unit
@@ -59,6 +59,11 @@ interface LoginMviView : MviView<LoginMviView.Model, LoginMviView.Event> {
 @Suppress("unused")
 open class LoginBaseMviView :
     BaseMviView<LoginMviView.Model, LoginMviView.Event>(), LoginMviView {
+
+    private var model: LoginMviView.Model = LoginMviView.Model()
+    override fun render(model: LoginMviView.Model) {
+        this.model = model
+    }
 
     override val onLabel: suspend (label: LoginStore.Label) -> Unit = { // Invoked via bindings in binder
         when (it) {
@@ -137,24 +142,24 @@ open class LoginBaseMviView :
         dispatch(LoginMviView.Event.ChangeField(LoginField.Username, newVal, false))
     }
     @Suppress("unused")
-    override fun validateUsername(forceValid: Boolean) {
-        dispatch(LoginMviView.Event.ValidateField(LoginField.Username, forceValid))
+    override fun focusChangeUsername(focused: Boolean) {
+        dispatch(LoginMviView.Event.ValidateField(LoginField.Username, focused && model.username.data.isEmpty()))
     }
     @Suppress("unused")
     override fun changePassword(newVal: String) {
         dispatch(LoginMviView.Event.ChangeField(LoginField.Password, newVal, false))
     }
     @Suppress("unused")
-    override fun validatePassword(forceValid: Boolean) {
-        dispatch(LoginMviView.Event.ValidateField(LoginField.Password, forceValid))
+    override fun focusChangePassword(focused: Boolean) {
+        dispatch(LoginMviView.Event.ValidateField(LoginField.Password, focused && model.password.data.isEmpty()))
     }
     @Suppress("unused")
     override fun changeVerificationCode(newVal: String) {
         dispatch(LoginMviView.Event.ChangeField(LoginField.VerificationCode, newVal, false))
     }
     @Suppress("unused")
-    override fun validateVerificationCode(forceValid: Boolean) {
-        dispatch(LoginMviView.Event.ValidateField(LoginField.VerificationCode, forceValid))
+    override fun focusChangeVerificationCode(focused: Boolean) {
+        dispatch(LoginMviView.Event.ValidateField(LoginField.VerificationCode, focused && model.verificationCode.data.isEmpty()))
     }
     @Suppress("unused")
     override fun setEmailVerificationCodeError(error: String) {

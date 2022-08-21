@@ -26,6 +26,14 @@ struct LoginView: View {
     private let onSignup: () -> Void
     private let onLogin: () -> Void
     
+    enum LoginField {
+        case username
+        case password
+        case passwordConfirmation
+        case verificationCode
+    }
+    @FocusState private var focusedField: LoginField?
+
     init(onSignup: @escaping () -> Void, onLogin: @escaping () -> Void) {
         self._holder = StateObject(
             wrappedValue: ControllerHolder { lifecycle in
@@ -56,7 +64,8 @@ struct LoginView: View {
                     )
                     StandardUsernameTextField("Username", username: usernameBinding)
                         .validated(errorMessage: viewModel.viewState.username.error)
-                    
+                        .focused($focusedField, equals: .username)
+
                     let passwordBinding = Binding<String>(
                         get: {
                             viewModel.viewState.password.data as String
@@ -68,6 +77,7 @@ struct LoginView: View {
                     if viewModel.viewState.emailVerificationRequired {
                         StandardPasswordTextField("Password", password: passwordBinding, preventNewPasswordContentType: true, trailingImage: nil)
                             .validated(errorMessage: viewModel.viewState.password.error)
+                            .focused($focusedField, equals: .password)
                     }
                     else {
                         StandardPasswordTextField(
@@ -77,6 +87,7 @@ struct LoginView: View {
                             }
                         )
                         .validated(errorMessage: viewModel.viewState.password.error)
+                        .focused($focusedField, equals: .password)
                     }
 
                     if viewModel.viewState.emailVerificationRequired {
@@ -94,11 +105,27 @@ struct LoginView: View {
                             doLogin()
                         }
                         .validated(errorMessage: viewModel.viewState.verificationCode.error)
+                        .focused($focusedField, equals: .verificationCode)
                     }
                 }
                 .padding(.horizontal, 30)
                 .padding(.top, 10)
-                
+                .viewFocus(focusedField: focusedField) { previousFocusedField, newFocusedField in
+                    switch (previousFocusedField) {
+                    case .username: viewModel.focusChangeUsername(focused: false)
+                    case .password: viewModel.focusChangePassword(focused: false)
+                    case .verificationCode: viewModel.focusChangeVerificationCode(focused: false)
+
+                    default: break
+                    }
+                    switch (newFocusedField) {
+                    case .username: viewModel.focusChangeUsername(focused: true)
+                    case .password: viewModel.focusChangePassword(focused: true)
+                    case .verificationCode: viewModel.focusChangeVerificationCode(focused: true)
+                    default: break
+                    }
+                }
+
                 if !emailVerified {
                     VStack {
                         Text("Need a new verification code?")
@@ -188,6 +215,7 @@ extension LoginView {
         var viewState: LoginMviViewModel = LoginMviViewModel()
 
         override func render(model: LoginMviViewModel) {
+            super.render(model: model)
             viewState = model
         }
 
