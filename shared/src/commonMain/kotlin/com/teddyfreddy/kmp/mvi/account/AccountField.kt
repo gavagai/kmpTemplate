@@ -9,7 +9,7 @@ enum class AccountField(
     override val required: Boolean = false,
     override val validator: Field.Validator? = null
 ) : Field {
-    Username("Email", true,
+    Email("Email", true,
         validator = Field.Validator { field: Field, value: Any?, _ ->
             emailValidator(field.label, value as? String, field.required)
         }

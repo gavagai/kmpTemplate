@@ -5,6 +5,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.ArrowCircleRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -16,6 +17,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.teddyfreddy.android.ui.extensions.EmailTextField
 import com.teddyfreddy.kmp.android.ui.decompose.Account
 import com.teddyfreddy.android.ui.extensions.ValidatedTextField
 
@@ -43,27 +45,18 @@ fun AccountView(
         }
 
         Spacer(modifier = Modifier.padding(20.dp))
-        ValidatedTextField(
+        EmailTextField(
             value = state.value.email.data,
             onValueChange = {
                 component.changeEmail(it)
             },
-            label = { Text("Email") },
-            placeholder =  { Text("Email*") },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email,
-                capitalization = KeyboardCapitalization.None,
-                autoCorrect = false,
-                imeAction = ImeAction.Next
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus(FocusDirection.Down)
-                }
-            ),
             errorText = state.value.email.error,
             isError = state.value.email.error != null,
             required = true,
+            decorations = false,
+            onNext = {
+                focusManager.moveFocus(FocusDirection.Down)
+            },
             onValidate = { forceValid ->
                 component.validateEmail(forceValid)
             }

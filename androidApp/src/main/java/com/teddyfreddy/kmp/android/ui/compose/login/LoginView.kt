@@ -99,6 +99,7 @@ fun LoginView(
                     },
                 isError = state.value.username.error != null,
                 errorText = state.value.username.error,
+                required = true,
                 onNext = {
                     focusManager.moveFocus(FocusDirection.Down)
                 },
@@ -126,6 +127,7 @@ fun LoginView(
                 trailingIcon = if (state.value.emailVerificationRequired) { {} } else null,
                 isError = state.value.password.error != null,
                 errorText = state.value.password.error,
+                required = true,
                 onGo = if (!state.value.emailVerificationRequired) {
                     {
                         doLogin()
@@ -154,6 +156,7 @@ fun LoginView(
                             }
                         },
                     isError = state.value.verificationCode.error != null,
+                    required = true,
                     supportingText = "Your code was sent to you when you signed up",
                     errorText = state.value.verificationCode.error,
                     onGo = {

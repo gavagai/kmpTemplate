@@ -41,7 +41,7 @@ class AccountStoreFactory(
             when (msg) {
                 is Msg.ChangeField -> {
                     when (msg.field) {
-                        AccountField.Username -> {
+                        AccountField.Email -> {
                             val email = email.copy(
                                 data = msg.value as? String ?: ""
                             )
@@ -95,7 +95,7 @@ class AccountStoreFactory(
                     }
                     val forceValid = msg.forceValid != null && msg.forceValid
                     when (msg.field) {
-                        AccountField.Username -> {
+                        AccountField.Email -> {
                             copy(
                                 email = email.copy(
                                     error = if (forceValid) null else validator.validate(msg.field, email.data)
@@ -146,7 +146,7 @@ class AccountStoreFactory(
             }
 
         private fun executeContinue(getState: () -> AccountStore.State) {
-            dispatch(Msg.ValidateField(AccountField.Username))
+            dispatch(Msg.ValidateField(AccountField.Email))
             dispatch(Msg.ValidateField(AccountField.Password))
             dispatch(Msg.ValidateField(AccountField.PasswordConfirmation))
             dispatch(Msg.ValidateField(AccountField.FirstName))
@@ -170,7 +170,7 @@ class AccountStoreFactory(
         }
 
         private fun executeRestoreFromRegistrationContext(registrationContext: RegistrationContext) {
-            dispatch(Msg.ChangeField(AccountField.Username, registrationContext.email))
+            dispatch(Msg.ChangeField(AccountField.Email, registrationContext.email))
             dispatch(Msg.ChangeField(AccountField.FirstName, registrationContext.givenName))
             dispatch(Msg.ChangeField(AccountField.LastName, registrationContext.familyName))
         }

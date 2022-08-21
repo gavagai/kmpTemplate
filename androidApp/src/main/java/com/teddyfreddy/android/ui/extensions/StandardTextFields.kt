@@ -178,6 +178,8 @@ fun UsernameTextField(
     isError: Boolean = false,
     supportingText: String? = null,
     errorText: String? = null,
+    required: Boolean = false,
+    decorations: Boolean = true,
     onNext: (() -> Unit)?,
     onValidate: ((Boolean) -> Unit)? = null
 ) {
@@ -186,9 +188,9 @@ fun UsernameTextField(
         onValueChange = onValueChange,
         modifier = modifier,
         label = label ?: { Text("Username") },
-        placeholder = placeholder ?: { Text("Username*") },
-        leadingIcon = leadingIcon ?: { Icon(Icons.Default.Person, "username") },
-        trailingIcon = trailingIcon,
+        placeholder = placeholder ?: { if (required) { Text("Username*") } else { Text("Username") } },
+        leadingIcon = if (decorations) { leadingIcon ?: { Icon(Icons.Default.Person, "Username") } } else null,
+        trailingIcon = if (decorations) trailingIcon else null,
         isError = isError,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Email,
@@ -201,7 +203,7 @@ fun UsernameTextField(
         ),
         supportingText = supportingText,
         errorText = errorText ?: "Please enter your username",
-        required = true,
+        required = required,
         onValidate = onValidate
     )
 }
@@ -220,6 +222,9 @@ fun PasswordTextField(
     isError: Boolean = false,
     supportingText: String? = null,
     errorText: String? = null,
+    required: Boolean = false,
+    decorations: Boolean = true,
+    showPassword: Boolean = false,
     onNext: (() -> Unit)? = null,
     onGo: (() -> Unit)? = null,
     onValidate: ((Boolean) -> Unit)? = null
@@ -237,17 +242,17 @@ fun PasswordTextField(
                 }
             },
         label = label ?: { Text("Password") },
-        placeholder = placeholder ?: { Text("Password*") },
-        leadingIcon = leadingIcon ?: { Icon(Icons.Default.Lock, "password") },
-        trailingIcon = trailingIcon ?: {
+        placeholder = placeholder ?: { if (required) { Text("Password*") } else { Text("Password") } },
+        leadingIcon = if (decorations) { leadingIcon ?: { Icon(Icons.Default.Lock, "Password") } } else null,
+        trailingIcon = if (decorations) { trailingIcon ?: {
             IconButton(
                 onClick = { if (onGo != null) onGo() }
             ) {
                 Icon(Icons.Outlined.ArrowCircleRight, "login")
             }
-        },
+        } } else null,
         isError = isError,
-        visualTransformation = PasswordVisualTransformation(),
+        visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Password,
             capitalization = KeyboardCapitalization.None,
@@ -260,7 +265,7 @@ fun PasswordTextField(
         ),
         supportingText = supportingText,
         errorText = errorText ?: "Please enter your password",
-        required = true,
+        required = required,
         onValidate = onValidate
     )
 }
@@ -279,6 +284,8 @@ fun OneTimeCodeTextField(
     isError: Boolean = false,
     supportingText: String? = null,
     errorText: String? = null,
+    required: Boolean = false,
+    decorations: Boolean = true,
     onNext: (() -> Unit)? = null,
     onGo: (() -> Unit)? = null,
     onValidate: ((Boolean) -> Unit)? = null
@@ -288,15 +295,15 @@ fun OneTimeCodeTextField(
         onValueChange = onValueChange,
         modifier = modifier,
         label = label ?: { Text("Verification code") },
-        placeholder = placeholder ?: { Text("Verification code*") },
-        leadingIcon = leadingIcon ?: { Icon(Icons.Default.Key, "verification code") },
-        trailingIcon = trailingIcon ?: {
+        placeholder = placeholder ?: { if (required) { Text("Verification code*") } else { Text("Verification code") } },
+        leadingIcon = if (decorations) { leadingIcon ?: { Icon(Icons.Default.Key, "verification code") } } else null,
+        trailingIcon = if (decorations) { trailingIcon ?: {
             IconButton(
                 onClick = { if (onGo != null) onGo() }
             ) {
                 Icon(Icons.Outlined.ArrowCircleRight, "login")
             }
-        },
+        } } else null,
         isError = isError,
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number,
@@ -310,9 +317,53 @@ fun OneTimeCodeTextField(
         ),
         supportingText = supportingText,
         errorText = errorText ?: "Please enter the one time verification code that you were sent",
-        required = true,
+        required = required,
         onValidate = onValidate
     )
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EmailTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    label: @Composable (() -> Unit)? = null,
+    placeholder: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    isError: Boolean = false,
+    supportingText: String? = null,
+    errorText: String? = null,
+    required: Boolean = false,
+    decorations: Boolean = true,
+    onNext: (() -> Unit)? = null,
+    onValidate: ((Boolean) -> Unit)? = null
+) {
+    ValidatedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier,
+        label = label ?: { Text("Email") },
+        placeholder = placeholder ?: { if (required) { Text("Email*") } else { Text("Email") } },
+        leadingIcon = if (decorations) { leadingIcon ?: { Icon(Icons.Default.Mail, "Email") } } else null,
+        trailingIcon = if (decorations) trailingIcon else null,
+        isError = isError,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Email,
+            capitalization = KeyboardCapitalization.None,
+            autoCorrect = false,
+            imeAction = if (onNext != null) ImeAction.Next else ImeAction.None
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = { if (onNext != null) onNext() }
+        ),
+        supportingText = supportingText,
+        errorText = errorText ?: "Please enter your email address",
+        required = required,
+        onValidate = onValidate
+    )
+}
+
 
 

@@ -45,10 +45,10 @@ class AccountComponent(
     }
 
     override fun changeEmail(newVal: String) {
-        store.accept(AccountStore.Intent.ChangeField(AccountField.Username, newVal, false))
+        store.accept(AccountStore.Intent.ChangeField(AccountField.Email, newVal, false))
     }
     override fun validateEmail(forceValid: Boolean) {
-        store.accept(AccountStore.Intent.ValidateField(AccountField.Username, forceValid))
+        store.accept(AccountStore.Intent.ValidateField(AccountField.Email, forceValid))
     }
     override fun changePassword(newVal: String) {
         store.accept(AccountStore.Intent.ChangeField(AccountField.Password, newVal, false))
