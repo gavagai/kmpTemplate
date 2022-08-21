@@ -12,10 +12,8 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import com.teddyfreddy.android.ui.extensions.OneTimeCodeTextField
+import com.teddyfreddy.android.ui.extensions.*
 import com.teddyfreddy.kmp.android.ui.decompose.Login
-import com.teddyfreddy.android.ui.extensions.PasswordTextField
-import com.teddyfreddy.android.ui.extensions.UsernameTextField
 import com.teddyfreddy.common.network.NetworkRequestError
 import kotlinx.coroutines.launch
 
@@ -85,18 +83,7 @@ fun LoginView(
                 onValueChange = {
                     component.changeUsername(it)
                 },
-                modifier = Modifier
-                    .onPreviewKeyEvent {
-                        if (it.key == Key.Tab && !it.isShiftPressed && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
-                            focusManager.moveFocus(FocusDirection.Down)
-                            true
-                        } else if (it.key == Key.Enter && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
-                            focusManager.moveFocus(FocusDirection.Down)
-                            true
-                        } else {
-                            false
-                        }
-                    },
+                modifier = Modifier.standardKeyNavigation(focusManager, up = false),
                 isError = state.value.username.error != null,
                 errorText = state.value.username.error,
                 required = true,
@@ -114,40 +101,17 @@ fun LoginView(
                 onValueChange = {
                     component.changePassword(it)
                 },
-                modifier = Modifier
-                    .onPreviewKeyEvent {
-                        if (it.key == Key.Tab && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
-                            if (it.isShiftPressed) {
-                                focusManager.moveFocus(FocusDirection.Up)
-                            }
-                            else {
-                                if (state.value.emailVerificationRequired) {
-                                    focusManager.moveFocus(FocusDirection.Down)
-                                }
-                            }
-                            true
-                        }
-                        else if (it.key == Key.Enter && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
-                            if (state.value.emailVerificationRequired) {
-                                focusManager.moveFocus(FocusDirection.Down)
-                            }
-                            else {
-                                doLogin()
-                            }
-                            true
-                        }
-                        else {
-                            false
-                        }
-                    },
-                    trailingIcon = if (state.value.emailVerificationRequired) { {} } else null,
+                modifier = Modifier.standardKeyNavigation(
+                    focusManager,
+                    down = true,
+                    enterMeansDown = state.value.emailVerificationRequired
+                ),
+                trailingIcon = if (state.value.emailVerificationRequired) { {} } else null,
                 isError = state.value.password.error != null,
                 errorText = state.value.password.error,
                 required = true,
                 onGo = if (!state.value.emailVerificationRequired) {
-                    {
-                        doLogin()
-                    }
+                    { doLogin() }
                 } else null,
                 onValidate = { forceValid ->
                     component.validatePassword(forceValid)
@@ -161,20 +125,11 @@ fun LoginView(
                     onValueChange = {
                         component.changeVerificationCode(it)
                     },
-                    modifier = Modifier
-                        .onPreviewKeyEvent {
-                            if (it.key == Key.Tab &&  !it.isShiftPressed && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
-                                focusManager.moveFocus(FocusDirection.Up)
-                                true
-                            }
-                            else if (it.key == Key.Enter && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
-                                doLogin()
-                                true
-                            }
-                            else {
-                                false
-                            }
-                        },
+                    modifier = Modifier.standardKeyNavigation(
+                        focusManager,
+                        down = false,
+                        enterMeansDown = false
+                    ),
                     isError = state.value.verificationCode.error != null,
                     required = true,
                     supportingText = "Your code was sent to you when you signed up",
