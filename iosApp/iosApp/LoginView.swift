@@ -144,10 +144,6 @@ struct LoginView: View {
             if message != nil {
                 showSnackbar(message ?? "", seconds: 3)
             }
-            else {
-                recentUsername = viewModel.viewState.username.data
-                emailVerified = true
-            }
         }
     }
     
@@ -182,6 +178,8 @@ extension LoginView {
         }
 
         override func onSuccessfulLogin() {
+            UserDefaults.standard.set(viewState.username.data, forKey: "RecentUsername")
+            UserDefaults.standard.set(true, forKey: "EmailVerified")
         }
 
         override func onSignup() {
