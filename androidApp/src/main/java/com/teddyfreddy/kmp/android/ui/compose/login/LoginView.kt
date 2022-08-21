@@ -117,14 +117,30 @@ fun LoginView(
                 modifier = Modifier
                     .onPreviewKeyEvent {
                         if (it.key == Key.Tab && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
-                            focusManager.moveFocus(if (it.isShiftPressed) FocusDirection.Up else FocusDirection.Down)
+                            if (it.isShiftPressed) {
+                                focusManager.moveFocus(FocusDirection.Up)
+                            }
+                            else {
+                                if (state.value.emailVerificationRequired) {
+                                    focusManager.moveFocus(FocusDirection.Down)
+                                }
+                            }
+                            true
+                        }
+                        else if (it.key == Key.Enter && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
+                            if (state.value.emailVerificationRequired) {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            }
+                            else {
+                                doLogin()
+                            }
                             true
                         }
                         else {
                             false
                         }
                     },
-                trailingIcon = if (state.value.emailVerificationRequired) { {} } else null,
+                    trailingIcon = if (state.value.emailVerificationRequired) { {} } else null,
                 isError = state.value.password.error != null,
                 errorText = state.value.password.error,
                 required = true,
@@ -147,8 +163,12 @@ fun LoginView(
                     },
                     modifier = Modifier
                         .onPreviewKeyEvent {
-                            if (it.key == Key.Tab && it.isShiftPressed && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
+                            if (it.key == Key.Tab &&  !it.isShiftPressed && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
                                 focusManager.moveFocus(FocusDirection.Up)
+                                true
+                            }
+                            else if (it.key == Key.Enter && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
+                                doLogin()
                                 true
                             }
                             else {

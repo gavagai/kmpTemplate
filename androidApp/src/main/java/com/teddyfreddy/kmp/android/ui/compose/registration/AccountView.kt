@@ -10,8 +10,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.input.key.*
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -21,7 +23,7 @@ import com.teddyfreddy.android.ui.extensions.EmailTextField
 import com.teddyfreddy.kmp.android.ui.decompose.Account
 import com.teddyfreddy.android.ui.extensions.ValidatedTextField
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun AccountView(
     component: Account,
@@ -50,6 +52,18 @@ fun AccountView(
             onValueChange = {
                 component.changeEmail(it)
             },
+            modifier = Modifier
+                .onPreviewKeyEvent {
+                    if (it.key == Key.Tab && !it.isShiftPressed && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
+                        focusManager.moveFocus(FocusDirection.Down)
+                        true
+                    } else if (it.key == Key.Enter && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
+                        focusManager.moveFocus(FocusDirection.Down)
+                        true
+                    } else {
+                        false
+                    }
+                },
             errorText = state.value.email.error,
             isError = state.value.email.error != null,
             required = true,
@@ -66,6 +80,19 @@ fun AccountView(
             value = state.value.password.data,
             onValueChange = {
                 component.changePassword(it)
+            },
+            modifier = Modifier.onPreviewKeyEvent {
+                if (it.key == Key.Tab && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
+                    focusManager.moveFocus(if (it.isShiftPressed) FocusDirection.Up else FocusDirection.Down)
+                    true
+                }
+                else if (it.key == Key.Enter && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
+                    focusManager.moveFocus(FocusDirection.Down)
+                    true
+                }
+                else {
+                    false
+                }
             },
             label = { Text("Password") },
             placeholder =  { Text("Password*") },
@@ -93,6 +120,19 @@ fun AccountView(
             onValueChange = {
                 component.changePasswordConfirmation(it)
             },
+            modifier = Modifier.onPreviewKeyEvent {
+                if (it.key == Key.Tab && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
+                    focusManager.moveFocus(if (it.isShiftPressed) FocusDirection.Up else FocusDirection.Down)
+                    true
+                }
+                else if (it.key == Key.Enter && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
+                    focusManager.moveFocus(FocusDirection.Down)
+                    true
+                }
+                else {
+                    false
+                }
+            },
             label = { Text("Password confirmation") },
             placeholder =  { Text("Retype your password*") },
             keyboardOptions = KeyboardOptions(
@@ -118,6 +158,19 @@ fun AccountView(
             value = state.value.givenName.data,
             onValueChange = {
                 component.changeFirstName(it)
+            },
+            modifier = Modifier.onPreviewKeyEvent {
+                if (it.key == Key.Tab && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
+                    focusManager.moveFocus(if (it.isShiftPressed) FocusDirection.Up else FocusDirection.Down)
+                    true
+                }
+                else if (it.key == Key.Enter && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
+                    focusManager.moveFocus(FocusDirection.Down)
+                    true
+                }
+                else {
+                    false
+                }
             },
             label = { Text("First name") },
             placeholder =  { Text("First name*") },
@@ -145,6 +198,19 @@ fun AccountView(
             onValueChange = {
                 component.changeLastName(it)
             },
+            modifier = Modifier.onPreviewKeyEvent {
+                if (it.key == Key.Tab && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
+                    focusManager.moveFocus(if (it.isShiftPressed) FocusDirection.Up else FocusDirection.Down)
+                    true
+                }
+                else if (it.key == Key.Enter && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
+                    focusManager.moveFocus(FocusDirection.Down)
+                    true
+                }
+                else {
+                    false
+                }
+            },
             label = { Text("Last name") },
             placeholder =  { Text("Last name*") },
             keyboardOptions = KeyboardOptions(
@@ -170,6 +236,15 @@ fun AccountView(
             value = state.value.phone,
             onValueChange = {
                 component.changePhoneNumber(it)
+            },
+            modifier = Modifier.onPreviewKeyEvent {
+                if (it.key == Key.Tab && it.isShiftPressed && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
+                    focusManager.moveFocus(FocusDirection.Up)
+                    true
+                }
+                else {
+                    false
+                }
             },
             label = { Text("Phone number") }
         )
