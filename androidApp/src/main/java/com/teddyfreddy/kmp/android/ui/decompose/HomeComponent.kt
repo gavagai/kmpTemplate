@@ -16,5 +16,4 @@ class HomeComponent(
     override fun backPressed() {
         onBack()
     }
-
 }

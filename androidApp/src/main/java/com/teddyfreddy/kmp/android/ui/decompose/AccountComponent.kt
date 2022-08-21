@@ -11,6 +11,7 @@ import com.teddyfreddy.kmp.mvi.RegistrationContext
 import com.teddyfreddy.kmp.mvi.account.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.distinctUntilChanged
+import java.time.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AccountComponent(
@@ -43,13 +44,43 @@ class AccountComponent(
         lifecycle.doOnDestroy { scope.cancel() }
     }
 
-    override fun changeField(field: AccountField, value: Any?, validate: Boolean) {
-        store.accept(AccountStore.Intent.ChangeField(field, value, validate))
+    override fun changeEmail(newVal: String) {
+        store.accept(AccountStore.Intent.ChangeField(AccountField.Username, newVal, false))
+    }
+    override fun validateEmail(forceValid: Boolean) {
+        store.accept(AccountStore.Intent.ValidateField(AccountField.Username, forceValid))
+    }
+    override fun changePassword(newVal: String) {
+        store.accept(AccountStore.Intent.ChangeField(AccountField.Password, newVal, false))
+    }
+    override fun validatePassword(forceValid: Boolean) {
+        store.accept(AccountStore.Intent.ValidateField(AccountField.Password, forceValid))
+    }
+    override fun changePasswordConfirmation(newVal: String) {
+        store.accept(AccountStore.Intent.ChangeField(AccountField.PasswordConfirmation, newVal, false))
+    }
+    override fun validatePasswordConfirmation(forceValid: Boolean) {
+        store.accept(AccountStore.Intent.ValidateField(AccountField.PasswordConfirmation, forceValid))
+    }
+    override fun changeFirstName(newVal: String) {
+        store.accept(AccountStore.Intent.ChangeField(AccountField.FirstName, newVal, false))
+    }
+    override fun validateFirstName(forceValid: Boolean) {
+        store.accept(AccountStore.Intent.ValidateField(AccountField.FirstName, forceValid))
+    }
+    override fun changeLastName(newVal: String) {
+        store.accept(AccountStore.Intent.ChangeField(AccountField.LastName, newVal, false))
+    }
+    override fun validateLastName(forceValid: Boolean) {
+        store.accept(AccountStore.Intent.ValidateField(AccountField.LastName, forceValid))
+    }
+    override fun changePhoneNumber(newVal: String) {
+        store.accept(AccountStore.Intent.ChangeField(AccountField.PhoneNumber, newVal))
+    }
+    override fun changeDateOfBirth(newVal: LocalDate?) {
+        store.accept(AccountStore.Intent.ChangeField(AccountField.DateOfBirth, newVal))
     }
 
-    override fun validateField(field: AccountField, forceValid: Boolean) {
-        store.accept(AccountStore.Intent.ValidateField(field, forceValid))
-    }
 
     override fun cancelPressed() {
         store.accept(AccountStore.Intent.Cancel)

@@ -17,7 +17,7 @@ class RegistrationComponent(
     private val stack =
         childStack(
             source = navigation,
-            initialConfiguration = Config.Account(),
+            initialConfiguration = Config.Account,
             handleBackButton = true, // Pop the back stack on back button press
             childFactory = ::createChild
         )
@@ -31,7 +31,7 @@ class RegistrationComponent(
     private fun accountComponent(componentContext: ComponentContext): AccountComponent =
         AccountComponent(
             componentContext = componentContext,
-            onContinue = { navigation.push(Config.Choice()) },
+            onContinue = { navigation.push(Config.Choice) },
             onCancel = { finish() }
         )
 
@@ -53,10 +53,10 @@ class RegistrationComponent(
 
     private sealed class Config : Parcelable {
         @Parcelize
-        data class Account(val registrationContext: @RawValue RegistrationContext = RegistrationContext()) : Config()
+        object Account : Config()
 
         @Parcelize
-        data class Choice(val registrationContext: @RawValue RegistrationContext = RegistrationContext()) : Config()
+        object Choice : Config()
     }
 
 

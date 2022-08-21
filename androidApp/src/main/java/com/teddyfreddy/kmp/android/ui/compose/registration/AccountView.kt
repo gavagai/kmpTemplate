@@ -16,7 +16,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.teddyfreddy.kmp.mvi.account.AccountField
 import com.teddyfreddy.kmp.android.ui.decompose.Account
 import com.teddyfreddy.android.ui.extensions.ValidatedTextField
 
@@ -47,7 +46,7 @@ fun AccountView(
         ValidatedTextField(
             value = state.value.email.data,
             onValueChange = {
-                component.changeField(AccountField.Username, it)
+                component.changeEmail(it)
             },
             label = { Text("Email") },
             placeholder =  { Text("Email*") },
@@ -66,14 +65,14 @@ fun AccountView(
             isError = state.value.email.error != null,
             required = true,
             onValidate = { forceValid ->
-                component.validateField(AccountField.Username, forceValid)
+                component.validateEmail(forceValid)
             }
         )
 
         ValidatedTextField(
             value = state.value.password.data,
             onValueChange = {
-                component.changeField(AccountField.Password, it)
+                component.changePassword(it)
             },
             label = { Text("Password") },
             placeholder =  { Text("Password*") },
@@ -92,14 +91,14 @@ fun AccountView(
             isError = state.value.password.error != null,
             required = true,
             onValidate = { forceValid ->
-                component.validateField(AccountField.Password, forceValid)
+                component.validatePassword(forceValid)
             }
         )
 
         ValidatedTextField(
             value = state.value.passwordConfirmation.data,
             onValueChange = {
-                component.changeField(AccountField.PasswordConfirmation, it)
+                component.changePasswordConfirmation(it)
             },
             label = { Text("Password confirmation") },
             placeholder =  { Text("Retype your password*") },
@@ -118,14 +117,14 @@ fun AccountView(
             isError = state.value.passwordConfirmation.error != null,
             required = true,
             onValidate = { forceValid ->
-                component.validateField(AccountField.PasswordConfirmation, forceValid)
+                component.validatePasswordConfirmation(forceValid)
             }
         )
 
         ValidatedTextField(
             value = state.value.givenName.data,
             onValueChange = {
-                component.changeField(AccountField.FirstName, it)
+                component.changeFirstName(it)
             },
             label = { Text("First name") },
             placeholder =  { Text("First name*") },
@@ -144,14 +143,14 @@ fun AccountView(
             isError = state.value.givenName.error != null,
             required = true,
             onValidate = { forceValid ->
-                component.validateField(AccountField.FirstName, forceValid)
+                component.validateFirstName(forceValid)
             }
         )
 
         ValidatedTextField(
             value = state.value.familyName.data,
             onValueChange = {
-                component.changeField(AccountField.LastName, it)
+                component.changeLastName(it)
             },
             label = { Text("Last name") },
             placeholder =  { Text("Last name*") },
@@ -170,14 +169,14 @@ fun AccountView(
             isError = state.value.familyName.error != null,
             required = true,
             onValidate = { forceValid ->
-                component.validateField(AccountField.LastName, forceValid)
+                component.validateLastName(forceValid)
             }
         )
 
         TextField(
             value = state.value.phone,
             onValueChange = {
-                component.changeField(AccountField.PhoneNumber, it)
+                component.changePhoneNumber(it)
             },
             label = { Text("Phone number") }
         )

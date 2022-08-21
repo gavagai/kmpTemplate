@@ -38,10 +38,10 @@ class RootComponent(
     private fun loginComponent(componentContext: ComponentContext): LoginComponent =
         LoginComponent(
             componentContext = componentContext,
-            onLogin = { response, message ->
+            onLogin = { response, _ ->
                 if (response != null) navigation.replaceCurrent(configuration = Config.Home)
             },
-            onSignup = { navigation.replaceCurrent(configuration = Config.Registration()) }
+            onSignup = { navigation.replaceCurrent(configuration = Config.Registration) }
         )
 
     private fun registrationComponent(componentContext: ComponentContext): RegistrationComponent =
@@ -64,7 +64,7 @@ class RootComponent(
         object Login : Config()
 
         @Parcelize
-        data class Registration(val registrationContext: @RawValue RegistrationContext = RegistrationContext()) : Config()
+        object Registration : Config()
 
         @Parcelize
         object Home : Config()
