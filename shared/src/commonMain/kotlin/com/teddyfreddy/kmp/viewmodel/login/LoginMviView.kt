@@ -4,10 +4,8 @@ import com.arkivanov.mvikotlin.core.view.BaseMviView
 import com.arkivanov.mvikotlin.core.view.MviView
 import com.teddyfreddy.common.ValidatedStringField
 import com.teddyfreddy.common.network.NetworkRequestError
-import com.teddyfreddy.common.network.NetworkResponse
 import com.teddyfreddy.kmp.mvi.login.LoginField
 import com.teddyfreddy.kmp.mvi.login.LoginStore
-import com.teddyfreddy.kmp.repository.LoginResponseDTO
 
 
 interface LoginMviView : MviView<LoginMviView.Model, LoginMviView.Event> {
@@ -83,7 +81,7 @@ open class LoginBaseMviView :
                 val snackbarMessage = when (it.exception) {
                     is NetworkRequestError -> {
                         when (it.exception) {
-                            is NetworkRequestError.TransportError -> "Trouble connecting to the server" // iOS specific messages are unreadable
+                            is NetworkRequestError.TransportError -> "Failed to connect to the server - Try again later" // iOS specific messages are unreadable
                             else -> "${it.exception.failureReason!!}${if (it.exception.recoverySuggestion != null) " - ${it.exception.recoverySuggestion!!}" else ""}"
                         }
                     }
@@ -96,7 +94,7 @@ open class LoginBaseMviView :
                 val snackbarMessage = when (it.exception) {
                     is NetworkRequestError -> {
                         when (it.exception) {
-                            is NetworkRequestError.TransportError -> "Trouble connecting to the server" // iOS specific messages are unreadable
+                            is NetworkRequestError.TransportError -> "Failed to connect to the server - Try again later" // iOS specific messages are unreadable
                             else -> "${it.exception.failureReason!!}${if (it.exception.recoverySuggestion != null) " - ${it.exception.recoverySuggestion!!}" else ""}"
                         }
                     }
