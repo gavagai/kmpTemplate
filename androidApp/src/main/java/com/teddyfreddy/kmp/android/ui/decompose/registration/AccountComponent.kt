@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.android.ui.decompose
+package com.teddyfreddy.kmp.android.ui.decompose.registration
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf

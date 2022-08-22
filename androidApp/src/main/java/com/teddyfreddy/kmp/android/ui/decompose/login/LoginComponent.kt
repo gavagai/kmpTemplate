@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.android.ui.decompose
+package com.teddyfreddy.kmp.android.ui.decompose.login
 
 import android.content.SharedPreferences
 import androidx.compose.runtime.MutableState

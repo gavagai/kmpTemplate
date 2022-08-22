@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.android.ui.decompose
+package com.teddyfreddy.kmp.android.ui.decompose.login
 
 import androidx.compose.runtime.State
 import com.teddyfreddy.kmp.mvi.login.LoginStore

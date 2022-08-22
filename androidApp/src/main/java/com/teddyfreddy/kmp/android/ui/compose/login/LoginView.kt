@@ -11,7 +11,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.teddyfreddy.android.ui.extensions.*
-import com.teddyfreddy.kmp.android.ui.decompose.Login
+import com.teddyfreddy.kmp.android.ui.decompose.login.Login
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,10 +49,9 @@ fun LoginView(
             val focusManager = LocalFocusManager.current
 
             Spacer(modifier = Modifier.padding(20.dp))
-            Text("Team Share")
+            Text("Shall We")
             Spacer(modifier = Modifier.padding(4.dp))
             Row {
-                Icon(Icons.Filled.Person, "logo")
                 Icon(Icons.Filled.Person, "logo")
                 Icon(Icons.Filled.Person, "logo")
             }
@@ -64,6 +63,7 @@ fun LoginView(
                     component.changeUsername(it)
                 },
                 modifier = Modifier.standardKeyNavigation(focusManager, up = false),
+                placeholder = { Text("Username (or email)*") },
                 isError = state.value.username.error != null,
                 errorText = state.value.username.error,
                 required = true,

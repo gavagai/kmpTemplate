@@ -1,4 +1,4 @@
-package com.teddyfreddy.kmp.android.ui.decompose
+package com.teddyfreddy.kmp.android.ui.decompose.registration
 
 interface Choice {
     enum class Destination {
@@ -8,7 +8,9 @@ interface Choice {
         ;
     }
 
-    fun continuePressed()
+    fun askToJoinPressed()
+    fun createOrganizationPressed()
+
     fun cancelPressed()
     fun backPressed()
 }

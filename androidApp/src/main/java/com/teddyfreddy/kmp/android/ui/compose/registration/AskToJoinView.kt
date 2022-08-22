@@ -6,27 +6,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.teddyfreddy.kmp.android.ui.decompose.registration.Choice
+import com.teddyfreddy.kmp.android.ui.decompose.registration.AskToJoin
 
 @Composable
-fun ChoiceView(
-    component: Choice,
+fun AskToJoinView(
+    component: AskToJoin,
     modifier: Modifier? = Modifier
 ) {
     Column {
-        Text("Choice")
-        Row(horizontalArrangement = Arrangement.SpaceAround) {
-            Button(onClick = { component.askToJoinPressed() }) {
-                Text("Ask to join")
-            }
-            Button(onClick = { component.createOrganizationPressed() }) {
-                Text("Create an organization")
-            }
-        }
-        Spacer(modifier = Modifier.padding(30.dp))
+        Text("AskToJoin")
         Row(horizontalArrangement = Arrangement.SpaceAround) {
             Button(onClick = { component.cancelPressed() }) {
                 Text("Cancel")
+            }
+            Spacer(modifier = Modifier.padding(10.dp))
+            Button(onClick = { component.continuePressed() }) {
+                Text("Continue")
             }
             Spacer(modifier = Modifier.padding(10.dp))
             Button(onClick = { component.backPressed() }) {

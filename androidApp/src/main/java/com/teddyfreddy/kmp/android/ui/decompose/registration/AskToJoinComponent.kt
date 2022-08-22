@@ -1,19 +1,19 @@
-package com.teddyfreddy.kmp.android.ui.decompose
+package com.teddyfreddy.kmp.android.ui.decompose.registration
 
 import com.arkivanov.decompose.ComponentContext
 import com.teddyfreddy.kmp.mvi.RegistrationContext
 
-class ChoiceComponent (
+class AskToJoinComponent (
     componentContext: ComponentContext,
     private val registrationContext: RegistrationContext,
-    private val onContinue: (Choice.Destination) -> Unit,
+    private val onContinue: () -> Unit,
     private val onCancel: () -> Unit,
     private val onBack: () -> Unit
 
-) : Choice, ComponentContext by componentContext {
+) : AskToJoin, ComponentContext by componentContext {
 
     override fun continuePressed() {
-        onContinue(Choice.Destination.AskToJoin)
+        onContinue()
     }
 
     override fun cancelPressed() {

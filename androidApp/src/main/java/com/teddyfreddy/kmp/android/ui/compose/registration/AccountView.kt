@@ -17,7 +17,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.teddyfreddy.android.ui.extensions.EmailTextField
-import com.teddyfreddy.kmp.android.ui.decompose.Account
+import com.teddyfreddy.kmp.android.ui.decompose.registration.Account
 import com.teddyfreddy.android.ui.extensions.ValidatedTextField
 import com.teddyfreddy.android.ui.extensions.standardKeyNavigation
 
