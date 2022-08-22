@@ -58,6 +58,7 @@ class LoginComponent(
     private fun executeLoginComplete(throwable: Throwable?) {
         if (throwable == null) {
             recordRecentLogin(emailVerified = true)
+            store.accept(LoginStore.Intent.SetEmailVerificationRequired(false))
             this@LoginComponent.onLogin()
         }
         else {
