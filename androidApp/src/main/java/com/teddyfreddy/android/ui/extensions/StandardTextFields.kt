@@ -25,7 +25,7 @@ import androidx.compose.ui.text.input.*
 fun TextFieldWithSupportingText(
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier? = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     textStyle: TextStyle = LocalTextStyle.current,
@@ -51,7 +51,7 @@ fun TextFieldWithSupportingText(
         TextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = modifier.onFocusChanged {
+            modifier = (modifier ?: Modifier).onFocusChanged {
                 if (it.isFocused) {
                     if (onFocusChange != null) onFocusChange(true)
                 }
@@ -96,7 +96,7 @@ fun TextFieldWithSupportingText(
 fun ValidatedTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier? = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     textStyle: TextStyle = LocalTextStyle.current,
@@ -141,6 +141,7 @@ fun ValidatedTextField(
         onValueChange = {
             onValueChange(it)
         },
+        modifier = modifier,
         enabled = enabled,
         readOnly = readOnly,
         textStyle = textStyle,
@@ -170,7 +171,7 @@ fun ValidatedTextField(
 fun UsernameTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier? = Modifier,
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
@@ -214,7 +215,7 @@ fun UsernameTextField(
 fun PasswordTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier? = Modifier,
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
@@ -232,7 +233,7 @@ fun PasswordTextField(
     ValidatedTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier
+        modifier = (modifier ?: Modifier)
             .onPreviewKeyEvent {
                 if (it.key == Key.Enter && it.nativeKeyEvent.action == NativeKeyEvent.ACTION_DOWN) {
                     if (onGo != null) onGo()
@@ -276,7 +277,7 @@ fun PasswordTextField(
 fun OneTimeCodeTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier? = Modifier,
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
@@ -327,7 +328,7 @@ fun OneTimeCodeTextField(
 fun EmailTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier? = Modifier,
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
