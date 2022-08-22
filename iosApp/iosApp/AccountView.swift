@@ -53,40 +53,16 @@ struct AccountView: View {
                             }
                             .padding(.leading, 7)
                 ) {
-                    let emailBinding = Binding<String>(
-                        get: {
-                            viewModel.viewState.email.data as String
-                        },
-                        set: {
-                            viewModel.changeEmail(newVal: $0)
-                        }
-                    )
-                    StandardEmailAddressTextField(email: emailBinding, leadingImage: nil)
+                    StandardEmailAddressTextField(email: Binding(get: { viewModel.viewState.email.data }, set: viewModel.changeEmail), leadingImage: nil)
                         .validated(errorMessage: viewModel.viewState.email.error)
                         .focused($focusedField, equals: .email)
 
-                    let passwordBinding = Binding<String>(
-                        get: {
-                            viewModel.viewState.password.data as String
-                        },
-                        set: {
-                            viewModel.changePassword(newVal: $0)
-                        }
-                    )
-                    StandardPasswordTextField(password: passwordBinding, leadingImage: nil)
+                    StandardPasswordTextField(password: Binding(get: { viewModel.viewState.password.data }, set: viewModel.changePassword), leadingImage: nil)
                         .validated(errorMessage: viewModel.viewState.password.error)
                         .focused($focusedField, equals: .password)
                     
-                    let passwordConfirmationBinding = Binding<String>(
-                        get: {
-                            viewModel.viewState.passwordConfirmation.data as String
-                        },
-                        set: {
-                            viewModel.changePasswordConfirmation(newVal: $0)
-                        }
-                    )
                     StandardPasswordTextField("Confirm password",
-                                              password: passwordConfirmationBinding,
+                                              password: Binding(get: { viewModel.viewState.passwordConfirmation.data }, set: viewModel.changePasswordConfirmation),
                                               leadingImage: nil)
                     .validated(errorMessage: viewModel.viewState.passwordConfirmation.error)
                     .focused($focusedField, equals: .passwordConfirmation)                }
@@ -100,27 +76,11 @@ struct AccountView: View {
                             }
                             .padding(.leading, 7)
                 ) {
-                    let givenNameBinding = Binding<String>(
-                        get: {
-                            viewModel.viewState.givenName.data
-                        },
-                        set: {
-                            viewModel.changeGivenName(newVal: $0)
-                        }
-                    )
-                    StandardGivenNameTextField("First name", givenName: givenNameBinding)
+                    StandardGivenNameTextField("First name", givenName: Binding(get: { viewModel.viewState.givenName.data }, set: viewModel.changeGivenName))
                         .validated(errorMessage: viewModel.viewState.givenName.error)
                         .focused($focusedField, equals: .firstName)
                     
-                    let familyNameBinding = Binding<String>(
-                        get: {
-                            viewModel.viewState.familyName.data as String
-                        },
-                        set: {
-                            viewModel.changeFamilyName(newVal: $0)
-                        }
-                    )
-                    StandardFamilyNameTextField("Last name", familyName: familyNameBinding)
+                    StandardFamilyNameTextField("Last name", familyName: Binding(get: { viewModel.viewState.familyName.data }, set: viewModel.changeFamilyName))
                         .validated(errorMessage: viewModel.viewState.familyName.error)
                         .focused($focusedField, equals: .lastName)
                     
@@ -132,7 +92,7 @@ struct AccountView: View {
                             viewModel.changePhoneNumber(newVal: $0)
                         }
                     )
-                    StandardPhoneNumberTextField(phoneNumber: phoneBinding, leadingImage: nil)
+                    StandardPhoneNumberTextField(phoneNumber: Binding(get: { viewModel.viewState.phone }, set: viewModel.changePhoneNumber), leadingImage: nil)
                 }
             }
             .padding(.horizontal, 30)
