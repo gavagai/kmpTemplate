@@ -16,11 +16,12 @@ import java.time.LocalDate
 @OptIn(ExperimentalCoroutinesApi::class)
 class AccountComponent(
     componentContext: ComponentContext,
+    private val registrationContext: RegistrationContext,
     private val onContinue: () -> Unit,
     private val onCancel: () -> Unit
 ) : Account, ComponentContext by componentContext {
 
-    private val store = AccountStoreFactory(DefaultStoreFactory(), RegistrationContext()).create()
+    private val store = AccountStoreFactory(DefaultStoreFactory(), registrationContext).create()
 
     private var _state: MutableState<AccountStore.State> = mutableStateOf(store.state)
     override val state = _state
@@ -36,13 +37,21 @@ class AccountComponent(
         scope.launch {
             store.labels.collect {
                 when (it) {
-                    is AccountStore.Label.Continue -> this@AccountComponent.onContinue()
+                    is AccountStore.Label.Continue -> executeContinue()
                     is AccountStore.Label.Cancel -> this@AccountComponent.onCancel()
                 }
             }
         }
         lifecycle.doOnDestroy { scope.cancel() }
     }
+
+    private fun executeContinue() {
+        registrationContext.email = state.value.email.data
+        registrationContext.familyName = state.value.familyName.data
+        registrationContext.givenName = state.value.givenName.data
+        this@AccountComponent.onContinue()
+    }
+
 
     override fun changeEmail(newVal: String) {
         store.accept(AccountStore.Intent.ChangeField(AccountField.Email, newVal, false))

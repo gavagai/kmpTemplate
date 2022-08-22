@@ -4,12 +4,15 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
+import com.teddyfreddy.kmp.mvi.RegistrationContext
 import kotlinx.parcelize.Parcelize
 
 class RegistrationComponent(
     componentContext: ComponentContext,
     private val onFinish: (String?) -> Unit
 ) : Registration, ComponentContext by componentContext {
+
+    private var registrationContext: RegistrationContext = RegistrationContext()
 
     private val navigation = StackNavigation<Config>()
     private val stack =
@@ -29,21 +32,19 @@ class RegistrationComponent(
     private fun accountComponent(componentContext: ComponentContext): AccountComponent =
         AccountComponent(
             componentContext = componentContext,
+            registrationContext = registrationContext,
             onContinue = { navigation.push(Config.Choice) },
-            onCancel = { finish() }
+            onCancel = { finish(null) }
         )
 
     private fun choiceComponent(componentContext: ComponentContext): ChoiceComponent =
         ChoiceComponent(
             componentContext = componentContext,
-            onContinue = { /*navigation.push()*/ },
-            onCancel = { finish() },
+            registrationContext = registrationContext,
+            onContinue = { choice -> /*navigation.push()*/ },
+            onCancel = { finish(null) },
             onBack = { navigation.pop() }
         )
-
-    private fun finish() {
-        onFinish("admin") // TODO
-    }
 
     override val childStack: Value<ChildStack<*, Registration.Child>>
         get() = stack

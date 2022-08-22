@@ -22,8 +22,7 @@ class AccountStoreFactory(
     }
 
     private sealed interface Action {
-        data class RestoreFromRegistrationContext(val registrationContext: RegistrationContext):
-            Action
+        data class ChangeField(val field: AccountField, val value: Any?) : Action
     }
 
     fun create(): AccountStore =
@@ -136,7 +135,10 @@ class AccountStoreFactory(
             }
     }
 
-    private class ExecutorImpl : CoroutineExecutor<AccountStore.Intent, Action, AccountStore.State, Msg, AccountStore.Label>() {
+//    private val executorFactory: () -> Executor<AccountStore.Intent, Action, AccountStore.State, Msg, AccountStore.Label> =  { ExecutorImpl(registrationContext) }
+
+    private class ExecutorImpl
+        : CoroutineExecutor<AccountStore.Intent, Action, AccountStore.State, Msg, AccountStore.Label>() {
         override fun executeIntent(intent: AccountStore.Intent, getState: () -> AccountStore.State) =
             when (intent) {
                 is AccountStore.Intent.Cancel -> publish(AccountStore.Label.Cancel)
@@ -165,21 +167,17 @@ class AccountStoreFactory(
 
         override fun executeAction(action: Action, getState: () -> AccountStore.State) {
             when (action) {
-                is Action.RestoreFromRegistrationContext -> executeRestoreFromRegistrationContext(action.registrationContext)
+                is Action.ChangeField -> dispatch(Msg.ChangeField(action.field, action.value))
             }
-        }
-
-        private fun executeRestoreFromRegistrationContext(registrationContext: RegistrationContext) {
-            dispatch(Msg.ChangeField(AccountField.Email, registrationContext.email))
-            dispatch(Msg.ChangeField(AccountField.FirstName, registrationContext.givenName))
-            dispatch(Msg.ChangeField(AccountField.LastName, registrationContext.familyName))
         }
     }
 
     private class BootstrapperImpl(private val registrationContext: RegistrationContext) : CoroutineBootstrapper<Action>() {
         override fun invoke() {
             scope.launch {
-                dispatch(Action.RestoreFromRegistrationContext(registrationContext))
+                dispatch(Action.ChangeField(AccountField.Email, registrationContext.email))
+                dispatch(Action.ChangeField(AccountField.FirstName, registrationContext.givenName))
+                dispatch(Action.ChangeField(AccountField.LastName, registrationContext.familyName))
             }
         }
     }
