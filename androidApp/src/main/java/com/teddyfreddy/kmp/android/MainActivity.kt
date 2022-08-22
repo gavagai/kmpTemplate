@@ -19,7 +19,6 @@ import com.teddyfreddy.kmp.sharedModule
 import com.teddyfreddy.kmp.android.ui.decompose.RootComponent
 import com.teddyfreddy.android.ui.adaptive.AdaptiveDesign
 import com.teddyfreddy.android.ui.adaptive.devicePostureFlow
-import com.teddyfreddy.kmp.android.ui.compose.app.AdaptiveNavigationApp
 import com.teddyfreddy.kmp.android.ui.compose.app.RootView
 import com.teddyfreddy.kmp.android.ui.theme.AppTheme
 import org.koin.core.context.stopKoin

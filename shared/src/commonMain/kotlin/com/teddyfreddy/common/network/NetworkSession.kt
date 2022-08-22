@@ -1,8 +1,6 @@
 package com.teddyfreddy.common.network
 
 import io.ktor.client.call.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
 import io.ktor.utils.io.core.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

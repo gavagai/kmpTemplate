@@ -1,6 +1,7 @@
 package com.teddyfreddy.kmp.android.ui.compose.app
 
 import androidx.compose.runtime.Composable
+import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.Children
 import com.teddyfreddy.android.ui.adaptive.AdaptiveDesign
 import com.teddyfreddy.kmp.android.ui.compose.app.HomeView
@@ -9,6 +10,7 @@ import com.teddyfreddy.kmp.android.ui.decompose.RootComponent
 import com.teddyfreddy.kmp.android.ui.compose.login.LoginView
 import com.teddyfreddy.kmp.android.ui.compose.registration.RegistrationView
 
+@OptIn(ExperimentalDecomposeApi::class)
 @Composable
 fun RootView(
     component: RootComponent,
