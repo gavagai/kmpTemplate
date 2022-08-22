@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.slide
+import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.stackAnimation
 import com.teddyfreddy.kmp.android.ui.decompose.registration.Registration
 
 @OptIn(ExperimentalDecomposeApi::class)
@@ -12,7 +14,10 @@ fun RegistrationView(
     component: Registration,
     modifier: Modifier? = Modifier
 ) {
-    Children(component.childStack) {
+    Children(
+        stack = component.childStack,
+        animation = stackAnimation(slide()),
+    ) {
         when (val child = it.instance) {
             is Registration.Child.Account -> AccountView(child.component)
             is Registration.Child.Choice -> ChoiceView(child.component)
