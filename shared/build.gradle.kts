@@ -3,12 +3,14 @@ plugins {
     id("com.android.library")
     // DON: --
     kotlin("plugin.serialization").version("1.7.10")
+    id("kotlin-parcelize")
     // DON: --
 }
 
 // DON: --
 val essentyVersion = "0.5.2"
-val mviKotlinVersion = "3.0.0-beta01"
+//val mviKotlinVersion = "3.0.0-beta01"
+val mviKotlinVersion = "3.0.2"
 // DON: --
 kotlin {
     android()
@@ -55,7 +57,7 @@ kotlin {
                 implementation("com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:$mviKotlinVersion")
                 implementation("com.arkivanov.mvikotlin:mvikotlin-logging:$mviKotlinVersion")
                 // Decompose
-                implementation("com.arkivanov.decompose:decompose:$decomposeVersion")
+                api("com.arkivanov.decompose:decompose:$decomposeVersion")
                 implementation("com.arkivanov.decompose:extensions-compose-jetpack:$decomposeVersion")
             }
             // DON: --
@@ -72,6 +74,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-android:$ktorVersion")
                 implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
                 implementation("androidx.compose.runtime:runtime:1.2.0") // Compose compiler dependency
+                implementation("com.arkivanov.essenty:lifecycle:$essentyVersion")
             }
             // DON: --
         }

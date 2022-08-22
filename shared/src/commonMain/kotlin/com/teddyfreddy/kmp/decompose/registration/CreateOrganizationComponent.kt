@@ -1,0 +1,27 @@
+package com.teddyfreddy.kmp.decompose.registration
+
+import com.arkivanov.decompose.ComponentContext
+import com.teddyfreddy.kmp.mvi.RegistrationContext
+
+class CreateOrganizationComponent (
+    componentContext: ComponentContext,
+    private val registrationContext: RegistrationContext,
+    private val onContinue: () -> Unit,
+    private val onCancel: () -> Unit,
+    private val onBack: () -> Unit
+
+) : CreateOrganization, ComponentContext by componentContext {
+
+    override fun continuePressed() {
+        onContinue()
+    }
+
+    override fun cancelPressed() {
+        onCancel()
+    }
+
+    override fun backPressed() {
+        onBack()
+    }
+
+}

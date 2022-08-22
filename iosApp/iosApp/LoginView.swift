@@ -54,34 +54,19 @@ struct LoginView: View {
                      .padding(.top, 15)
 
                 VStack {
-                    let usernameBinding = Binding<String>(
-                        get: {
-                            viewModel.viewState.username.data as String
-                        },
-                        set: {
-                            viewModel.changeUsername(newVal: $0)
-                        }
-                    )
-                    StandardUsernameTextField("Username", username: usernameBinding)
+                    StandardUsernameTextField("Username", username: Binding(get: { viewModel.viewState.username.data }, set: viewModel.changeUsername))
                         .validated(errorMessage: viewModel.viewState.username.error)
                         .focused($focusedField, equals: .username)
 
-                    let passwordBinding = Binding<String>(
-                        get: {
-                            viewModel.viewState.password.data as String
-                        },
-                        set: {
-                            viewModel.changePassword(newVal: $0)
-                        }
-                    )
                     if viewModel.viewState.emailVerificationRequired {
-                        StandardPasswordTextField("Password", password: passwordBinding, preventNewPasswordContentType: true, trailingImage: nil)
+                        StandardPasswordTextField("Password", password: Binding(get: { viewModel.viewState.password.data }, set: viewModel.changePassword),
+                                                preventNewPasswordContentType: true, trailingImage: nil)
                             .validated(errorMessage: viewModel.viewState.password.error)
                             .focused($focusedField, equals: .password)
                     }
                     else {
                         StandardPasswordTextField(
-                            "Password", password: passwordBinding,
+                            "Password", password: Binding(get: { viewModel.viewState.password.data }, set: viewModel.changePassword),
                             onAction: {
                                 doLogin()
                             }
@@ -91,15 +76,7 @@ struct LoginView: View {
                     }
 
                     if viewModel.viewState.emailVerificationRequired {
-                        let verificationCodeBinding = Binding<String>(
-                            get: {
-                                viewModel.viewState.verificationCode.data as String
-                            },
-                            set: {
-                                viewModel.changeVerificationCode(newVal: $0)
-                            }
-                        )
-                        StandardOneTimeCodeTextField("Verification code", code: verificationCodeBinding,
+                        StandardOneTimeCodeTextField("Verification code", code: Binding(get: { viewModel.viewState.verificationCode.data }, set: viewModel.changeVerificationCode),
                                                      trailingImage: { Image(systemName: "arrow.forward.circle") }
                         ) {
                             doLogin()
