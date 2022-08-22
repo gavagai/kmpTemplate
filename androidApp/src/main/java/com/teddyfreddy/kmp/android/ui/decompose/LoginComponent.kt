@@ -12,9 +12,7 @@ import com.teddyfreddy.common.network.NetworkRequestError
 import com.teddyfreddy.kmp.mvi.login.LoginField
 import com.teddyfreddy.kmp.mvi.login.LoginStore
 import com.teddyfreddy.kmp.mvi.login.LoginStoreFactory
-import com.teddyfreddy.common.network.NetworkResponse
 import com.teddyfreddy.kmp.android.SharedPreferenceKeys
-import com.teddyfreddy.kmp.repository.LoginResponseDTO
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.distinctUntilChanged
 import org.koin.core.component.KoinComponent
@@ -23,7 +21,7 @@ import org.koin.core.component.inject
 @OptIn(ExperimentalCoroutinesApi::class)
 class LoginComponent(
     componentContext: ComponentContext,
-    private val onLogin: (response: NetworkResponse<LoginResponseDTO>?, exception: Throwable?) -> Unit,
+    private val onLogin: () -> Unit,
     private val onSignup: () -> Unit
 ) : Login, ComponentContext by componentContext, KoinComponent {
 
@@ -48,43 +46,72 @@ class LoginComponent(
         scope.launch {
             store.labels.collect {
                 when (it) {
-                    is LoginStore.Label.LoginInitiated -> {}
-                    is LoginStore.Label.LoginComplete -> {
-                        if (it.exception == null) {
-                            with(preferences.edit()) {
-                                putBoolean(SharedPreferenceKeys.EmailVerified.key, true)
-                                putString(
-                                    SharedPreferenceKeys.RecentUsername.key,
-                                    store.state.username.data
-                                )
-                                apply()
-                            }
-                            store.accept(LoginStore.Intent.SetEmailVerificationRequired(false))
-                        } else if (it.exception is NetworkRequestError.EmailVerificationFailed ||
-                            it.exception is NetworkRequestError.EmailVerificationCodeExpired
-                        ) {
-                            with(preferences.edit()) {
-                                putBoolean(SharedPreferenceKeys.EmailVerified.key, false)
-                                apply()
-                            }
-                            store.accept(LoginStore.Intent.SetEmailVerificationRequired(true))
-                        }
-                        this@LoginComponent.onLoginComplete(it.exception)
-                        this@LoginComponent.onLogin(it.response, it.exception)
-                    }
-                    is LoginStore.Label.EmailVerificationCodeSent -> {
-                        this@LoginComponent.onEmailVerificationCodeSent(it.exception)
-                    }
+                    is LoginStore.Label.LoginInitiated -> { /* trigger waiting view */ }
+                    is LoginStore.Label.LoginComplete -> executeLoginComplete(it.throwable)
+                    is LoginStore.Label.EmailVerificationCodeSent -> executeEmailVerificationSent(it.throwable)
                 }
             }
         }
         lifecycle.doOnDestroy { scope.cancel() }
     }
 
+    private fun executeLoginComplete(throwable: Throwable?) {
+        if (throwable == null) {
+            recordRecentLogin(emailVerified = true)
+            this@LoginComponent.onLogin()
+        }
+        else {
+            recordRecentLogin(emailVerified = false)
+            store.accept(LoginStore.Intent.SetEmailVerificationRequired(true))
+            val errorMessage = when (throwable) {
+                is NetworkRequestError -> {
+                    when (throwable) {
+                        NetworkRequestError.EmailVerificationFailed, NetworkRequestError.EmailVerificationCodeExpired -> {
+                            setEmailVerificationCodeError(throwable.failureReason!!)
+                        }
+                        else -> {}
+                    }
+                    "${throwable.failureReason!!}${if (throwable.recoverySuggestion != null) " - ${throwable.recoverySuggestion!!}" else ""}"
+                }
+                else -> throwable.message
+            }
+            this@LoginComponent.onError(errorMessage)
+        }
+    }
 
-    private lateinit var onLoginComplete: (exception: Throwable?) -> Unit
-    override fun login(onLoginComplete: (exception: Throwable?) -> Unit) {
-        this.onLoginComplete = onLoginComplete
+    private fun recordRecentLogin(emailVerified: Boolean) {
+        with(preferences.edit()) {
+            putBoolean(SharedPreferenceKeys.EmailVerified.key, emailVerified)
+            putString(
+                SharedPreferenceKeys.RecentUsername.key,
+                store.state.username.data
+            )
+            apply()
+        }
+    }
+
+    private fun executeEmailVerificationSent(throwable: Throwable?) {
+        val message: String =
+            if (throwable != null) {
+                when (throwable) {
+                    is NetworkRequestError -> {
+                        "${throwable.failureReason!!}${if (throwable.recoverySuggestion != null) " - ${throwable.recoverySuggestion!!}" else ""}"
+                    }
+                    else -> {
+                        throwable.message ?: "Unknown error encountered - please try again"
+                    }
+                }
+            }
+            else {
+                "Check your email for a new verification code - don't forget the Junk folder"
+            }
+        this@LoginComponent.onEmailVerificationCodeSent(message)
+    }
+
+
+    private lateinit var onError: (errorMessage: String?) -> Unit
+    override fun login(onError: (String?) -> Unit) {
+        this.onError = onError
         store.accept(LoginStore.Intent.Login)
     }
 
@@ -92,8 +119,8 @@ class LoginComponent(
         this.onSignup()
     }
 
-    private lateinit var onEmailVerificationCodeSent: (exception: Throwable?) -> Unit
-    override fun getNewCode(onEmailVerificationCodeSent: (exception: Throwable?) -> Unit) {
+    private lateinit var onEmailVerificationCodeSent: (message: String) -> Unit
+    override fun getNewCode(onEmailVerificationCodeSent: (message: String) -> Unit) {
         this.onEmailVerificationCodeSent = onEmailVerificationCodeSent
         store.accept(LoginStore.Intent.SendEmailVerificationCode)
     }

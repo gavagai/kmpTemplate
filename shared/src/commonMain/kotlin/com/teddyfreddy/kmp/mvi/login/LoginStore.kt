@@ -40,11 +40,11 @@ interface LoginStore : Store<LoginStore.Intent, LoginStore.State, LoginStore.Lab
         object LoginInitiated: Label
         data class LoginComplete(
             val response: NetworkResponse<LoginResponseDTO>?,
-            val exception: Throwable?
+            val throwable: Throwable?
         ): Label
         data class EmailVerificationCodeSent(
             val response: NetworkResponse<Unit>?,
-            val exception: Throwable?
+            val throwable: Throwable?
         ): Label
     }
 }

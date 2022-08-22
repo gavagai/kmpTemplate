@@ -1,17 +1,20 @@
 package com.teddyfreddy.kmp.android.ui.decompose
 
+import android.content.SharedPreferences
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.stack.ChildStack
-import com.arkivanov.decompose.router.stack.StackNavigation
-import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.router.stack.replaceCurrent
+import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
+import com.teddyfreddy.kmp.android.SharedPreferenceKeys
 import kotlinx.parcelize.Parcelize
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class RootComponent(
     componentContext: ComponentContext
-) : Root, ComponentContext by componentContext {
+) : Root, ComponentContext by componentContext, KoinComponent {
+
+    private val preferences: SharedPreferences by inject()
 
     private val navigation = StackNavigation<Config>()
     private val stack =
@@ -36,23 +39,29 @@ class RootComponent(
     private fun loginComponent(componentContext: ComponentContext): LoginComponent =
         LoginComponent(
             componentContext = componentContext,
-            onLogin = { response, _ ->
-                if (response != null) navigation.replaceCurrent(configuration = Config.Home)
-            },
-            onSignup = { navigation.replaceCurrent(configuration = Config.Registration) }
+            onLogin = { navigation.push(configuration = Config.Home) },
+            onSignup = { navigation.push(configuration = Config.Registration) }
         )
 
     private fun registrationComponent(componentContext: ComponentContext): RegistrationComponent =
         RegistrationComponent(
             componentContext = componentContext,
-            onFinish = { navigation.replaceCurrent(configuration = Config.Login) }
+            onFinish = {
+                if (it != null) {
+                    with(preferences.edit()) {
+                        putBoolean(SharedPreferenceKeys.EmailVerified.key, false)
+                        putString(SharedPreferenceKeys.RecentUsername.key, it)
+                        apply()
+                    }
+                }
+                navigation.pop()
+            }
         )
 
     private fun homeComponent(componentContext: ComponentContext): HomeComponent =
         HomeComponent(
             componentContext = componentContext,
-            onLogout = { navigation.replaceCurrent(configuration = Config.Login) },
-            onBack = { navigation.replaceCurrent(configuration = Config.Login) }
+            onLogout = { navigation.pop() },
         )
 
 

@@ -12,7 +12,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.teddyfreddy.android.ui.extensions.*
 import com.teddyfreddy.kmp.android.ui.decompose.Login
-import com.teddyfreddy.common.network.NetworkRequestError
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,25 +34,8 @@ fun LoginView(
     }
 
     fun doLogin() {
-        component.login { exception ->
-            if (exception != null) {
-                  val snackbarMessage = when (exception) {
-                    is NetworkRequestError -> {
-                        when (exception) {
-                            NetworkRequestError.EmailVerificationFailed -> {
-                                component.setEmailVerificationCodeError(exception.failureReason!!)
-                            }
-                            NetworkRequestError.EmailVerificationCodeExpired -> {
-                                component.setEmailVerificationCodeError(exception.failureReason!!)
-                            }
-                            else -> {}
-                        }
-                        "${exception.failureReason!!}${if (exception.recoverySuggestion != null) " - ${exception.recoverySuggestion!!}" else ""}"
-                    }
-                    else -> exception.message
-                }
-                showSnackbar(snackbarMessage ?: "")
-            }
+        component.login { snackbarMessage ->
+            showSnackbar(snackbarMessage ?: "")
         }
     }
 
@@ -144,19 +126,8 @@ fun LoginView(
                 Text("Need a new verification code?")
                 Button(
                     onClick = {
-                        component.getNewCode { exception ->
-                            if (exception != null) {
-                                val snackbarMessage = when (exception) {
-                                    is NetworkRequestError -> {
-                                        "${exception.failureReason!!}${if (exception.recoverySuggestion != null) " - ${exception.recoverySuggestion!!}" else ""}"
-                                    }
-                                    else -> exception.message
-                                }
-                                showSnackbar(snackbarMessage ?: "")
-                            }
-                            else {
-                                showSnackbar("Check your email for a new verification code - don't forget the Junk folder")
-                            }
+                        component.getNewCode { message ->
+                            showSnackbar(message)
                         }
                     }
                 ) {

@@ -4,8 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 
 class HomeComponent(
     componentContext: ComponentContext,
-    private val onLogout: () -> Unit,
-    private val onBack: () -> Unit
+    private val onLogout: () -> Unit
 ) : Home, ComponentContext by componentContext {
 
 
@@ -14,6 +13,6 @@ class HomeComponent(
     }
 
     override fun backPressed() {
-        onBack()
+        onLogout()
     }
 }
