@@ -5,22 +5,22 @@ import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
+import com.russhwolf.settings.Settings
+import com.teddyfreddy.kmp.SettingsKeys
 import com.teddyfreddy.kmp.decompose.registration.RegistrationComponent
 import com.teddyfreddy.kmp.decompose.login.LoginComponent
-import org.koin.core.component.KoinComponent
 
 class RootComponent(
     componentContext: ComponentContext
-) : Root, ComponentContext by componentContext, KoinComponent {
+) : Root, ComponentContext by componentContext {
 
-//    private val preferences: SharedPreferences by inject()
+    private val settings: Settings = Settings()
 
     private val navigation = StackNavigation<Config>()
     private val stack =
         childStack(
             source = navigation,
-//            initialConfiguration = Config.Login(preferences.getString(SharedPreferenceKeys.RecentUsername.key, null)),
-            initialConfiguration = Config.Login("normal"),
+            initialConfiguration = Config.Login(settings.getStringOrNull(SettingsKeys.RecentUsername.key)),
             handleBackButton = true, // Pop the back stack on back button press
             childFactory = ::createChild
         )
@@ -51,13 +51,10 @@ class RootComponent(
         RegistrationComponent(
             componentContext = componentContext,
             onFinish = {
-//                if (it != null) {
-//                    with(preferences.edit()) {
-//                        putBoolean(SharedPreferenceKeys.EmailVerified.key, false)
-//                        putString(SharedPreferenceKeys.RecentUsername.key, it)
-//                        apply()
-//                    }
-//                }
+                if (it != null) {
+                    settings.putBoolean(SettingsKeys.EmailVerified.key, false)
+                    settings.putString(SettingsKeys.RecentUsername.key, it)
+                }
                 navigation.pop()
                 navigation.replaceCurrent(Config.Login(it)) // Force new state
             }

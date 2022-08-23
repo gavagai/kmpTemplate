@@ -6,12 +6,6 @@ struct LoginDecomposeView: View {
 
     @Environment(\.colorScheme) var colorScheme
 
-    @AppStorage("EmailVerified")
-    private var emailVerified = false
-
-    @AppStorage("RecentUsername")
-    private var recentUsername: String = ""
-
     @State
     private var snackbarShowing = false
     @State
@@ -94,7 +88,7 @@ struct LoginDecomposeView: View {
                     }
                 }
 
-                if !emailVerified {
+                if !model.emailVerificationRequired {
                     VStack {
                         Text("Need a new verification code?")
                              .padding(.top, 30)

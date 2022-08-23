@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
-import com.teddyfreddy.kmp.android.ui.decompose.app.RootComponent
+import com.teddyfreddy.kmp.decompose.app.RootComponent
 import com.teddyfreddy.android.ui.adaptive.AdaptiveDesign
 import com.teddyfreddy.kmp.android.R
 import kotlinx.coroutines.launch

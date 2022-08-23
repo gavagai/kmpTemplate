@@ -6,8 +6,8 @@ import com.arkivanov.decompose.extensions.compose.jetpack.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.stackAnimation
 import com.teddyfreddy.android.ui.adaptive.AdaptiveDesign
-import com.teddyfreddy.kmp.android.ui.decompose.app.Root
-import com.teddyfreddy.kmp.android.ui.decompose.app.RootComponent
+import com.teddyfreddy.kmp.decompose.app.Root
+import com.teddyfreddy.kmp.decompose.app.RootComponent
 import com.teddyfreddy.kmp.android.ui.compose.login.LoginView
 import com.teddyfreddy.kmp.android.ui.compose.registration.RegistrationView
 

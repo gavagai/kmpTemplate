@@ -6,7 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.teddyfreddy.kmp.android.ui.decompose.app.Home
+import com.teddyfreddy.kmp.decompose.app.Home
 
 @Composable
 fun HomeView(

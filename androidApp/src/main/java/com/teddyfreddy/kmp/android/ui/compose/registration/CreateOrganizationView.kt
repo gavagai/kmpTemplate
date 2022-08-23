@@ -6,14 +6,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.teddyfreddy.kmp.android.ui.decompose.registration.CreateOrganization
+import com.teddyfreddy.kmp.decompose.registration.CreateOrganization
 
 @Composable
 fun CreateOrganizationView(
     component: CreateOrganization,
     modifier: Modifier? = Modifier
 ) {
-    Column {
+    Column(
+        modifier = modifier ?: Modifier
+    ) {
         Text("CreateOrganization")
         Row(horizontalArrangement = Arrangement.SpaceAround) {
             Button(onClick = { component.cancelPressed() }) {

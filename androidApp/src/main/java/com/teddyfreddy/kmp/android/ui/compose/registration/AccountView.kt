@@ -7,7 +7,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -16,8 +15,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
 import com.teddyfreddy.android.ui.extensions.EmailTextField
-import com.teddyfreddy.kmp.android.ui.decompose.registration.Account
+import com.teddyfreddy.kmp.decompose.registration.Account
 import com.teddyfreddy.android.ui.extensions.ValidatedTextField
 import com.teddyfreddy.android.ui.extensions.standardKeyNavigation
 
@@ -27,7 +27,7 @@ fun AccountView(
     component: Account,
     modifier: Modifier? = Modifier
 ) {
-    val state = remember { component.state }
+    val state = component.model.subscribeAsState()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

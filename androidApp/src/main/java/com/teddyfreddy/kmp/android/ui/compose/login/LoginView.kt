@@ -10,8 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
 import com.teddyfreddy.android.ui.extensions.*
-import com.teddyfreddy.kmp.android.ui.decompose.login.Login
+import com.teddyfreddy.kmp.decompose.login.Login
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -20,7 +21,7 @@ fun LoginView(
     component: Login,
     modifier: Modifier? = Modifier
 ) {
-    val state = remember { component.state }
+    val state = component.model.subscribeAsState()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 

@@ -5,14 +5,16 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.teddyfreddy.kmp.android.ui.decompose.registration.Congratulations
+import com.teddyfreddy.kmp.decompose.registration.Congratulations
 
 @Composable
 fun CongratulationsView(
     component: Congratulations,
     modifier: Modifier? = Modifier
 ) {
-    Column {
+    Column(
+        modifier = modifier ?: Modifier
+    ) {
         Text("Congratulations")
         Button(onClick = { component.finishPressed() }) {
             Text("Finish")

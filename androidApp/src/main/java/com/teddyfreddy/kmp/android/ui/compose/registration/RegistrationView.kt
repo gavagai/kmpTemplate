@@ -6,7 +6,7 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.stackAnimation
-import com.teddyfreddy.kmp.android.ui.decompose.registration.Registration
+import com.teddyfreddy.kmp.decompose.registration.Registration
 
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable

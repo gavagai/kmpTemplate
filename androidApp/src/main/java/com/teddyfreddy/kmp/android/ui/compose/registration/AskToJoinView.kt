@@ -6,14 +6,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.teddyfreddy.kmp.android.ui.decompose.registration.AskToJoin
+import com.teddyfreddy.kmp.decompose.registration.AskToJoin
 
 @Composable
 fun AskToJoinView(
     component: AskToJoin,
     modifier: Modifier? = Modifier
 ) {
-    Column {
+    Column(
+        modifier = modifier ?: Modifier
+    ) {
         Text("AskToJoin")
         Row(horizontalArrangement = Arrangement.SpaceAround) {
             Button(onClick = { component.cancelPressed() }) {

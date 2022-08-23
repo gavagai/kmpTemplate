@@ -6,14 +6,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.teddyfreddy.kmp.android.ui.decompose.registration.Choice
+import com.teddyfreddy.kmp.decompose.registration.Choice
 
 @Composable
 fun ChoiceView(
     component: Choice,
     modifier: Modifier? = Modifier
 ) {
-    Column {
+    Column(
+        modifier = modifier ?: Modifier
+    ) {
         Text("Choice")
         Row(horizontalArrangement = Arrangement.SpaceAround) {
             Button(onClick = { component.askToJoinPressed() }) {
