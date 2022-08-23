@@ -11,13 +11,13 @@ struct LoginDecomposeView: View {
     @State
     private var snackbarText = ""
     
-    enum LoginField {
+    enum Field {
         case username
         case password
         case passwordConfirmation
         case verificationCode
     }
-    @FocusState private var focusedField: LoginField?
+    @FocusState private var focusedField: Field?
 
     private var component: Login
     @ObservedObject
@@ -27,7 +27,6 @@ struct LoginDecomposeView: View {
         self.component = component
         
         self.model = ObservableValue(component.model)
-
     }
 
     var body: some View {
@@ -68,6 +67,19 @@ struct LoginDecomposeView: View {
                         }
                         .validated(errorMessage: model.verificationCode.error)
                         .focused($focusedField, equals: .verificationCode)
+                        
+                        VStack {
+                            Text("Need a new verification code?")
+                                 .padding(.top, 30)
+                            Button("Get code") {
+                                component.getNewCode { message in
+                                    showSnackbar(message, seconds: 3)
+                                }
+                            }
+                            .buttonStyle(StandardButtonStyle())
+                                .frame(width: 150)
+                        }
+                        .padding(.horizontal, 30)
                     }
                 }
                 .padding(.horizontal, 30)
@@ -77,7 +89,6 @@ struct LoginDecomposeView: View {
                     case .username: component.focusChangeUsername(focused: false)
                     case .password: component.focusChangePassword(focused: false)
                     case .verificationCode: component.focusChangeVerificationCode(focused: false)
-
                     default: break
                     }
                     switch (newFocusedField) {
@@ -88,28 +99,10 @@ struct LoginDecomposeView: View {
                     }
                 }
 
-                if !model.emailVerificationRequired {
-                    VStack {
-                        Text("Need a new verification code?")
-                             .padding(.top, 30)
-                        Button("Get code") {
-                            component.getNewCode { message in
-                                showSnackbar(message, seconds: 3)
-                            }
-                        }
-                        .buttonStyle(StandardButtonStyle())
-                            .frame(width: 150)
-                    }
-                    .padding(.horizontal, 30)
-                    .padding(.top, 10)
-                }
-
                 VStack {
                     Text("Don't have an account?")
                         .padding(.top, 30)
-                    Button("Sign up") {
-                        component.signup()
-                    }
+                    Button("Sign up", action: component.signup)
                     .buttonStyle(StandardButtonStyle(foregroundColor: .white, backgroundColor: .red))
                         .frame(width: 150)
                 }
@@ -117,20 +110,7 @@ struct LoginDecomposeView: View {
                 .padding(.top, 30)
             }
             
-            VStack {
-                Spacer()
-                if snackbarShowing {
-                    Text(snackbarText)
-                        .lineLimit(3)
-                        .frame(maxWidth: .infinity)
-                        .padding(10)
-                        .foregroundColor(snackbarForeground())
-                        .background(snackbarBackground())
-                        .cornerRadius(10)
-                        .padding(20)
-                }
-            }
-            .frame(maxHeight: .infinity)
+            SnackbarView(snackbarShowing: $snackbarShowing, snackbarText: $snackbarText)
         }
     }
     

@@ -27,6 +27,7 @@
 		F67726EC28B45FD800809193 /* RootDecomposeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F67726E828B45FD800809193 /* RootDecomposeView.swift */; };
 		F67726ED28B45FD800809193 /* HomeDecomposeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F67726E928B45FD800809193 /* HomeDecomposeView.swift */; };
 		F6893A6E28B535F6004BD2A8 /* AccountDecomposeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6893A6D28B535F6004BD2A8 /* AccountDecomposeView.swift */; };
+		F6893A7028B544F7004BD2A8 /* SnackbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6893A6F28B544F7004BD2A8 /* SnackbarView.swift */; };
 		F6F6983D28B1FB4500EDAA91 /* ProductImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F6983C28B1FB4500EDAA91 /* ProductImageView.swift */; };
 /* End PBXBuildFile section */
 
@@ -65,6 +66,7 @@
 		F67726E828B45FD800809193 /* RootDecomposeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootDecomposeView.swift; sourceTree = "<group>"; };
 		F67726E928B45FD800809193 /* HomeDecomposeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeDecomposeView.swift; sourceTree = "<group>"; };
 		F6893A6D28B535F6004BD2A8 /* AccountDecomposeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountDecomposeView.swift; sourceTree = "<group>"; };
+		F6893A6F28B544F7004BD2A8 /* SnackbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnackbarView.swift; sourceTree = "<group>"; };
 		F6F6983C28B1FB4500EDAA91 /* ProductImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -129,6 +131,7 @@
 				F6F6983C28B1FB4500EDAA91 /* ProductImageView.swift */,
 				F65844BB28B2F17E006CE276 /* View+ViewFocusModifier.swift */,
 				F6893A6D28B535F6004BD2A8 /* AccountDecomposeView.swift */,
+				F6893A6F28B544F7004BD2A8 /* SnackbarView.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -252,6 +255,7 @@
 				F67726EA28B45FD800809193 /* RegistrationDecomposeView.swift in Sources */,
 				F62C1F4728B44101005792BF /* ComponentHolder.swift in Sources */,
 				F658493928B1EDFC00D543E2 /* RootView.swift in Sources */,
+				F6893A7028B544F7004BD2A8 /* SnackbarView.swift in Sources */,
 				F658493B28B1EE3100D543E2 /* HomeView.swift in Sources */,
 				F61170F228B04EE200215C48 /* LoginView.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,

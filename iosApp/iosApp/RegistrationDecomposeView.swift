@@ -3,16 +3,28 @@ import shared
 
 struct RegistrationDecomposeView: View {
 
-    private var component: Registration
+    @ObservedObject
+    private var childStack: ObservableValue<ChildStack<AnyObject, RegistrationChild>>
 
     init(_ component: Registration) {
-        self.component = component
+        self.childStack = ObservableValue(component.childStack)
     }
 
+
     var body: some View {
-        Text("Registration")
-        Button("Cancel") {
-            component.finish(username: "boo")
+        let child = self.childStack.value.active.instance
+
+        switch child {
+        case let account as RegistrationChild.Account:
+            AccountDecomposeView(account.component)
+                .transition(
+                    .asymmetric(
+                        insertion: AnyTransition.move(edge: .trailing),
+                        removal: AnyTransition.move(edge: .trailing)
+                    )
+                )
+
+        default: EmptyView()
         }
     }
 }

@@ -11,8 +11,6 @@ struct HomeDecomposeView: View {
 
     var body: some View {
         Text("Home")
-        Button("Logout") {
-            component.logoutPressed()
-        }
+        Button("Logout", action: component.logoutPressed) 
     }
 }

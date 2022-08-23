@@ -106,13 +106,10 @@ struct AccountDecomposeView: View {
             }
             
             HStack {
-                Button("Cancel", role: .cancel) {
-                    component.cancelPressed()
-                }
+                Button("Cancel", role: .cancel, action: component.cancelPressed)
                 .buttonStyle(StandardButtonStyle())
 
                 Button("Continue") {
-
                     switch (focusedField) {
                     case .email: component.focusChangeEmail(focused: false)
                     case .password: component.focusChangePassword(focused: false)
