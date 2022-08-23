@@ -7,27 +7,28 @@ import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.arkivanov.mvikotlin.extensions.coroutines.labels
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import com.russhwolf.settings.Settings
 import com.teddyfreddy.common.network.NetworkRequestError
+import com.teddyfreddy.kmp.SettingsKeys
 import com.teddyfreddy.kmp.mvi.login.LoginField
 import com.teddyfreddy.kmp.mvi.login.LoginStore
 import com.teddyfreddy.kmp.mvi.login.LoginStoreFactory
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import org.koin.core.component.KoinComponent
 
 class LoginComponent(
     componentContext: ComponentContext,
     private val onLogin: () -> Unit,
     private val onSignup: () -> Unit
-) : Login, ComponentContext by componentContext, KoinComponent {
+) : Login, ComponentContext by componentContext {
 
-//    private val preferences: SharedPreferences by inject()
+    private val settings: Settings = Settings()
 
     private val store = LoginStoreFactory(
                             DefaultStoreFactory(),
-                            "normal",//preferences.getString(SharedPreferenceKeys.RecentUsername.key, null),
-                            false//preferences.getBoolean(SharedPreferenceKeys.EmailVerified.key, false)
+                            settings.getStringOrNull(SettingsKeys.RecentUsername.key),
+                            settings.getBoolean(SettingsKeys.EmailVerified.key)
                         ).create()
 
     private var _model: MutableValue<Login.Model> = MutableValue(Login.Model())
@@ -83,14 +84,8 @@ class LoginComponent(
     }
 
     private fun recordRecentLogin(emailVerified: Boolean) {
-//        with(preferences.edit()) {
-//            putBoolean(SharedPreferenceKeys.EmailVerified.key, emailVerified)
-//            putString(
-//                SharedPreferenceKeys.RecentUsername.key,
-//                store.state.username.data
-//            )
-//            apply()
-//        }
+        settings.putBoolean(SettingsKeys.EmailVerified.key, emailVerified)
+        settings.putString(SettingsKeys.RecentUsername.key, store.state.username.data)
     }
 
     private fun executeEmailVerificationSent(throwable: Throwable?) {

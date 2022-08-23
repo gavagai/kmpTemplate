@@ -33,6 +33,15 @@ kotlin {
     }
 
 // DON: --
+    sourceSets {
+        all {
+            languageSettings.apply {
+                optIn("kotlin.RequiresOptIn")
+                optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
+            }
+        }
+    }
+
     val ktorVersion = "2.0.2"
     val koinVersion = "3.2.0"
 // DON: --
@@ -61,6 +70,9 @@ kotlin {
                 api("com.arkivanov.decompose:decompose:$decomposeVersion")
                 implementation("com.arkivanov.decompose:extensions-compose-jetpack:$decomposeVersion")
                 api("com.arkivanov.essenty:lifecycle:$essentyVersion")
+
+                // Multiplatform settings
+                implementation("com.russhwolf:multiplatform-settings-no-arg:0.9")
             }
             // DON: --
         }
