@@ -11,6 +11,7 @@ plugins {
 val essentyVersion = "0.5.2"
 //val mviKotlinVersion = "3.0.0-beta01"
 val mviKotlinVersion = "3.0.2"
+val decomposeVersion = "1.0.0-alpha-02"
 // DON: --
 kotlin {
     android()
@@ -26,6 +27,7 @@ kotlin {
             // DON: --
             export("com.arkivanov.essenty:lifecycle:$essentyVersion")
             export("com.arkivanov.mvikotlin:mvikotlin:$mviKotlinVersion")
+            export("com.arkivanov.decompose:decompose:$decomposeVersion")
             // DON: --
         }
     }
@@ -33,7 +35,6 @@ kotlin {
 // DON: --
     val ktorVersion = "2.0.2"
     val koinVersion = "3.2.0"
-    val decomposeVersion = "1.0.0-alpha-02"
 // DON: --
     sourceSets {
         val commonMain by getting {
@@ -59,6 +60,7 @@ kotlin {
                 // Decompose
                 api("com.arkivanov.decompose:decompose:$decomposeVersion")
                 implementation("com.arkivanov.decompose:extensions-compose-jetpack:$decomposeVersion")
+                api("com.arkivanov.essenty:lifecycle:$essentyVersion")
             }
             // DON: --
         }
@@ -90,8 +92,6 @@ kotlin {
             // DON: --
             dependencies {
                 implementation("io.ktor:ktor-client-darwin:$ktorVersion")
-                api("com.arkivanov.essenty:lifecycle:$essentyVersion")
-                api("com.arkivanov.mvikotlin:mvikotlin:$mviKotlinVersion")
             }
             // DON: --
         }

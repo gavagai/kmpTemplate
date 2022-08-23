@@ -69,7 +69,12 @@ class LoginComponent(
                         }
                         else -> {}
                     }
-                    "${throwable.failureReason!!}${if (throwable.recoverySuggestion != null) " - ${throwable.recoverySuggestion!!}" else ""}"
+                    if (throwable is NetworkRequestError.TransportError) {
+                        "Failed to connect to the server - Try again later" // iOS specific messages are unreadable
+                    }
+                    else {
+                        "${throwable.failureReason!!}${if (throwable.recoverySuggestion != null) " - ${throwable.recoverySuggestion!!}" else ""}"
+                    }
                 }
                 else -> throwable.message
             }

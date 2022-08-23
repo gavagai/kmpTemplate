@@ -6,7 +6,6 @@
 //  Copyright © 2022 orgName. All rights reserved.
 //
 
-import SwiftUI
 import shared
 
 public class ObservableValue<T : AnyObject> : ObservableObject {

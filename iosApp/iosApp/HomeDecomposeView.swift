@@ -3,7 +3,6 @@ import shared
 
 struct HomeDecomposeView: View {
 
-    @StateObject
     private var component: Home
 
     init(_ component: Home) {
@@ -12,8 +11,8 @@ struct HomeDecomposeView: View {
 
     var body: some View {
         Text("Home")
-        Button("Back") {
-            component.backPressed()
+        Button("Logout") {
+            component.logoutPressed()
         }
     }
 }

@@ -9,8 +9,8 @@ struct iOSApp: App {
 
 	var body: some Scene {
 		WindowGroup {
-//			AccountView(registrationContext: RegistrationContext(email: nil, givenName: nil, familyName: nil))
-            RootView()
+//            RootView()
+            ContentDecomposeView()
 		}
 	}
 }

@@ -3,7 +3,6 @@ import shared
 
 struct RegistrationDecomposeView: View {
 
-    @StateObject
     private var component: Registration
 
     init(_ component: Registration) {
@@ -13,7 +12,7 @@ struct RegistrationDecomposeView: View {
     var body: some View {
         Text("Registration")
         Button("Cancel") {
-            component.cancelPressed()
+            component.finish(username: "boo")
         }
     }
 }

@@ -84,14 +84,6 @@ struct AccountView: View {
                         .validated(errorMessage: viewModel.viewState.familyName.error)
                         .focused($focusedField, equals: .lastName)
                     
-                    let phoneBinding = Binding<String>(
-                        get: {
-                            viewModel.viewState.phone
-                        },
-                        set: {
-                            viewModel.changePhoneNumber(newVal: $0)
-                        }
-                    )
                     StandardPhoneNumberTextField(phoneNumber: Binding(get: { viewModel.viewState.phone }, set: viewModel.changePhoneNumber), leadingImage: nil)
                 }
             }

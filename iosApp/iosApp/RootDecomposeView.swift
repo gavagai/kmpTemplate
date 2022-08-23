@@ -3,14 +3,14 @@ import shared
 
 struct RootDecomposeView: View {
     @ObservedObject
-    private var routerStates: ObservableValue<RouterState<AnyObject, RootChild>>
+    private var childStack: ObservableValue<ChildStack<AnyObject, RootChild>>
 
     init(_ component: Root) {
-        self.routerStates = ObservableValue(component.routerState)
+        self.childStack = ObservableValue(component.childStack)
     }
 
     var body: some View {
-        let child = self.routerStates.value.activeChild.instance
+        let child = self.childStack.value.active.instance
 
         switch child {
         case let main as RootChild.Login:
@@ -24,7 +24,6 @@ struct RootDecomposeView: View {
                         removal: AnyTransition.move(edge: .trailing)
                     )
                 )
-                .animation(.easeInOut)
 
         case let home as RootChild.Home:
             HomeDecomposeView(home.component)
