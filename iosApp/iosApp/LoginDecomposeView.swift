@@ -55,7 +55,7 @@ struct LoginDecomposeView: View {
                                 doLogin()
                             }
                         )
-                        .validated(errorMessage: model.password.error)
+                        .validated(errorMessage: model.password.error, shiftImage: true)
                         .focused($focusedField, equals: .password)
                     }
 
@@ -65,7 +65,7 @@ struct LoginDecomposeView: View {
                         ) {
                             doLogin()
                         }
-                        .validated(errorMessage: model.verificationCode.error)
+                        .validated(errorMessage: model.verificationCode.error, shiftImage: true)
                         .focused($focusedField, equals: .verificationCode)
                         
                         VStack {
